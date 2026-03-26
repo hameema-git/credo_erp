@@ -56,7 +56,7 @@ from .utils import generate_invoice_number
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import get_template
 from django.http import HttpResponse
-from xhtml2pdf import pisa
+# from xhtml2pdf import pisa
 from django.contrib import messages
 
 from .models import Invoice, InvoiceItem, Quotation
@@ -143,7 +143,7 @@ def invoice_detail(request, pk):
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.http import HttpResponse
-from xhtml2pdf import pisa
+# from xhtml2pdf import pisa
 
 # def invoice_pdf(request, pk):
 #     invoice = get_object_or_404(Invoice, id=pk)
