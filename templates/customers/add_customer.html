@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Customer</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f5f6fa;
+            font-family: Calibri, sans-serif;
+        }
+
+        /* MAIN BOX */
+        .container-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            height: 80px;
+        }
+
+        .company-info {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* FORM */
+        .form-control {
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        textarea.form-control {
+            resize: none;
+        }
+
+        /* BUTTON */
+        .btn-gradient {
+            background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="container-box">
+
+    <!-- 🔥 HEADER WITH LOGO -->
+    <div class="header">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <!-- LOGO -->
+            <img src="{% static 'logo6.png' %}" class="logo">
+
+            <!-- COMPANY DETAILS -->
+            <div class="company-info">
+                <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
+                Mussaffa 45 - Abu Dhabi, UAE<br>
+                TRN: 105189276600001<br>
+                📞 +971 58 862 7172<br>
+                ✉ info@credodesigns.ae
+            </div>
+
+        </div>
+
+        <!-- RIGHT TITLE -->
+        <div class="text-end">
+            <div class="title">ADD CUSTOMER</div>
+            <small class="text-muted">Create new customer</small>
+        </div>
+
+    </div>
+
+    <!-- FORM -->
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label"><b>Customer Name</b></label>
+            <input type="text" name="name" class="form-control" placeholder="Enter customer name" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"><b>Phone Number</b></label>
+            <input type="text" name="phone" class="form-control" placeholder="Enter phone number">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"><b>Email Address</b></label>
+            <input type="email" name="email" class="form-control" placeholder="Enter email">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"><b>Address</b></label>
+            <textarea name="address" class="form-control" rows="3" placeholder="Enter address"></textarea>
+        </div>
+
+        <!-- ACTION -->
+        <div class="mt-4 d-flex justify-content-between">
+
+            <a href="{% url 'create_quotation' %}" class="btn btn-secondary">
+                Back
+            </a>
+
+            <button type="submit" class="btn btn-gradient">
+                Save Customer
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+</div>
+
+</body>
+</html>

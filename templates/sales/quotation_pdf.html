@@ -1,0 +1,669 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+@page {
+    size: A4;
+    margin: 20px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #222;
+ margin-left: 6px;
+ margin-right: 6px;
+    margin-bottom: 8px;
+}
+
+/* PAGE STRUCTURE */
+.page {
+    min-height: 100%;
+    /* display: flex;
+    flex-direction: column; */
+     max-width: 800px;
+    margin: 0 auto;
+}
+
+/* MAIN CONTENT */
+.content {
+    flex: 1;
+}
+
+/* GRADIENT */
+.gradient {
+    /* background: linear-gradient(to right, #5a2ea6, #d90429); */
+         /* background: linear-gradient(to right, #5a2ea6, #5a086c,#af0943,#d90429); */
+         /* background: linear-gradient(90deg, #4b2a8f 0%, #9c1c6b 50%, #d90429 100%); */
+             /* background: linear-gradient(90deg, #3a0ca3, #9d0f7a, #ff0033); */
+background: linear-gradient(
+    90deg,
+    #362c7a 0%,   /* deep violet */
+   #741960 50%,  /* dark magenta */
+    #d0153e 100%  /* strong red */
+);
+color: white;
+    font-weight: bolder;
+    padding: 8px;
+    
+    
+}
+
+/* HEADER */
+/* .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} */
+ .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* better than center */
+}
+
+/* 🔥 FIXED LOGO SIZE */
+/* .logo {
+    height: 200px;   
+   
+    width: auto;
+    font-weight: bolder;
+    align-items: left;
+    
+} */
+
+.logo {
+    height: 120px;   /* balanced */
+    width: auto;
+    margin-top: 10px;
+}
+.logo1 {
+    height: 120px;   /* balanced */
+    width: auto;
+    margin-top: 10px;
+    position: relative;
+    left: 150px;
+    top: 120px;
+}
+
+/* TITLE */
+.title {
+    font-size: 26px;
+    font-weight: bolder;
+}
+
+.info {
+    text-align: justify;
+    font-size: 18px;
+    margin-top: 20PX;
+
+    
+   
+}
+
+/* CLIENT */
+.client-title {
+    margin-top: 15px;
+    padding: 8px;
+    font-weight: bolder;
+}
+
+/* .client-table {
+    width: 100%;
+    border-collapse: separate;
+    margin-left: -2px;
+    margin-right: 6px;
+} */
+ .client-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2px;
+
+}
+
+
+
+.client-table td {
+    padding: 10px;
+    background: #eee;
+    padding: 8px;
+    /* border: 1px solid white; */
+    /* border: 0px solid white; */
+}
+.client-table td:first-child {
+    background: #e0e0e0; /* slightly darker label */
+}
+
+
+/* ADD ONLY INNER BORDERS */
+.client-table tr td + td {
+    border-left: 1px solid white;
+}
+
+.client-table tr + tr td {
+    border-top: 1px solid white;
+}
+/* ITEMS */
+/* .items {
+    width: 100%;
+   
+    margin-top: 20px;
+     border-collapse: separate;   
+    border-spacing: 4px;        
+} */
+
+
+.items {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.items th {
+    padding: 10px;
+    text-align: left;
+    border-right: 1px solid white;
+}
+
+/* REMOVE LEFT BORDER COMPLETELY */
+.items th:first-child {
+    border-left: none;
+}
+
+/* REMOVE RIGHT BORDER FROM LAST COLUMN */
+.items th:last-child {
+    border-right: none;
+}
+.items td { padding: 10px; border-bottom: 1px solid #ddd; }
+
+/* BOTTOM */
+/* .bottom {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+} */
+ /* .bottom {
+    margin-top: 15px;
+    align-items: flex-start;
+} */
+
+.bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* PAYMENT */
+.payment {
+    width: 45%;
+   
+   
+}
+
+/* .payment {
+    width: 60%;
+} */
+
+.payment table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment td {
+    padding: 8px;
+    background: #eee;
+    border: 3px solid white;   /* 🔥 MATCH TOTAL BOX */
+}
+
+.box-title {
+    padding: 6px;
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+/* TOTAL */
+.total-box {
+    width: 45%;
+    position: relative;
+    bottom: 80px;
+    left: 400px;
+}
+
+.total-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-weight: bolder;
+}
+
+.total-table td {
+    padding: 8px;
+    background: #eee;
+    border: 3px solid white;
+}
+
+.total-table .head {
+    text-align: center;
+    font-weight: bolder;
+     /* background: linear-gradient(to right,#5a086c,#af0943,#d90429); */
+     /* background: linear-gradient(90deg, #4b2a8f 0%, #9c1c6b 50%, #d90429 100%); */
+    /* background: linear-gradient(90deg, #3a0ca3, #9d0f7a, #ff0033); */
+background: linear-gradient(
+    90deg,
+    #362c7a 0%,   /* deep violet */
+   #741960 50%,  /* dark magenta */
+    #d0153e 100%  /* strong red */
+);
+    color: white;
+}
+
+/* 🔥 FOOTER FIX */
+/* .footer {
+    border-top: 1px solid #ccc;
+    padding-top: 8px;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-top: auto;  
+    font-weight: bolder;
+    position: relative;
+    bottom: 20px;
+} */
+
+/* RIGHT ALIGN */
+.right {
+    text-align: right;
+}
+
+
+/* PAGE STRUCTURE */
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* MAIN CONTENT */
+.content {
+    flex: 1;
+}
+
+/* 🔥 THIS PUSHES BOTTOM SECTION DOWN */
+/* .bottom-section {
+    margin-top: auto;
+} */
+ .bottom-section {
+    margin-top: 20px;
+}
+
+/* BOTTOM LAYOUT */
+/* .bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+} */
+
+.box-title {
+    padding: 8px;
+    font-size: 13px;
+    font-weight: bolder;
+}
+
+
+/* .client-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-weight: bolder;
+} */
+
+/* .client-table td {
+    padding: 8px;
+    background: #eee;
+    border: 1px solid white;
+} */
+
+/* .client-table .head {
+    text-align: center;
+    font-weight: bolder; */
+     /* background: linear-gradient(to right,#5a086c,#af0943,#d90429); */
+     /* background: linear-gradient(90deg, #4b2a8f 0%, #9c1c6b 50%, #d90429 100%); */
+    /* background: linear-gradient(90deg, #3a0ca3, #9d0f7a, #ff0033); */
+/* background: linear-gradient(
+    90deg,
+    #362c7a 0%,   
+   #741960 50%,  
+    #d0153e 100% 
+);
+    color: white;
+} */
+/* .footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 14px;
+    align-items: center;
+}
+
+.footer-row span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.icon {
+    height: 14px;
+    width: 14px;
+} */
+
+ /* .footer {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bolder;
+    margin-top: 15px;
+    position: relative;
+    top: -50px;
+} */
+
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bolder;
+}
+
+.footer-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* 🔥 MAIN FIX */
+.footer-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: nowrap;   /* 🔥 prevent line break */
+}
+
+/* EACH ITEM */
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;   /* 🔥 prevent text breaking */
+}
+
+/* ICON SIZE */
+.footer-item img {
+    height: 12px;
+    width: 12px;
+}
+
+.payment {
+    width: 50%;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="content">
+
+<!-- HEADER -->
+<div class="header">
+    <div>
+        <img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo">
+    </div>
+
+    <div class="info">
+        <div class="title">QUOTATION</div><br>
+        <b>Quotation No :</b> {{ quotation.number }}<br>
+        <b>Date :</b> {{ quotation.date }}<br>
+        <b>TRN No :</b> 105189276600001
+    </div>
+</div>
+
+<!-- CLIENT -->
+
+<!-- 
+<table class="client-table">
+    <tr>
+        <td><b>To</b></td>
+        <td>{{ quotation.customer.name }}</td>
+    </tr>
+    <tr>
+        <td><b>Attn</b></td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><b>Sales Person</b></td>
+        <td>-</td>
+    </tr>
+</table> -->
+
+<div class="client-box">
+
+    <div class="client-title gradient">
+        Client Information:
+    </div>
+
+    <table class="client-table">
+
+        <colgroup>
+            <col style="width:30%">
+            <col style="width:70%">
+        </colgroup>
+
+        <tr>
+            <td><b>To</b></td>
+            <td>{{ quotation.customer.name }}</td>
+        </tr>
+
+        {% if quotation.attention %}
+        <tr>
+            <td><b>Attn</b></td>
+            <td>{{ quotation.attention }}</td>
+        </tr>
+        {% endif %}
+
+        {% if quotation.sales_person %}
+        <tr>
+            <td><b>Sales Person</b></td>
+            <td>{{ quotation.sales_person }}</td>
+        </tr>
+        {% endif %}
+
+    </table>
+
+</div>
+
+<!-- <table class="client-table">
+    <colgroup>
+        <col style="width:30%">
+        <col style="width:70%">
+    </colgroup>
+    <tr>
+        <td><b>To</b></td>
+        <td>{{ quotation.customer.name }}</td>
+    </tr>
+
+    {% if quotation.attention %}
+    <tr>
+        <td><b>Attn</b></td>
+        <td>{{ quotation.attention }}</td>
+    </tr>
+    {% endif %}
+
+    {% if quotation.sales_person %}
+    <tr>
+        <td><b>Sales Person</b></td>
+        <td>{{ quotation.sales_person }}</td>
+    </tr>
+
+    
+    {% endif %}
+</table> -->
+
+<!-- ITEMS -->
+<table class="items">
+    <tr >
+        <th class="gradient" >Description</th>
+        <th class="gradient" style="width:80px;"><center>Qty</center></th>
+        <th class="gradient" style="width:120px;"><center>Unit Price</center></th>
+        <th class="gradient"style="width:120px;"><center>Price</center></th>
+    </tr>
+
+    {% for item in quotation.items.all %}
+    <tr>
+        <!-- <td>{{ forloop.counter }}. {{ item.service.name }}</td> -->
+         <td>
+    {{ forloop.counter }}. 
+    {% if item.description %}
+        {{ item.description }}
+    {% elif item.service %}
+        {{ item.service.name }}
+    {% endif %}
+</td>
+        <td>{{ item.quantity }}</td>
+        <!-- <td>AED {{ item.price }}</td>
+        <td>AED {{ item.total }}</td> -->
+        <td>AED {{ item.price|floatformat:2 }}</td>
+<td>AED {{ item.total|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</div> <!-- END content -->
+
+<!-- ✅ MOVE HERE -->
+<!-- <div class="bottom-section">
+    <div class="bottom">
+
+        <div class="payment" style="position: relative;bottom:70px;">
+       
+           <div class="head gradient" style="height: 25px;align-items: center;">Payment Terms  :  Bank Transfer</div>
+           <p><b>Account Name : </b>Credo International Digital Design<br>
+Iban No: AE510030014366159920001<br>
+Account No:14366159920001<br>
+Bank Name : ADCB</p>
+            
+                    <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" class="logo1">
+
+            <p style="margin-top:40px;">Signature:</p>
+        </div> -->
+
+        <div class="payment" style="position: relative;top:70px;">
+
+    <div class="gradient box-title">
+        Payment Terms : Bank Transfer
+    </div>
+
+    <div style="margin-top:10px; font-size:14px; line-height:1.6;">
+        <b>Account Name :</b> Credo International Digital Design<br>
+        <b>IBAN No :</b> AE510030014366159920001<br>
+        <b>Account No :</b> 14366159920001<br>
+        <b>Bank Name :</b> ADCB
+    </div>
+
+    <div style="margin-top:40px;">
+        <p>Signature:</p>
+        <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" 
+             style="height:130px; margin-top:-50px;position: relative;left:130px;bottom:-5px;">
+    </div>
+
+</div>
+<!-- <div class="payment">
+    <table>
+        <tr class="gradient">
+            <td>Payment Terms : Bank Transfer</td>
+        </tr>
+        <tr>
+            <td>Bank Transfer</td>
+        </tr>
+        <tr>
+            <td style="padding-top:40px;">Signature:</td>
+        </tr>
+    </table>
+</div> -->
+
+        <div class="total-box">
+            <table class="total-table">
+                <tr class="gradient">
+                    <td colspan="2" class="head">Amount Due</td>
+                </tr>
+                <tr>
+                    <td>SUB TOTAL</td>
+                    <td class="right">AED {{ quotation.subtotal|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>VAT (0%)</td>
+                    <td class="right">AED {{ quotation.vat|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td><b>TOTAL</b></td>
+                    <td class="right"><b>AED {{ quotation.total|floatformat:2 }}</b></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<!-- <div class="footer">
+    <p style="text-align: left;">For More Info :</p>
+    info@credodesigns.ae | +971 58 862 7172 | +971 50 913 2555 | Mussaffa 45 - Abu Dhabi
+</div> -->
+<div class="footer">
+
+    <div class="footer-title">For More Info:</div>
+
+    <div class="footer-row">
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/mail.png' %}">
+            <span>info@credodesigns.ae</span>
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/phone.png' %}">
+            <span>+971566981200</span>
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/whatsapp.png' %}">
+            <span>+971 50 913 2555</span>
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/location.png' %}">
+            <span>Mussaffa 45 - Abu Dhabi</span>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+
+</body>
+</html>

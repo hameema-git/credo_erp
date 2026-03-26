@@ -1,0 +1,1 @@
+web: gunicorn ops_system.wsgi

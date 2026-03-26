@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+
+@page {
+    size: A4;
+    margin: 12mm 15mm;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Calibri, sans-serif;
+    color: #222;
+}
+
+/* PAGE STRUCTURE */
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo {
+    height: 100px;
+}
+
+.title {
+    font-size: 33px;
+    font-weight: bolder;
+}
+
+.info {
+    text-align: right;
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+/* CLIENT */
+.client {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bolder;
+}
+
+/* COMPANY */
+.company {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bolder;
+    margin-top: 10px;
+}
+
+/* ITEMS TABLE */
+.items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.items th {
+    font-size: 18px;
+    padding: 12px;
+    text-align: left;
+    font-weight: bolder;
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+    color: white;
+}
+
+.items td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* PUSH BOTTOM DOWN */
+.bottom-section {
+    margin-top: auto;
+}
+
+/* BOTTOM LAYOUT */
+.bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* PAYMENT */
+.payment {
+    width: 55%;
+    font-size: 14.5px;
+  
+    line-height: 1.6;
+}
+/* .payment b {
+    font-weight: normal;
+} */
+
+/* TOTAL */
+.total-box {
+    width: 40%;
+}
+
+.total-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-weight: bolder;
+    font-size: 16px;
+}
+
+.total-table td {
+    padding: 8px;
+    border: 3px solid white;
+    background: #eee;
+}
+
+.total-table .total-final td {
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e) !important;
+    color: white;
+    font-weight: bolder;
+}
+
+/* THANK YOU */
+.thankyou {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #362c7a;
+    font-weight: bolder;
+}
+
+/* FOOTER */
+
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+
+   
+    padding-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bolder;
+}
+
+.footer-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* 🔥 MAIN FIX */
+.footer-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: nowrap;   /* 🔥 prevent line break */
+}
+
+/* EACH ITEM */
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;   /* 🔥 prevent text breaking */
+}
+
+/* ICON SIZE */
+.footer-item img {
+    height: 12px;
+    width: 12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="content">
+
+<!-- HEADER -->
+<div class="header">
+
+    <div>
+        <img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo">
+    </div>
+
+    <div class="info">
+        <div class="title">INVOICE</div><br>
+        Invoice No : {{ invoice.number }}<br>
+        Date : {{ invoice.date }}<br>
+        TRN No : 105189276600001
+    </div>
+
+</div>
+
+<!-- CLIENT -->
+<div class="client">
+    To:<br>
+    {{ invoice.customer.name }}
+</div>
+
+<!-- COMPANY -->
+<div class="company">
+    CREDO INTERNATIONAL DIGITAL DESIGNS L.L.C - S.P.C<br>
+    Mussaffa 45 - Abu Dhabi
+</div>
+
+<!-- ITEMS -->
+<table class="items">
+<tr>
+    <th>Description</th>
+    <th style="text-align:center;">Qty</th>
+    <th style="text-align:center;">Unit Price</th>
+    <th style="text-align:center;">Total Cost</th>
+</tr>
+
+{% for item in invoice.items.all %}
+<tr>
+    <td>{{ forloop.counter }}. {{ item.description }}</td>
+    <td style="text-align:center;">{{ item.quantity }}</td>
+    <td style="text-align:center;">AED {{ item.price|floatformat:2 }}</td>
+    <td style="text-align:center;">AED {{ item.total|floatformat:2 }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- BOTTOM PUSH -->
+<!-- <div class="bottom-section" style="position: absolute;top: 400px;"> -->
+    <div style="height:190px;"></div>
+    <div class="bottom-section">
+    <hr class="divider">
+
+<div class="bottom">
+
+    <!-- PAYMENT -->
+    <!-- <div class="payment">
+        <b>Payment Info:</b><br><br>
+        Account Name : Credo International Digital Design<br>
+        IBAN No : AE510030014366159920001<br>
+        Account No : 14366159920001<br>
+        Bank Name : ADCB
+    </div> -->
+
+    <div class="payment">
+    <b style="font-size: 20px;">Payment Info:</b><br><br>
+
+    Account Name : <b>Credo International Digital Design</b><br>
+    IBAN No : <b>AE510030014366159920001</b><br>
+    Account No : <b>14366159920001</b><br>
+    Bank Name : <b>ADCB</b>
+</div>
+
+    <!-- TOTAL -->
+    <div class="total-box">
+
+        <table class="total-table">
+
+        <tr>
+            <td>SUB TOTAL</td>
+            <td style="text-align:right;">AED {{ invoice.subtotal|floatformat:2 }}</td>
+        </tr>
+
+        <tr>
+            <td>VAT - 5%</td>
+            <td style="text-align:right;">AED {{ invoice.vat|floatformat:2 }}</td>
+        </tr>
+
+        <tr class="total-final">
+            <td>TOTAL</td>
+            <td style="text-align:right;">AED {{ invoice.total|floatformat:2 }}</td>
+        </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- STAMP -->
+<div style="text-align:right; margin-top:20px;">
+    <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" style="height:110px;">
+</div>
+
+<!-- THANK YOU -->
+<div class="thankyou">
+    Thank you for your Business
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+     <hr class="divider">
+
+    <div>For More Info:</div>
+
+    <div class="footer-row">
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/mail.png' %}">
+            info@credodesigns.ae
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/phone.png' %}">
+            +971566981200
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/whatsapp.png' %}">
+            +971 50 913 2555
+        </div>
+
+        <div class="footer-item">
+            <img src="{{ request.build_absolute_uri }}{% static 'icons/location.png' %}">
+            Mussaffa 45 - Abu Dhabi
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<!-- <style>
+
+@page {
+    size: A5;
+    margin: 20px;
+}
+
+body {
+    font-family: Calibri, sans-serif;
+    color: #222;
+    display: flex;
+    justify-content: center;
+}
+
+/* MAIN BOX */
+.receipt-box {
+    /* width: 720px; */
+    border: 1px solid #333;
+    /* padding: 25px 25px 30px 35px; */
+    position: relative;
+    width: 500px;
+    padding: 20px 20px 25px 30px;
+}
+
+/* LEFT STRIP */
+.left-strip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 25px;
+    background: linear-gradient(180deg,#362c7a,#741960,#d0153e);
+}
+
+/* HEADER */
+.header {
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.header td {
+    vertical-align: top;
+}
+
+.logo {
+    height: 70px;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.right-info {
+    text-align: right;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* CONTENT */
+.content {
+    margin-top: 25px;
+    font-size: 15px;
+}
+
+/* ROW */
+.row {
+    margin: 10px 0;
+}
+
+/* DOTTED LINE */
+.line {
+    border-bottom: 2px dotted #444;
+    display: inline-block;
+    min-width: 300px;
+    font-weight: bold;
+}
+
+/* OPTIONS */
+.options span {
+    margin-right: 18px;
+}
+
+/* AMOUNT BOX */
+.amount-box {
+    display: inline-block;
+    border: 2px solid #333;
+    /* padding: 8px 25px; */
+    font-weight: bold;
+    /* font-size: 22px; */
+    margin-top: 15px;
+      font-size: 18px;
+    padding: 6px 15px;
+}
+
+/* SIGNATURE */
+.signature {
+    margin-top: 30px;
+    display: table;
+    width: 100%;
+}
+
+.signature td {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.sign-line {
+    border-top: 2px solid #000;
+    width: 200px;
+    margin: 10px auto;
+}
+
+.stamp {
+    height: 90px;
+}
+
+.received-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+</style> -->
+
+<style>
+
+@page {
+    size: A4;
+    margin: 12mm 15mm;   /* 🔥 balanced margin */
+}
+
+body {
+    font-family: Calibri, sans-serif;
+    color: #222;
+    margin: 0;
+}
+
+/* MAIN RECEIPT BOX */
+.receipt-box {
+    width: 100%;
+    border: 1.5px solid #444;
+    padding: 15px 20px 15px 30px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* LEFT STRIP */
+.left-strip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 22px;
+    background: linear-gradient(180deg,#362c7a,#741960,#d0153e);
+}
+
+/* HEADER */
+.header {
+    display: table;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.header td {
+    vertical-align: top;
+}
+
+/* LOGO */
+.logo {
+    height: 70px;
+}
+
+/* TITLE */
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+/* RIGHT INFO */
+.right-info {
+    text-align: right;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* CONTENT */
+.content {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* ROW */
+.row {
+    margin: 6px 0;
+}
+
+/* DOTTED LINE */
+.line {
+    border-bottom: 1.5px dotted #444;
+    display: inline-block;
+    min-width: 260px;
+    font-weight: bold;
+}
+
+/* PAYMENT OPTIONS */
+.options span {
+    margin-right: 12px;
+    font-size: 13px;
+}
+
+/* AMOUNT BOX */
+.amount-box {
+    display: inline-block;
+    border: 2px solid #333;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 5px 15px;
+    margin-top: 10px;
+}
+
+/* SIGNATURE */
+.signature {
+    margin-top: 20px;
+    display: table;
+    width: 100%;
+}
+
+.signature td {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+/* SIGN LINE */
+.sign-line {
+    border-top: 2px solid #000;
+    width: 180px;
+    margin: 6px auto;
+}
+
+/* STAMP */
+.stamp {
+    height: 70px;
+}
+
+/* RECEIVED NAME */
+.received-name {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+</style>
+</style>
+</head>
+
+<body>
+
+<div class="receipt-box">
+
+    <div class="left-strip"></div>
+
+    <!-- HEADER -->
+    <table class="header">
+        <tr>
+            <td width="20%">
+                <img src="{{ base_url }}static/logo6.png" class="logo">
+            </td>
+
+            <td width="50%" class="title">
+                PAYMENT RECEIPT
+            </td>
+
+            <td width="30%" class="right-info">
+                +971 58 862 7172<br>
+                +971 50 913 2555<br>
+                info@credodesigns.ae<br>
+                Mussaffa 45 - Abu Dhabi<br><br>
+                <b>TRN No:</b> 105189276600001
+            </td>
+        </tr>
+    </table>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- MR NO -->
+        <div class="row">
+            <b>MR.NO:</b> 
+            <span class="line">{{ receipt.receipt_number }}</span>
+        </div>
+
+        <!-- CUSTOMER -->
+        <div class="row">
+            Received with thanks from 
+            <span class="line">{{ receipt.invoice.customer.name }}</span>
+        </div>
+
+        <!-- AMOUNT WORDS -->
+        <div class="row">
+            Amount in words 
+            <span class="line">
+                <!-- <b>{{ receipt.amount_paid }} AED Only</b> -->
+                <b>{{ amount_words }}</b>
+            </span>
+        </div>
+
+        <!-- PAYMENT METHOD -->
+        <div class="row options">
+            By 
+            <span>
+                {% if payment_method == 'Cash' %}☑{% else %}☐{% endif %} Cash
+            </span>
+            <span>
+                {% if payment_method == 'Cheque' %}☑{% else %}☐{% endif %} Cheque
+            </span>
+            <span>
+                {% if payment_method == 'Bank Transfer' %}☑{% else %}☐{% endif %} Bank Transfer
+            </span>
+            <span>
+                {% if payment_method == 'UPI' %}☑{% else %}☐{% endif %} UPI
+            </span>
+        </div>
+
+        <!-- PURPOSE -->
+        <div class="row">
+            For the purpose of 
+            <span class="line">
+                {% if custom_description %}
+                    {{ custom_description }}
+                {% elif receipt.invoice.items.first.description %}
+                    {{ receipt.invoice.items.first.description|truncatechars:60 }}
+                {% else %}
+                    Invoice Payment
+                {% endif %}
+            </span>
+        </div>
+
+        <!-- DATE -->
+        <div class="row">
+            Date: 
+            <span class="line">{{ receipt.date }}</span>
+        </div>
+
+        <!-- AMOUNT BOX -->
+        <div class="row">
+            <div class="amount-box">
+                AED {{ receipt.amount_paid|floatformat:2 }}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SIGNATURE -->
+    <table class="signature">
+        <tr>
+            <td>
+                <div class="received-name">
+                    {% if received_by %}
+                        {{ received_by }}
+                    {% else %}
+                        {{ receipt.received_by|default:"Admin" }}
+                    {% endif %}
+                </div>
+
+                <div class="sign-line"></div>
+                Received By
+            </td>
+
+            <td>
+                <img src="{{ base_url }}static/stamp.jpeg" class="stamp"><br>
+                Authorized Signature
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

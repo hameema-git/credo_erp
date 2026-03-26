@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f5f6fa;
+            font-family: Calibri, sans-serif;
+        }
+
+        /* MAIN BOX */
+        .container-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            height: 80px;
+        }
+
+        .company-info {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* BUTTON */
+        .btn-gradient {
+            background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+            border: none;
+            color: white;
+        }
+
+        /* CARDS */
+        .dashboard-card {
+            border-radius: 10px;
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+        }
+
+        .card-1 { background: linear-gradient(90deg,#362c7a,#5f4bb6); }
+        .card-2 { background: linear-gradient(90deg,#741960,#a92a7a); }
+        .card-3 { background: linear-gradient(90deg,#d0153e,#ff4d6d); }
+
+        /* TABLE */
+        .table thead {
+            background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+            color: white;
+        }
+
+        .card-header-custom {
+            background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="container-box">
+
+    <!-- 🔥 HEADER -->
+    <div class="header">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <img src="{% static 'logo6.png' %}" class="logo">
+
+            <div class="company-info">
+                <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
+                Mussaffa 45 - Abu Dhabi, UAE<br>
+                TRN: 105189276600001<br>
+                📞 +971 58 862 7172<br>
+                ✉ info@credodesigns.ae
+            </div>
+
+        </div>
+
+        <div class="text-end">
+            <div class="title">DASHBOARD</div>
+            <small class="text-muted">Overview & quick actions</small>
+        </div>
+
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <!-- <div class="mb-4 d-flex gap-2 flex-wrap"> -->
+
+        <!-- 🔍 SEARCH BAR -->
+<!-- <form method="GET" class="mb-4 d-flex gap-2 flex-wrap">
+    
+
+    <input type="text",id="searchInput", 
+           name="q" 
+           value="{{ query|default:'' }}"
+           class="form-control"
+           placeholder="Search...">
+
+    <select name="type" class="form-select" style="max-width: 180px;">
+        <option value="all" {% if type == 'all' %}selected{% endif %}>All</option>
+        <option value="customer" {% if type == 'customer' %}selected{% endif %}>Customers</option>
+        <option value="quotation" {% if type == 'quotation' %}selected{% endif %}>Quotations</option>
+        <option value="invoice" {% if type == 'invoice' %}selected{% endif %}>Invoices</option>
+    </select>
+
+    <button type="submit" class="btn btn-gradient">🔍 Search</button>
+
+    {% if query %}
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+
+</form>
+        <a href="{% url 'add_customer' %}" class="btn btn-gradient">
+            + Add Customer
+        </a>
+
+        <a href="{% url 'add_service' %}" class="btn btn-gradient">
+            + Add Service
+        </a>
+
+        <a href="{% url 'create_quotation' %}" class="btn btn-gradient">
+            + Create Quotation
+        </a>
+
+    </div> -->
+
+
+    <!-- ACTION + SEARCH SECTION -->
+<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+    <!-- 🔍 SEARCH -->
+    <form method="GET" action="{% url 'search_results' %}" class="d-flex gap-2">
+
+        <input type="text" 
+               id="searchInput"
+               name="q" 
+               value="{{ query|default:'' }}"
+               class="form-control"
+               placeholder="Search...">
+
+        <select name="type" class="form-select" style="max-width: 180px;">
+            <option value="all">All</option>
+            <option value="customer">Customers</option>
+            <option value="quotation">Quotations</option>
+            <option value="invoice">Invoices</option>
+        </select>
+
+        <button type="submit" class="btn btn-gradient">
+            🔍 Search
+        </button>
+
+    </form>
+
+    <!-- ACTION BUTTONS -->
+    <div class="d-flex gap-2 flex-wrap">
+
+        <a href="{% url 'add_customer' %}" class="btn btn-gradient">
+            + Add Customer
+        </a>
+
+        <a href="{% url 'add_service' %}" class="btn btn-gradient">
+            + Add Service
+        </a>
+
+        <a href="{% url 'create_quotation' %}" class="btn btn-gradient">
+            + Create Quotation
+        </a>
+
+    </div>
+
+</div>
+
+    <!-- STATS -->
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+            <div class="dashboard-card card-1">
+                Total Customers
+                <h2>{{ customers_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-card card-2">
+                Total Quotations
+                <h2>{{ quotations_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-card card-3">
+                Total Invoices
+                <h2>{{ invoices_count }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DATA -->
+    <div class="row">
+
+        <!-- QUOTATIONS -->
+        <div class="col-md-6">
+            <div class="card shadow">
+
+                <div class="card-header-custom">
+                    Recent Quotations
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for q in recent_quotations %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'quotation_detail' q.id %}">
+                                        {{ q.number }}
+                                    </a>
+                                </td>
+                                <td>{{ q.customer.name }}</td>
+                                <td>AED {{ q.total }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3">No data</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- INVOICES -->
+        <div class="col-md-6">
+            <div class="card shadow">
+
+                <div class="card-header-custom">
+                    Recent Invoices
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for i in recent_invoices %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'invoice_detail' i.id %}">
+                                        {{ i.number }}
+                                    </a>
+                                </td>
+                                <td>{{ i.customer.name }}</td>
+                                <td>AED {{ i.total }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3">No data</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+</body>
+
+<script>
+const input = document.getElementById("searchInput");
+
+if (input) {
+    input.addEventListener("keyup", function() {
+        let query = this.value;
+
+        if (query.length < 2) return;
+
+        fetch(`/search/?q=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });
+    });
+}
+</script>
+</html>
