@@ -7,14 +7,20 @@
 
 @page {
     size: A4;
-    margin: 12mm 15mm;
+    /* margin: 12mm 15mm; */
+    margin: 20px;
 }
 
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Calibri, sans-serif;
+    /* font-family: Calibri, sans-serif; */
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: #222;
+     margin-left: 6px;
+    margin-right: 6px;
+    margin-bottom: 8px;
+
 }
 
 /* PAGE STRUCTURE */
@@ -40,19 +46,44 @@ html, body {
 }
 
 .logo {
-    height: 100px;
+    /* height: 100px; */
+      height: 140px;   /* balanced */
+    width: auto;
+    margin-top: 10px;
+
 }
 
-.title {
+/* .title {
     font-size: 33px;
     font-weight: bolder;
 }
 
 .info {
-    text-align: right;
+    text-align: left;
     font-size: 15px;
     font-weight: bolder;
+} */
+
+/* TITLE */
+.title {
+    font-size: 26px;
+    font-weight: bolder;
 }
+
+.info {
+    text-align: justify;
+    font-size: 18px;
+    margin-top: 20PX;
+
+    
+   
+}
+.client-title {
+    margin-top: 15px;
+    padding: 8px;
+    font-weight: bolder;
+}
+
 
 /* CLIENT */
 .client {
@@ -63,33 +94,47 @@ html, body {
 
 /* COMPANY */
 .company {
-    text-align: center;
+    text-align: right;
     font-size: 12px;
-    font-weight: bolder;
+    font-weight: bold;
     margin-top: 10px;
+    text-align: justify;
+    position: relative;
+    left: 383px;
+    margin-bottom: 10px;
 }
+/* .company1 {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 400px;
+    /* margin-top: 10px; */
+    /* text-align: justify;
+} */ */
 
 /* ITEMS TABLE */
 .items {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    height:15px;
+    margin-top: 10px;
 }
 
 .items th {
-    font-size: 18px;
-    padding: 12px;
+    font-size: 17px;
+    /* padding: 12px; */
+      padding: 3px 3px; 
     text-align: left;
     font-weight: bolder;
     background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
     color: white;
+    
 }
 
 .items td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 100px;
 }
 
 /* PUSH BOTTOM DOWN */
@@ -150,13 +195,27 @@ html, body {
 /* FOOTER */
 
 
-.footer {
+/* .footer {
     position: fixed;
     bottom: 20px;
     left: 0;
     right: 0;
 
    
+    padding-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bolder;
+} */
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+
+    border-top: 1px solid #0d0c0c;
     padding-top: 10px;
     font-size: 14px;
     text-align: center;
@@ -210,10 +269,12 @@ html, body {
 
     <div class="info">
         <div class="title">INVOICE</div><br>
-        Invoice No : {{ invoice.number }}<br>
-        Date : {{ invoice.date }}<br>
-        TRN No : 105189276600001
-    </div>
+      <b> Invoice No :</b>  {{ invoice.number }}<br>
+       <b>  Date : </b> {{ invoice.date }}<br>
+ {% if invoice.customer.trn_number %}
+<b> TRN No:</b> {{ invoice.customer.trn_number }}</p>
+{% endif %}
+</div>
 
 </div>
 
@@ -224,34 +285,45 @@ html, body {
 </div>
 
 <!-- COMPANY -->
+
 <div class="company">
     CREDO INTERNATIONAL DIGITAL DESIGNS L.L.C - S.P.C<br>
-    Mussaffa 45 - Abu Dhabi
+     Mussaffa 45 - Abu Dhabi
+
 </div>
+
 
 <!-- ITEMS -->
 <table class="items">
 <tr>
-    <th>Description</th>
+    <!-- <th>Description</th>
     <th style="text-align:center;">Qty</th>
     <th style="text-align:center;">Unit Price</th>
-    <th style="text-align:center;">Total Cost</th>
+    <th style="text-align:center;">Total Cost</th> -->
+     <tr >
+        <th class="gradient" >Description</th>
+        <th class="gradient" style="width:80px;"><center>Qty</center></th>
+        <th class="gradient" style="width:120px;"><center>Unit Price</center></th>
+        <th class="gradient"style="width:120px;"><center>Price</center></th>
+    </tr>
 </tr>
 
 {% for item in invoice.items.all %}
 <tr>
-    <td>{{ forloop.counter }}. {{ item.description }}</td>
+    <td style="font-weight: 100;">{{ forloop.counter }}. {{ item.description }}</td>
     <td style="text-align:center;">{{ item.quantity }}</td>
     <td style="text-align:center;">AED {{ item.price|floatformat:2 }}</td>
     <td style="text-align:center;">AED {{ item.total|floatformat:2 }}</td>
+    
 </tr>
 {% endfor %}
 </table>
 
 <!-- BOTTOM PUSH -->
 <!-- <div class="bottom-section" style="position: absolute;top: 400px;"> -->
-    <div style="height:190px;"></div>
-    <div class="bottom-section">
+    <!-- <div style="height:325px;"></div> -->
+    
+    <div class="bottom-section" style="position:relative;top: 220px;">
     <hr class="divider">
 
 <div class="bottom">
@@ -266,7 +338,7 @@ html, body {
     </div> -->
 
     <div class="payment">
-    <b style="font-size: 20px;">Payment Info:</b><br><br>
+    <b style="font-size: 20px; color: #362c7a;">Payment Info:</b><br><br>
 
     Account Name : <b>Credo International Digital Design</b><br>
     IBAN No : <b>AE510030014366159920001</b><br>
@@ -280,8 +352,8 @@ html, body {
         <table class="total-table">
 
         <tr>
-            <td>SUB TOTAL</td>
-            <td style="text-align:right;">AED {{ invoice.subtotal|floatformat:2 }}</td>
+            <td style=" color: #362c7a;">SUB TOTAL</td>
+            <td style="text-align:right; color: #362c7a;">AED {{ invoice.subtotal|floatformat:2 }}</td>
         </tr>
 
         <tr>
@@ -307,7 +379,7 @@ html, body {
 
 <!-- THANK YOU -->
 <div class="thankyou">
-    Thank you for your Business
+Thank you for your Business
 </div>
 
 </div>
@@ -316,7 +388,7 @@ html, body {
 
 <!-- FOOTER -->
 <div class="footer">
-     <hr class="divider">
+     <!-- <hr class="divider"> -->
 
     <div>For More Info:</div>
 

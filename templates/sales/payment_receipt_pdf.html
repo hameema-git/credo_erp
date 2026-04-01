@@ -2,170 +2,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- <style>
-
-@page {
-    size: A5;
-    margin: 20px;
-}
-
-body {
-    font-family: Calibri, sans-serif;
-    color: #222;
-    display: flex;
-    justify-content: center;
-}
-
-/* MAIN BOX */
-.receipt-box {
-    /* width: 720px; */
-    border: 1px solid #333;
-    /* padding: 25px 25px 30px 35px; */
-    position: relative;
-    width: 500px;
-    padding: 20px 20px 25px 30px;
-}
-
-/* LEFT STRIP */
-.left-strip {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 25px;
-    background: linear-gradient(180deg,#362c7a,#741960,#d0153e);
-}
-
-/* HEADER */
-.header {
-    display: table;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.header td {
-    vertical-align: top;
-}
-
-.logo {
-    height: 70px;
-}
-
-.title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 20px;
-    letter-spacing: 1px;
-}
-
-.right-info {
-    text-align: right;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-/* CONTENT */
-.content {
-    margin-top: 25px;
-    font-size: 15px;
-}
-
-/* ROW */
-.row {
-    margin: 10px 0;
-}
-
-/* DOTTED LINE */
-.line {
-    border-bottom: 2px dotted #444;
-    display: inline-block;
-    min-width: 300px;
-    font-weight: bold;
-}
-
-/* OPTIONS */
-.options span {
-    margin-right: 18px;
-}
-
-/* AMOUNT BOX */
-.amount-box {
-    display: inline-block;
-    border: 2px solid #333;
-    /* padding: 8px 25px; */
-    font-weight: bold;
-    /* font-size: 22px; */
-    margin-top: 15px;
-      font-size: 18px;
-    padding: 6px 15px;
-}
-
-/* SIGNATURE */
-.signature {
-    margin-top: 30px;
-    display: table;
-    width: 100%;
-}
-
-.signature td {
-    text-align: center;
-    vertical-align: bottom;
-}
-
-.sign-line {
-    border-top: 2px solid #000;
-    width: 200px;
-    margin: 10px auto;
-}
-
-.stamp {
-    height: 90px;
-}
-
-.received-name {
-    font-weight: bold;
-    font-size: 16px;
-}
-
-</style> -->
 
 <style>
 
-@page {
+/* @page {
     size: A4;
-    margin: 12mm 15mm;   /* 🔥 balanced margin */
+    margin: 0;
+} */
+ @page {
+    size: 210mm 127mm;   /* 🔥 A6 landscape */
+    margin: 4mm;
 }
 
 body {
     font-family: Calibri, sans-serif;
-    color: #222;
     margin: 0;
 }
 
-/* MAIN RECEIPT BOX */
-.receipt-box {
+/* CENTER */
+.page {
     width: 100%;
-    border: 1.5px solid #444;
-    padding: 15px 20px 15px 30px;
-    position: relative;
-    box-sizing: border-box;
+    padding-top: 20px;
 }
 
-/* LEFT STRIP */
-.left-strip {
+/* BOX */
+/* .receipt-box {
+    width: 720px;
+    margin: 0 auto;
+    height: 400px;
+
+    border: 1px solid #444; */
+    /* padding: 20px 20px 20px 55px; */
+    /* padding: 15px 18px 15px 50px;   */
+    /* padding: 15px 18px 15px 45px;
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+} */
+
+
+.receipt-box {
+    width: 720px;
+    margin: 0 auto;
+
+    border: 1px solid #444;
+    padding: 15px 18px 15px 45px;
+
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+/* RIBBON */
+/* .left-strip {
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 22px;
-    background: linear-gradient(180deg,#362c7a,#741960,#d0153e);
-}
+
+    width: 28px;
+
+    background: linear-gradient(
+        180deg,
+        #362c7a,
+        #741960,
+        #d0153e
+    );
+
+    border-bottom-right-radius: 60px;
+} */
+/* 
+.left-strip {
+    position: absolute;
+    left: -5px;   
+    top: 10px;   
+    bottom: 10px; 
+
+    width: 26px;
+
+    background: linear-gradient(
+        180deg,
+        #362c7a,
+        #741960,
+        #d0153e
+    );
+
+    border-bottom-right-radius: 60px;
+} */
+
+/* .left-strip {
+    position: absolute;
+    left: 20px;   
+    top: 15px;
+    bottom: 195px;
+
+    width: 22px;   
+
+    background: linear-gradient(
+        180deg,
+        #362c7a,
+        #741960,
+        #d0153e
+    );
+
+    border-bottom-right-radius: 50px;
+} */
 
 /* HEADER */
 .header {
-    display: table;
     width: 100%;
-    margin-bottom: 0;
 }
 
 .header td {
@@ -174,212 +121,309 @@ body {
 
 /* LOGO */
 .logo {
-    height: 70px;
+    height: 100px;
 }
 
 /* TITLE */
+/* .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 50px;
+} */
+
 .title {
     text-align: center;
     font-weight: bold;
-    font-size: 22px;
-    letter-spacing: 1px;
+    font-size: 20px;
+    margin-top: 200px;   /* 🔥 reduced from 50px */
 }
 
-/* RIGHT INFO */
+/* RIGHT */
 .right-info {
     text-align: right;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.4;
 }
 
 /* CONTENT */
+/* .content { */
+    /* margin-top: 10px; */
+    /* font-size: 13px;
+     margin-top: 20px;   
+} */
+
+/* .content {
+    font-size: 13px;
+    margin-top: 15px;   
+    line-height: 1.5;   
+} */
+/* .content {
+    font-size: 13px;
+    margin-top: 15px;
+    line-height: 1.5;
+
+    flex: 1;   
+} */
+
 .content {
+    font-size: 13px;
     margin-top: 10px;
-    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* ROW */
 .row {
-    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    /* margin: 6px 0; */
+     margin: 6px 0;   /* was 6px */
+
 }
 
-/* DOTTED LINE */
+/* LABEL */
+.label {
+    /* width: 180px; */
+     width: 170px;
+}
+
+/* LINE */
 .line {
-    border-bottom: 1.5px dotted #444;
-    display: inline-block;
-    min-width: 260px;
+    flex: 1;
+    border-bottom: 1px dotted #444;
+    padding-left: 5px;
     font-weight: bold;
 }
 
-/* PAYMENT OPTIONS */
-.options span {
-    margin-right: 12px;
-    font-size: 13px;
+/* OPTIONS */
+.options {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-/* AMOUNT BOX */
-.amount-box {
-    display: inline-block;
+/* AMOUNT */
+/* .amount-box {
     border: 2px solid #333;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
     padding: 5px 15px;
-    margin-top: 10px;
-}
-
-/* SIGNATURE */
-.signature {
+    margin-left: 180px;
     margin-top: 20px;
-    display: table;
-    width: 100%;
+    display: inline-block;
+} */
+
+/* SIGN */
+/* .signature { */
+    /* margin-top: 25px; */
+    /* display: flex;
+    justify-content: space-between;
+    align-items: flex-end;  */
+    /* align-items: center; */
+      /* margin-top: 15px;   
+} */
+
+/* .signature {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin-top: 10px;  
+} */
+.signature {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: -40px;
+}
+.amount-box {
+    display: inline-block;
+
+    border: 2px solid #444;
+    padding: 6px 16px;
+
+    font-weight: bold;
+    font-size: 14px;
+
+    background: #f5f5f5;   /* 🔥 subtle box look */
 }
 
-.signature td {
-    text-align: center;
-    vertical-align: bottom;
-}
-
-/* SIGN LINE */
 .sign-line {
     border-top: 2px solid #000;
-    width: 180px;
+    width: 160px;
     margin: 6px auto;
+}
+
+.received-name {
+    font-weight: bold;
+    text-align: center;
 }
 
 /* STAMP */
 .stamp {
-    height: 70px;
+    height: 60px;
 }
 
-/* RECEIVED NAME */
-.received-name {
-    font-weight: bold;
-    font-size: 15px;
+.signature > div {
+    width: 33%;
 }
+.ribbon-img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 20px;
 
+    width: 105px;
+    height: 80%;   /* or 100% */
+    object-fit: fill;
+}
 </style>
-</style>
+
 </head>
 
 <body>
 
+<div class="page">
+
 <div class="receipt-box">
 
-    <div class="left-strip"></div>
+<!-- <div class="left-strip"></div> -->
+ <img src="{{ request.build_absolute_uri }}{% static 'ribbon.png' %}" class="ribbon-img">
 
-    <!-- HEADER -->
-    <table class="header">
-        <tr>
-            <td width="20%">
-                <img src="{{ base_url }}static/logo6.png" class="logo">
-            </td>
+<table class="header">
+<tr>
+<td width="20%">
+<img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo">
+</td>
 
-            <td width="50%" class="title">
-                PAYMENT RECEIPT
-            </td>
+<td width="50%" class="title" style="position: absolute;bottom: 360px;right: 250px;">
+PAYMENT RECEIPT
+</td>
 
-            <td width="30%" class="right-info">
-                +971 58 862 7172<br>
-                +971 50 913 2555<br>
-                info@credodesigns.ae<br>
-                Mussaffa 45 - Abu Dhabi<br><br>
-                <b>TRN No:</b> 105189276600001
-            </td>
-        </tr>
-    </table>
+<td width="30%" class="right-info">
++971566981200<br>
++971 50 913 2555<br>
+info@credodesigns.ae<br>
+Mussaffa 45 - Abu Dhabi<br><br>
 
-    <!-- CONTENT -->
-    <div class="content">
+<b>TRN No:</b> {{ receipt.invoice.customer.trn_number }}
+</td>
+</tr>
+</table>
 
-        <!-- MR NO -->
-        <div class="row">
-            <b>MR.NO:</b> 
-            <span class="line">{{ receipt.receipt_number }}</span>
+<div class="content">
+
+<div class="row">
+<div class="label"><b>MR.NO:</b></div>
+<div class="line">{{ receipt.receipt_number }}</div>
+</div>
+
+<div class="row">
+<div class="label">Received with thanks from</div>
+<div class="line">{{ receipt.invoice.customer.name }}</div>
+</div>
+
+<div class="row">
+<div class="label">Amount in words</div>
+<div class="line">{{ amount_words }}</div>
+</div>
+
+<div class="row options">
+<div class="label">By</div>
+
+<!-- <span>{% if receipt.payment_method == 'cash' %}☑{% else %}☐{% endif %} Cash</span>
+<span>{% if receipt.payment_method == 'cheque' %}☑{% else %}☐{% endif %} Cheque</span>
+<span>{% if receipt.payment_method == 'bank' or not receipt.payment_method %}☑{% else %}☐{% endif %} Bank Transfer</span>
+<span>{% if receipt.payment_method == 'upi' %}☑{% else %}☐{% endif %} UPI</span> -->
+
+<!-- {% with method=receipt.payment_method|lower %}
+<span>{% if method == 'cash' %}☑{% else %}☐{% endif %} Cash</span>
+<span>{% if method == 'cheque' %}☑{% else %}☐{% endif %} Cheque</span>
+<span>{% if method == 'bank' or not method %}☑{% else %}☐{% endif %} Bank Transfer</span>
+<span>{% if method == 'upi' %}☑{% else %}☐{% endif %} UPI</span>
+{% endwith %} -->
+
+{% with method=receipt.payment_method|default:"bank"|lower %}
+<span>{% if method == 'cash' %}☑{% else %}☐{% endif %} Cash</span>
+<span>{% if method == 'cheque' %}☑{% else %}☐{% endif %} Cheque</span>
+<span>{% if 'bank' in method %}☑{% else %}☐{% endif %} Bank Transfer</span>
+<span>{% if method == 'upi' %}☑{% else %}☐{% endif %} UPI</span>
+{% endwith %}
+</div>
+
+<div class="row">
+<div class="label">For the purpose of</div>
+<div class="line">
+{% if receipt.short_description %}
+{{ receipt.short_description }}
+{% else %}
+{% for item in receipt.invoice.items.all %}
+{{ item.description }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+{% endif %}
+</div>
+</div>
+
+<div class="row">
+<div class="label">Date:</div>
+<div class="line">{{ receipt.date }}</div>
+</div>
+
+<!-- <div class="amount-box">
+AED {{ receipt.amount_paid|floatformat:2 }}
+</div> -->
+
+</div>
+
+<!-- <div class="signature">
+
+<div>
+<div class="received-name">
+{{ receipt.received_by|default:"Admin" }}
+</div>
+<div class="sign-line"></div>
+<div style="text-align:center;">Received By</div>
+</div> -->
+<div class="signature">
+
+    <!-- AMOUNT -->
+    <!-- <div style="text-align:center;">
+        <div class="amount-box">
+            AED {{ receipt.amount_paid|floatformat:2 }}
         </div>
+    </div> -->
+    <div style="text-align:center;">
+    <div class="amount-box">
+        AED {{ receipt.amount_paid|floatformat:2 }}
+    </div>
+</div>
 
-        <!-- CUSTOMER -->
-        <div class="row">
-            Received with thanks from 
-            <span class="line">{{ receipt.invoice.customer.name }}</span>
+    <!-- RECEIVED BY -->
+    <div style="text-align:center;">
+        <div class="received-name">
+            {{ receipt.received_by|default:"Admin" }}
         </div>
-
-        <!-- AMOUNT WORDS -->
-        <div class="row">
-            Amount in words 
-            <span class="line">
-                <!-- <b>{{ receipt.amount_paid }} AED Only</b> -->
-                <b>{{ amount_words }}</b>
-            </span>
-        </div>
-
-        <!-- PAYMENT METHOD -->
-        <div class="row options">
-            By 
-            <span>
-                {% if payment_method == 'Cash' %}☑{% else %}☐{% endif %} Cash
-            </span>
-            <span>
-                {% if payment_method == 'Cheque' %}☑{% else %}☐{% endif %} Cheque
-            </span>
-            <span>
-                {% if payment_method == 'Bank Transfer' %}☑{% else %}☐{% endif %} Bank Transfer
-            </span>
-            <span>
-                {% if payment_method == 'UPI' %}☑{% else %}☐{% endif %} UPI
-            </span>
-        </div>
-
-        <!-- PURPOSE -->
-        <div class="row">
-            For the purpose of 
-            <span class="line">
-                {% if custom_description %}
-                    {{ custom_description }}
-                {% elif receipt.invoice.items.first.description %}
-                    {{ receipt.invoice.items.first.description|truncatechars:60 }}
-                {% else %}
-                    Invoice Payment
-                {% endif %}
-            </span>
-        </div>
-
-        <!-- DATE -->
-        <div class="row">
-            Date: 
-            <span class="line">{{ receipt.date }}</span>
-        </div>
-
-        <!-- AMOUNT BOX -->
-        <div class="row">
-            <div class="amount-box">
-                AED {{ receipt.amount_paid|floatformat:2 }}
-            </div>
-        </div>
-
+        <div class="sign-line"></div>
+        Received By
     </div>
 
     <!-- SIGNATURE -->
-    <table class="signature">
-        <tr>
-            <td>
-                <div class="received-name">
-                    {% if received_by %}
-                        {{ received_by }}
-                    {% else %}
-                        {{ receipt.received_by|default:"Admin" }}
-                    {% endif %}
-                </div>
+    <div style="text-align:center;">
+        <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" class="stamp"><br>
+        Authorized Signature
+    </div>
 
-                <div class="sign-line"></div>
-                Received By
-            </td>
+</div>
 
-            <td>
-                <img src="{{ base_url }}static/stamp.jpeg" class="stamp"><br>
-                Authorized Signature
-            </td>
-        </tr>
-    </table>
+<!-- <div style="text-align:center;">
+<img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" class="stamp"><br>
+Authorized Signature
+</div> -->
+
+</div>
+
+</div>
 
 </div>
 

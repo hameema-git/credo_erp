@@ -152,7 +152,7 @@
                 <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
                 TRN: 105189276600001<br>
                 Abu Dhabi, UAE<br>
-                +971 58 862 7172
+                 +971566981200
             </div>
         </div>
 
@@ -218,26 +218,70 @@
     </div>
 
     <!-- ACTION -->
-    <div class="mt-4 d-flex justify-content-between">
+    <!-- <div class="mt-4 d-flex justify-content-between">
 
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">
             Back
         </a>
 
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'quotation_pdf' quotation.id %}" class="btn btn-danger">
+        <div class="d-flex gap-2 flex-wrap"> -->
+            <!-- <a href="{% url 'quotation_pdf' quotation.id %}" class="btn btn-danger">
                 Download PDF
-            </a>
+            </a> -->
 
-            <a href="{% url 'convert_to_invoice' quotation.id %}" class="btn btn-gradient">
-                Convert to Invoice
-            </a>
+            <!-- <a href="{% url 'quotation_pdf' quotation.id %}" 
+   class="btn btn-danger pdf-btn">
+    Download PDF
+</a>
+
+           
         </div>
 
+    </div> -->
+
+    <div class="mt-4 d-flex justify-content-between">
+
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        Back
+    </a>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+        <!-- ✅ EDIT BUTTON -->
+        <a href="{% url 'edit_quotation' quotation.id %}" 
+           class="btn btn-warning">
+            ✏️ Edit
+        </a>
+
+        <!-- PDF BUTTON -->
+        <a href="{% url 'quotation_pdf' quotation.id %}" 
+           class="btn btn-danger pdf-btn">
+            Download PDF
+        </a>
+
     </div>
+
+</div>
 
 </div>
 </div>
 
 </body>
+<script>
+document.querySelectorAll('.pdf-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        // Change text
+        if (this.tagName === "BUTTON") {
+            this.innerHTML = "Generating...";
+        } else {
+            this.innerHTML = "Downloading...";
+        }
+
+        // Disable button
+        this.style.pointerEvents = "none";
+        this.style.opacity = "0.7";
+    });
+});
+</script>
 </html>

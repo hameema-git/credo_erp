@@ -17,6 +17,7 @@ html, body {
  margin-left: 6px;
  margin-right: 6px;
     margin-bottom: 8px;
+    
 }
 
 /* PAGE STRUCTURE */
@@ -75,9 +76,9 @@ color: white;
 } */
 
 .logo {
-    height: 120px;   /* balanced */
+    height: 140px;   /* balanced */
     width: auto;
-    margin-top: 10px;
+    margin-top: 0px;
 }
 .logo1 {
     height: 120px;   /* balanced */
@@ -376,7 +377,7 @@ background: linear-gradient(
     left: 0;
     right: 0;
 
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #100d0d;
     padding-top: 10px;
     font-size: 14px;
     text-align: center;
@@ -435,7 +436,14 @@ background: linear-gradient(
         <div class="title">QUOTATION</div><br>
         <b>Quotation No :</b> {{ quotation.number }}<br>
         <b>Date :</b> {{ quotation.date }}<br>
-        <b>TRN No :</b> 105189276600001
+        <!-- <b>TRN No :</b> 105189276600001 -->
+          <!-- {% if invoice.customer.trn_number %}
+<b> TRN No:</b> {{ quotation.customer.trn_number }}</p>
+{% endif %} -->
+
+{% if quotation.customer.trn_number %}
+<b>TRN No :</b> {{ quotation.customer.trn_number }}<br>
+{% endif %}
     </div>
 </div>
 
@@ -540,14 +548,22 @@ background: linear-gradient(
         {{ item.service.name }}
     {% endif %}
 </td>
-        <td>{{ item.quantity }}</td>
+        <td><center>{{ item.quantity }}</center></td>
         <!-- <td>AED {{ item.price }}</td>
         <td>AED {{ item.total }}</td> -->
-        <td>AED {{ item.price|floatformat:2 }}</td>
-<td>AED {{ item.total|floatformat:2 }}</td>
+        <td><center>AED {{ item.price|floatformat:2 }}</center></td>
+<td><center>AED {{ item.total|floatformat:2 }}</center></td>
     </tr>
     {% endfor %}
 </table>
+
+<div style="margin-top:10px; font-size:13px;">
+    <span style="color:#555;">Note:</span><br>
+    <span style="color:#d90429;">
+        Above charges are for one year only.<br>
+        Renewal charges will be applicable every year.
+    </span>
+</div>
 
 </div> <!-- END content -->
 

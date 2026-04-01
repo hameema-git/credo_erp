@@ -169,7 +169,7 @@
             <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
             Mussaffa 45 - Abu Dhabi, UAE<br>
             TRN: 105189276600001<br>
-            📞 +971 58 862 7172<br>
+            📞 +971566981200<br>
             ✉ info@credodesigns.ae
         </div>
     </div>
@@ -185,7 +185,7 @@
 <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 action-section">
 
     <!-- SEARCH -->
-    <form method="GET" action="{% url 'search_results' %}" class="d-flex flex-wrap gap-2 w-100">
+    <!-- <form method="GET" action="{% url 'search_results' %}" class="d-flex flex-wrap gap-2 w-100">
 
         <input type="text" 
                id="searchInput"
@@ -198,13 +198,56 @@
             <option value="customer">Customers</option>
             <option value="quotation">Quotations</option>
             <option value="invoice">Invoices</option>
+            <option value="invoice">Service</option>
         </select>
 
         <button type="submit" class="btn btn-gradient">
             🔍 Search
         </button>
 
-    </form>
+    </form> -->
+    <div class="mb-4 position-relative">
+
+<form method="GET" action="{% url 'search_results' %}" class="d-flex gap-2 flex-wrap align-items-start">
+
+    <!-- SEARCH INPUT -->
+    <input type="text" id="searchInput" name="q"
+           class="form-control"
+           placeholder="Search..."
+           style="flex:1;">
+
+    <!-- TYPE SELECT + DROPDOWN WRAPPER -->
+    <div style="position: relative; width: 200px;">
+
+        <select id="searchType" name="type" class="form-select">
+            <option value="all">All</option>
+            <option value="customer">Customer</option>
+            <option value="quotation">Quotation</option>
+            <option value="invoice">Invoice</option>
+            <option value="service">Service</option>
+        </select>
+
+        <!-- 🔥 DROPDOWN BELOW TYPE -->
+        <div id="typeListBox"
+             class="list-group mt-1"
+             style="
+                max-height:200px;
+                overflow-y:auto;
+                display:none;
+                position:absolute;
+                width:100%;
+                z-index:1000;
+             ">
+        </div>
+
+    </div>
+
+    <!-- SEARCH BUTTON -->
+    <button class="btn btn-gradient">Search</button>
+
+</form>
+
+</div>
 
     <!-- ACTION BUTTONS -->
     <div class="d-flex flex-wrap gap-2 action-buttons w-100">
@@ -220,6 +263,11 @@
         <a href="{% url 'create_quotation' %}" class="btn btn-gradient">
             + Create Quotation
         </a>
+        
+        <a href="{% url 'create_invoice' %}" class="btn btn-gradient">
+            + Create Invoice
+        </a>
+        
 
     </div>
 
@@ -271,6 +319,7 @@
                                 <th>No</th>
                                 <th>Customer</th>
                                 <th>Total</th>
+                                 <th>Action</th>
                             </tr>
                         </thead>
 
@@ -284,6 +333,13 @@
                                 </td>
                                 <td>{{ q.customer.name }}</td>
                                 <td>AED {{ q.total }}</td>
+
+    <td>
+        <a href="{% url 'edit_quotation' q.id %}" 
+           class="btn btn-warning btn-sm">
+           ✏️ Edit
+        </a>
+    </td>
                             </tr>
                             {% empty %}
                             <tr><td colspan="3">No data</td></tr>
@@ -313,6 +369,7 @@
                                 <th>No</th>
                                 <th>Customer</th>
                                 <th>Total</th>
+                                 <th>Action</th>
                             </tr>
                         </thead>
 
@@ -326,6 +383,12 @@
                                 </td>
                                 <td>{{ i.customer.name }}</td>
                                 <td>AED {{ i.total }}</td>
+                                   <td>
+        <a href="{% url 'edit_invoice' i.id %}" 
+           class="btn btn-warning btn-sm">
+           ✏️ Edit
+        </a>
+    </td>
                             </tr>
                             {% empty %}
                             <tr><td colspan="3">No data</td></tr>
@@ -339,12 +402,12 @@
     </div>
 
 </div>
-```
+
 
 </div>
 </div>
 
-<script>
+<!-- <script>
 const input = document.getElementById("searchInput");
 
 if (input) {
@@ -360,6 +423,87 @@ if (input) {
         });
     });
 }
+</script> -->
+
+<script>
+const input = document.getElementById("searchInput");
+const typeSelect = document.getElementById("searchType");
+const listBox = document.getElementById("typeListBox");
+
+function loadData(query="", type="all") {
+    fetch(`/quotation/search/?q=${query}&type=${type}`)
+    .then(res => res.json())
+    .then(data => {
+
+        listBox.innerHTML = "";
+        let items = [];
+
+        if (type === "customer") items = data.customers.map(i => ({
+            text: i.name,
+            url: `/quotation/customer/${i.id}/`
+        }));
+
+        else if (type === "quotation") items = data.quotations.map(i => ({
+            text: i.number,
+            url: `/quotation/${i.id}/`
+        }));
+
+        else if (type === "invoice") items = data.invoices.map(i => ({
+            text: i.number,
+            url: `/quotation/invoice/${i.id}/`
+        }));
+
+        else if (type === "service") items = data.services.map(i => ({
+            text: i.name,
+            url: `/quotation/service/${i.id}/`
+        }));
+
+        if (items.length === 0) {
+            listBox.style.display = "none";
+            return;
+        }
+
+        listBox.style.display = "block";
+
+        items.forEach(item => {
+
+            let el = document.createElement("a");
+            el.className = "list-group-item list-group-item-action";
+            el.innerText = item.text;
+
+            // 🔥 CLICK → OPEN PAGE
+            el.addEventListener("click", function(e) {
+                e.preventDefault();
+
+                input.value = item.text;   // autofill input
+                listBox.style.display = "none";
+
+                window.location.href = item.url; // redirect
+            });
+
+            listBox.appendChild(el);
+        });
+    });
+}
+
+// 🔥 TYPE CHANGE → LOAD FULL LIST
+typeSelect.addEventListener("change", () => {
+    loadData("", typeSelect.value);
+});
+
+// 🔥 TYPING → FILTER
+input.addEventListener("keyup", () => {
+    loadData(input.value, typeSelect.value);
+});
+
+// 🔥 CLICK OUTSIDE → CLOSE DROPDOWN
+document.addEventListener("click", function(e) {
+    if (!e.target.closest("#typeListBox") && 
+        !e.target.closest("#searchInput") &&
+        !e.target.closest("#searchType")) {
+        listBox.style.display = "none";
+    }
+});
 </script>
 
 </body>

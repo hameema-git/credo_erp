@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Quotation</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body {
+    font-family: Calibri, sans-serif;
+    background: #f5f6fa;
+}
+
+.container-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo { height: 80px; }
+
+.company-info {
+    font-size: 13px;
+    color: #555;
+}
+
+.table thead {
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+    color: white;
+}
+
+.desc-box {
+    min-height: 40px;
+    resize: none;
+}
+
+.total-box {
+    background: #f1f2f6;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+    border: none;
+    color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container mt-3">
+<div class="container-box">
+
+<!-- HEADER -->
+<div class="header">
+    <div class="d-flex align-items-center gap-3">
+        <img src="{% static 'logo6.png' %}" class="logo">
+        <div class="company-info">
+            <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
+            TRN: 105189276600001<br>
+            Abu Dhabi, UAE<br>
+             +971566981200
+        </div>
+    </div>
+
+    <h4><b>EDIT QUOTATION</b></h4>
+</div>
+
+<form method="post">
+{% csrf_token %}
+
+<!-- CUSTOMER -->
+<div class="mb-4">
+<label><b>Customer</b></label>
+<select name="customer" class="form-select">
+    {% for customer in customers %}
+    <option value="{{ customer.id }}"
+    {% if quotation.customer.id == customer.id %}selected{% endif %}>
+        {{ customer.name }}
+    </option>
+    {% endfor %}
+</select>
+</div>
+
+<!-- ATTENTION -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <label><b>Attn</b></label>
+        <input type="text" name="attention" class="form-control"
+               value="{{ quotation.attention }}">
+    </div>
+
+    <div class="col-md-6">
+        <label><b>Sales Person</b></label>
+        <input type="text" name="sales_person" class="form-control"
+               value="{{ quotation.sales_person }}">
+    </div>
+</div>
+
+<!-- ITEMS -->
+<h5><b>Items</b></h5>
+
+<div class="table-responsive">
+<table class="table table-bordered" id="items-table">
+<thead>
+<tr>
+    <th>Description</th>
+    <th>Price</th>
+    <th>Qty</th>
+    <th>Total</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for item in quotation.items.all %}
+<tr>
+
+<td>
+<!-- <textarea name="description" class="form-control desc-box">
+{{ item.description }}
+</textarea> -->
+
+<select class="form-select mb-1 service-select" onchange="fillDescription(this)">
+    <option value="">-- Custom Service --</option>
+
+    {% for s in services %}
+    <option value="{{ s.id }}"
+        data-price="{{ s.price }}"
+        data-description="{{ s.description }}"
+        {% if item.service and item.service.id == s.id %}selected{% endif %}>
+        {{ s.name }}
+    </option>
+    {% endfor %}
+</select>
+
+<textarea name="description" class="form-control desc-box">
+{{ item.description }}
+</textarea>
+</td>
+
+<td>
+<input type="number" step="0.01" name="price"
+       class="form-control price"
+       value="{{ item.price }}"
+       oninput="calculateRow(this)">
+</td>
+
+<td>
+<input type="number" name="quantity"
+       value="{{ item.quantity }}"
+       class="form-control"
+       oninput="calculateRow(this)">
+</td>
+
+<td>
+<input type="text" class="form-control row-total"
+       value="{{ item.total }}" readonly>
+</td>
+
+<td>
+<button type="button" class="btn btn-danger btn-sm"
+        onclick="deleteRow(this)">Delete</button>
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+<button type="button" class="btn btn-secondary mb-3" onclick="addRow()">+ Add Item</button>
+
+<!-- TOTAL -->
+<div class="row">
+<div class="col-md-6"></div>
+
+<div class="col-md-6">
+<div class="total-box">
+<h6>Subtotal: AED <span id="subtotal">0.00</span></h6>
+<h6>VAT: AED <span id="vat">0.00</span></h6>
+<h4><b>Total: AED <span id="grand-total">0.00</span></b></h4>
+</div>
+</div>
+</div>
+
+<!-- ACTION -->
+<div class="mt-4 d-flex justify-content-between">
+    <a href="{% url 'quotation_detail' quotation.id %}" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-gradient">Update Quotation</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+<script>
+
+function calculateRow(el) {
+    let row = el.closest("tr");
+
+    let price = parseFloat(row.querySelector(".price").value) || 0;
+    let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+
+    let total = price * qty;
+    row.querySelector(".row-total").value = total.toFixed(2);
+
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let subtotal = 0;
+
+    document.querySelectorAll(".row-total").forEach(el => {
+        subtotal += parseFloat(el.value) || 0;
+    });
+
+    let vat = subtotal * 0.05;
+    let grandTotal = subtotal + vat;
+
+    document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+    document.getElementById("vat").innerText = vat.toFixed(2);
+    document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
+}
+
+function addRow() {
+    let table = document.querySelector("#items-table tbody");
+    let row = table.rows[0].cloneNode(true);
+
+    row.querySelectorAll("input, textarea").forEach(el => el.value = "");
+    row.querySelector(".row-total").value = "";
+
+    table.appendChild(row);
+}
+
+function deleteRow(btn) {
+    btn.closest("tr").remove();
+    calculateTotal();
+}
+
+window.onload = calculateTotal;
+
+
+function fillDescription(select) {
+    let row = select.closest("tr");
+
+    let option = select.options[select.selectedIndex];
+    let description = option.getAttribute("data-description");
+    let price = option.getAttribute("data-price");
+
+    let descBox = row.querySelector("textarea");
+    let priceInput = row.querySelector(".price");
+
+    if (select.value) {
+        descBox.value = description || "";
+        priceInput.value = price || "";
+        priceInput.readOnly = true;
+    } else {
+        descBox.value = "";
+        priceInput.value = "";
+        priceInput.readOnly = false;
+    }
+
+    calculateRow(priceInput);
+}
+
+
+</script>
+
+</body>
+</html>

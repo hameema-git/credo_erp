@@ -136,11 +136,13 @@ body {
 </div>
 
 <!-- FORM -->
-<form method="GET" action="{% url 'receipt_pdf' invoice.id %}">
+<!-- <form method="GET" action="{% url 'receipt_pdf' invoice.id %}"> -->
+    <form method="POST">
+    {% csrf_token %}
 
     <!-- SHORT DESC -->
     <label><b>Short Description (for receipt)</b></label>
-    <textarea name="desc" class="form-control mb-3"
+    <textarea name="description" class="form-control mb-3"
               rows="3"
               placeholder="Enter short description for receipt..."></textarea>
 
@@ -162,9 +164,12 @@ body {
     <!-- ACTION -->
     <div class="action-buttons">
 
-        <button type="submit" class="btn btn-gradient">
+        <!-- <button type="submit" class="btn btn-gradient">
             Generate Receipt PDF
-        </button>
+        </button> -->
+        <button type="submit" class="btn btn-gradient pdf-btn">
+    Generate Receipt PDF
+</button>
 
         <a href="{% url 'invoice_detail' invoice.id %}" class="btn btn-secondary">
             Cancel
@@ -178,4 +183,21 @@ body {
 </div>
 
 </body>
+<script>
+document.querySelectorAll('.pdf-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        // Change text
+        if (this.tagName === "BUTTON") {
+            this.innerHTML = "Generating...";
+        } else {
+            this.innerHTML = "Downloading...";
+        }
+
+        // Disable button
+        this.style.pointerEvents = "none";
+        this.style.opacity = "0.7";
+    });
+});
+</script>
 </html>
