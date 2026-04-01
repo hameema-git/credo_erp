@@ -128,12 +128,14 @@ def create_quotation(request):
 
     if request.method == "POST":
         customer = Customer.objects.get(id=request.POST.get("customer"))
+        note = request.POST.get("note")
 
         quotation = Quotation.objects.create(
             number=generate_quotation_number(),
             customer=customer,
             attention=request.POST.get("attention") or "",
             sales_person=request.POST.get("sales_person") or "",
+            note=note 
             # trn_number=customer.trn_number   # ✅ ADD HERE
         )
 

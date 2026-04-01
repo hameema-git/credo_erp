@@ -34,6 +34,7 @@ class Quotation(models.Model):
     number = models.CharField(max_length=50, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
+    note = models.TextField(blank=True, null=True)
 
     attention = models.CharField(max_length=100, blank=True, null=True)
     sales_person = models.CharField(max_length=100, blank=True, null=True)

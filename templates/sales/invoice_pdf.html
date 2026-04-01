@@ -291,9 +291,10 @@ html, body {
         <div class="title">INVOICE</div><br>
       <b> Invoice No :</b>  {{ invoice.number }}<br>
        <b>  Date : </b> {{ invoice.date }}<br>
- {% if invoice.customer.trn_number %}
+        <b>TRN No :</b> 105189276600001
+ <!-- {% if invoice.customer.trn_number %}
 <b> TRN No:</b> {{ invoice.customer.trn_number }}</p>
-{% endif %}
+{% endif %} -->
 </div>
 
 </div>
@@ -301,7 +302,8 @@ html, body {
 <!-- CLIENT -->
 <div class="client">
     To:<br>
-    {{ invoice.customer.name }}
+    {{ invoice.customer.name }}<br>
+    <b> TRN No:</b> {{ invoice.customer.trn_number }}
 </div>
 
 <!-- COMPANY -->

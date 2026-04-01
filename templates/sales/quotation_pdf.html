@@ -437,14 +437,18 @@ background: linear-gradient(
         <div class="title">QUOTATION</div><br>
         <b>Quotation No :</b> {{ quotation.number }}<br>
         <b>Date :</b> {{ quotation.date }}<br>
-        <!-- <b>TRN No :</b> 105189276600001 -->
+        <b>TRN No :</b> 105189276600001
           <!-- {% if invoice.customer.trn_number %}
 <b> TRN No:</b> {{ quotation.customer.trn_number }}</p>
 {% endif %} -->
 
-{% if quotation.customer.trn_number %}
+
+
+<!-- {% if quotation.customer.trn_number %}
 <b>TRN No :</b> {{ quotation.customer.trn_number }}<br>
-{% endif %}
+{% endif %} -->
+
+
     </div>
 </div>
 
@@ -558,13 +562,15 @@ background: linear-gradient(
     {% endfor %}
 </table>
 
-<div style="margin-top:10px; font-size:13px;">
+
+{% if quotation.note %}
+<div style="margin-top:15px; font-size:13px;">
     <span style="color:#555;">Note:</span><br>
     <span style="color:#d90429;">
-        Above charges are for one year only.<br>
-        Renewal charges will be applicable every year.
+        {{ quotation.note }}
     </span>
 </div>
+{% endif %}
 
 </div> <!-- END content -->
 
