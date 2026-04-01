@@ -752,3 +752,25 @@ def edit_invoice(request, pk):
         "invoice": invoice,
         "customers": customers
     })
+
+def delete_quotation(request, pk):
+    q = get_object_or_404(Quotation, id=pk)
+    q.delete()
+    return redirect('dashboard')
+
+
+def delete_invoice(request, pk):
+    i = get_object_or_404(Invoice, id=pk)
+    i.delete()
+    return redirect('dashboard')
+
+def delete_customer(request, pk):
+    c = get_object_or_404(Customer, id=pk)
+    c.delete()
+    return redirect('dashboard')
+
+
+def delete_service(request, pk):
+    s = get_object_or_404(Service, id=pk)
+    s.delete()
+    return redirect('dashboard')

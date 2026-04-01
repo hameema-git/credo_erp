@@ -9,7 +9,7 @@ from .views import (
     search_ajax, search_results,
     receipt_preview,
     create_invoice ,edit_invoice,edit_quotation,customer_detail ,edit_customer,
-     service_detail,edit_service # ✅ NEW
+     service_detail,edit_service,delete_invoice,delete_quotation,delete_customer,delete_service # ✅ NEW
 )
 
 urlpatterns = [
@@ -47,4 +47,8 @@ urlpatterns = [
 
     # -------- DASHBOARD --------
     path('', dashboard, name='dashboard'),
+    path('quotation/delete/<int:pk>/', delete_quotation, name='delete_quotation'),
+    path('invoice/delete/<int:pk>/', delete_invoice, name='delete_invoice'),
+    path('customer/delete/<int:pk>/', delete_customer, name='delete_customer'),
+    path('service/delete/<int:pk>/', delete_service, name='delete_service'),
 ]
