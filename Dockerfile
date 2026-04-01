@@ -4,6 +4,17 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies (for WeasyPrint)
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     libpango-1.0-0 \
+#     libpangoft2-1.0-0 \
+#     libcairo2 \
+#     libffi-dev \
+#     shared-mime-info \
+#     fonts-dejavu-core \
+#     && rm -rf /var/lib/apt/lists/*
+
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpango-1.0-0 \
@@ -12,8 +23,10 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     shared-mime-info \
     fonts-dejavu-core \
+    libgdk-pixbuf-2.0-0 \
+    libxml2 \
+    libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
 COPY . /app
