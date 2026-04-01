@@ -52,7 +52,7 @@ def add_customer(request):
             address=request.POST.get("address"),
             trn_number=request.POST.get("trn_number")  # ✅ ADD
         )
-        return redirect('create_invoice')   # 🔥 updated
+        return redirect('dashboard')   # 🔥 updated
 
     return render(request, "customers/add_customer.html")
 
@@ -95,7 +95,7 @@ def add_service(request):
             price=request.POST.get("price"),
             description=request.POST.get("description")
         )
-        return redirect('create_invoice')   # 🔥 updated
+        return redirect('dashboard')   # 🔥 updated
 
     return render(request, "services/add_service.html")
 def service_detail(request, pk):
@@ -179,20 +179,91 @@ def quotation_detail(request, pk):
     })
 
 
+# def quotation_pdf(request, pk):
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     html = render_to_string("sales/quotation_pdf.html", {
+#         "quotation": quotation
+#     })
+
+#     pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="quotation_{quotation.number}.pdf"'
+
+#     return response
+
+
+# def quotation_pdf(request, pk):
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     # html = render_to_string(
+#     #     "sales/quotation_pdf.html",
+#     #     {"quotation": quotation},
+#     #     request=request   # ✅ ADD THIS
+#     # )
+
+#     # pdf = HTML(
+#     #     string=html,
+#     #     base_url=request.build_absolute_uri('/')  # OK
+#     # ).write_pdf()
+
+#     html = render_to_string(
+#     "sales/quotation_pdf.html",
+#     {
+#         "quotation": quotation,
+#         "base_url": request.build_absolute_uri('/')   # ✅ ADD THIS
+#     },
+#         request=request
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=request.build_absolute_uri()
+#     ).write_pdf()
+
+#     return HttpResponse(pdf, content_type='application/pdf')
+
+# def quotation_pdf(request, pk):
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     base_url = f"{request.scheme}://{request.get_host()}/"
+
+#     html = render_to_string(
+#         "sales/quotation_pdf.html",
+#         {
+#             "quotation": quotation,
+#             "base_url": base_url
+#         },
+#         request=request
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=base_url   # ✅ CRITICAL
+#     ).write_pdf()
+
+#     return HttpResponse(pdf, content_type='application/pdf')
+
+import os
+from django.conf import settings
+from weasyprint import HTML
+
 def quotation_pdf(request, pk):
     quotation = get_object_or_404(Quotation, id=pk)
 
-    html = render_to_string("sales/quotation_pdf.html", {
-        "quotation": quotation
-    })
+    html = render_to_string(
+        "sales/quotation_pdf.html",
+        {
+            "quotation": quotation,
+            "static_path": settings.STATIC_ROOT  # ✅ IMPORTANT
+        },
+        request=request
+    )
 
-    pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+    pdf = HTML(string=html).write_pdf()
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="quotation_{quotation.number}.pdf"'
-
-    return response
-
+    return HttpResponse(pdf, content_type='application/pdf')
 
 # ---------------- INVOICE (NEW FLOW) ----------------
 def create_invoice(request):
@@ -262,14 +333,41 @@ def invoice_list(request):
     })
 
 
+# def invoice_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+
+#     # html = render_to_string("sales/invoice_pdf.html", {
+#     #     "invoice": invoice
+#     # })
+
+#     html = render_to_string(
+#     "sales/invoice_pdf.html",
+#     {"invoice": invoice},
+#     request=request   # ✅ ADD THIS
+# )
+
+#     pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="invoice_{invoice.number}.pdf"'
+
+#     return response
+
 def invoice_pdf(request, pk):
     invoice = get_object_or_404(Invoice, id=pk)
 
-    html = render_to_string("sales/invoice_pdf.html", {
-        "invoice": invoice
-    })
+    html = render_to_string(
+        "sales/invoice_pdf.html",
+        {
+            "invoice": invoice,
+            "static_path": settings.STATIC_ROOT   # ✅ IMPORTANT
+        }
+    )
 
-    pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+    pdf = HTML(
+        string=html,
+        base_url=settings.STATIC_ROOT   # ✅ CRITICAL FIX
+    ).write_pdf()
 
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="invoice_{invoice.number}.pdf"'
@@ -312,26 +410,81 @@ def update_payment(request, pk):
     return redirect('invoice_detail', pk=pk)
 
 
+# def payment_receipt_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+#     receipt = PaymentReceipt.objects.filter(invoice=invoice).last()
+
+#     amount_words = num2words(receipt.amount_paid, lang='en').title() + " AED Only"
+
+#     html = render_to_string("sales/payment_receipt_pdf.html", {
+#         "receipt": receipt,
+#         # "custom_description": custom_description, 
+#         # "short_discription":short_discription,
+    
+#         "amount_words": amount_words
+#     })
+
+#     pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+
+#     return response
+
+# def payment_receipt_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+#     receipt = PaymentReceipt.objects.filter(invoice=invoice).last()
+
+#     amount_words = num2words(receipt.amount_paid, lang='en').title() + " AED Only"
+
+#     html = render_to_string(
+#         "sales/payment_receipt_pdf.html",
+#         {
+#             "receipt": receipt,
+#             "amount_words": amount_words,
+#             "static_path": settings.STATIC_ROOT   # ✅ VERY IMPORTANT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT   # ✅ CRITICAL FIX
+#     ).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+
+#     return response
+
 def payment_receipt_pdf(request, pk):
     invoice = get_object_or_404(Invoice, id=pk)
     receipt = PaymentReceipt.objects.filter(invoice=invoice).last()
 
+    if not receipt:
+        return HttpResponse("No payment receipt found for this invoice")
+
     amount_words = num2words(receipt.amount_paid, lang='en').title() + " AED Only"
 
-    html = render_to_string("sales/payment_receipt_pdf.html", {
-        "receipt": receipt,
-        # "custom_description": custom_description, 
-        # "short_discription":short_discription,
-    
-        "amount_words": amount_words
-    })
+    html = render_to_string(
+        "sales/payment_receipt_pdf.html",
+        {
+            "receipt": receipt,
+            "amount_words": amount_words,
+            "static_path": settings.STATIC_ROOT
+        }
+    )
 
-    pdf = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+    pdf = HTML(
+        string=html,
+        base_url=settings.STATIC_ROOT
+    ).write_pdf()
 
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
 
     return response
+
+
 
 
 # ---------------- SEARCH ----------------

@@ -25,17 +25,23 @@ html, body {
 
 /* PAGE STRUCTURE */
 .page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    max-width: 800px;
+    /* min-height: 100vh; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* max-width: 800px; */
+    width: 100%;
     margin: 0 auto;
+    position: relative;
+      height: 1120px;   /* 🔥 FIXED A4 HEIGHT */
+    /* position: relative; */
+
 }
 
 .content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
+    padding-bottom: 260px;
 }
 
 /* HEADER */
@@ -95,12 +101,12 @@ html, body {
 /* COMPANY */
 .company {
     text-align: right;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     margin-top: 10px;
     text-align: justify;
     position: relative;
-    left: 383px;
+    left: 393px;
     margin-bottom: 10px;
 }
 /* .company1 {
@@ -112,16 +118,21 @@ html, body {
 } */ */
 
 /* ITEMS TABLE */
-.items {
+/* .items {
     width: 100%;
     border-collapse: collapse;
     height:15px;
     margin-top: 10px;
+} */
+.items {
+    border-collapse: collapse;
+    width: 100%;
 }
+
 
 .items th {
     font-size: 17px;
-    /* padding: 12px; */
+   
       padding: 3px 3px; 
     text-align: left;
     font-weight: bolder;
@@ -138,8 +149,16 @@ html, body {
 }
 
 /* PUSH BOTTOM DOWN */
+/* .bottom-section {
+    margin-bottom: 40px;
+    
+}     */
+
 .bottom-section {
-    margin-top: auto;
+    position: absolute;
+    bottom: 80px;   /* 🔥 adjust this value */
+    left: 0;
+    right: 0;
 }
 
 /* BOTTOM LAYOUT */
@@ -217,7 +236,7 @@ html, body {
 
     border-top: 1px solid #0d0c0c;
     padding-top: 10px;
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bolder;
@@ -264,7 +283,8 @@ html, body {
 <div class="header">
 
     <div>
-        <img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo">
+        <!-- <img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo"> -->
+         <img src="file:///{{ static_path }}/logo6.png" class="logo">
     </div>
 
     <div class="info">
@@ -294,19 +314,28 @@ html, body {
 
 
 <!-- ITEMS -->
-<table class="items">
+<table class="items" style="width: 733px;">
 <tr>
     <!-- <th>Description</th>
     <th style="text-align:center;">Qty</th>
     <th style="text-align:center;">Unit Price</th>
     <th style="text-align:center;">Total Cost</th> -->
      <tr >
-        <th class="gradient" >Description</th>
+        <!-- <th class="gradient" >Description</th>
+        <th class="gradient" style="width:80px;"><center>Qty</center></th>
+        <th class="gradient" style="width:120px;"><center>Unit Price</center></th>
+        <th class="gradient"style="width:120px;"><center>Price</center></th> -->
+          <!-- <th style="width:55%;">Description</th>
+    <th style="width:10%; text-align:center;">Qty</th>
+    <th style="width:17%; text-align:center;">Unit Price</th>
+    <th style="width:18%; text-align:center;">Price</th> -->
+
+     <th class="gradient" >Description</th>
         <th class="gradient" style="width:80px;"><center>Qty</center></th>
         <th class="gradient" style="width:120px;"><center>Unit Price</center></th>
         <th class="gradient"style="width:120px;"><center>Price</center></th>
     </tr>
-</tr>
+
 
 {% for item in invoice.items.all %}
 <tr>
@@ -323,7 +352,8 @@ html, body {
 <!-- <div class="bottom-section" style="position: absolute;top: 400px;"> -->
     <!-- <div style="height:325px;"></div> -->
     
-    <div class="bottom-section" style="position:relative;top: 220px;">
+    <div class="bottom-section" style="position:absolute;top: 660px;">
+        <!-- <div class="bottom-section"> -->
     <hr class="divider">
 
 <div class="bottom">
@@ -374,7 +404,8 @@ html, body {
 
 <!-- STAMP -->
 <div style="text-align:right; margin-top:20px;">
-    <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" style="height:110px;">
+    <!-- <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" style="height:110px;"> -->
+     <img src="file:///{{ static_path }}/stamp.jpeg" style="height:110px;">
 </div>
 
 <!-- THANK YOU -->
@@ -395,22 +426,26 @@ Thank you for your Business
     <div class="footer-row">
 
         <div class="footer-item">
-            <img src="{{ request.build_absolute_uri }}{% static 'icons/mail.png' %}">
+            <!-- <img src="{{ request.build_absolute_uri }}{% static 'icons/mail.png' %}"> -->
+             <img src="file:///{{ static_path }}/icons/mail.png">
             info@credodesigns.ae
         </div>
 
         <div class="footer-item">
-            <img src="{{ request.build_absolute_uri }}{% static 'icons/phone.png' %}">
+            <!-- <img src="{{ request.build_absolute_uri }}{% static 'icons/phone.png' %}"> -->
+             <img src="file:///{{ static_path }}/icons/phone.png">
             +971566981200
         </div>
 
         <div class="footer-item">
-            <img src="{{ request.build_absolute_uri }}{% static 'icons/whatsapp.png' %}">
+            <!-- <img src="{{ request.build_absolute_uri }}{% static 'icons/whatsapp.png' %}"> -->
+             <img src="file:///{{ static_path }}/icons/whatsapp.png">
             +971 50 913 2555
         </div>
 
         <div class="footer-item">
-            <img src="{{ request.build_absolute_uri }}{% static 'icons/location.png' %}">
+            <!-- <img src="{{ request.build_absolute_uri }}{% static 'icons/location.png' %}"> -->
+             <img src="file:///{{ static_path }}/icons/location.png">
             Mussaffa 45 - Abu Dhabi
         </div>
 

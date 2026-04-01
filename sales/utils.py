@@ -12,12 +12,12 @@ def generate_quotation_number():
     last = Quotation.objects.order_by('-id').first()
 
     if not last:
-        return "CRD-QT-2561"   # starting number
+        return "CRD-QT-2573"   # starting number
 
     try:
         last_num = int(last.number.split('-')[-1])
     except:
-        last_num = 2560   # fallback safety
+        last_num = 2572   # fallback safety
 
     new_num = last_num + 1
 
@@ -50,12 +50,12 @@ def generate_invoice_number():
     last = Invoice.objects.order_by('-id').first()
 
     if not last:
-        return "CRD-IN-2561"
+        return "CRD-IN-2567"
 
     try:
         last_num = int(last.number.split('-')[-1])
     except:
-        last_num = 2560
+        last_num = 2566
 
     new_num = last_num + 1
 
@@ -66,11 +66,11 @@ def generate_receipt_number():
     last = PaymentReceipt.objects.order_by('-id').first()
 
     if not last:
-        return "CRD-RCPT-2561"
+        return "CRD-RCPT-2567"
 
     try:
         last_num = int(last.receipt_number.split('-')[-1])
     except:
-        last_num = 2560
+        last_num = 2566
 
     return f"CRD-RCPT-{last_num + 1}"

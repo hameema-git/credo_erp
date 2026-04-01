@@ -11,7 +11,7 @@
 } */
  @page {
     size: 210mm 127mm;   /* 🔥 A6 landscape */
-    margin: 4mm;
+    margin: 5mm;
 }
 
 body {
@@ -22,8 +22,14 @@ body {
 /* CENTER */
 .page {
     width: 100%;
-    padding-top: 20px;
+    /* padding-top: 20px; */
 }
+/* .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding-top: 10px;
+} */
 
 /* BOX */
 /* .receipt-box {
@@ -42,11 +48,12 @@ body {
 
 
 .receipt-box {
-    width: 720px;
+    /* width: 720px; */
+    width: 100%;
     margin: 0 auto;
 
     border: 1px solid #444;
-    padding: 15px 18px 15px 45px;
+    padding: 20px;
 
     position: relative;
     box-sizing: border-box;
@@ -54,6 +61,7 @@ body {
 
     display: flex;
     flex-direction: column;
+
 }
 /* RIBBON */
 /* .left-strip {
@@ -136,7 +144,7 @@ body {
     text-align: center;
     font-weight: bold;
     font-size: 20px;
-    margin-top: 200px;   /* 🔥 reduced from 50px */
+    margin-top: 50px;   /* 🔥 reduced from 50px */
 }
 
 /* RIGHT */
@@ -168,7 +176,8 @@ body {
 
 .content {
     font-size: 13px;
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-left: 5px;
     line-height: 1.5;
 }
 
@@ -193,6 +202,11 @@ body {
     border-bottom: 1px dotted #444;
     padding-left: 5px;
     font-weight: bold;
+}
+.short-line {
+    flex: none;
+    width: 110px;
+     border-bottom: 1px dotted #444;   /* 🔥 adjust as needed */
 }
 
 /* OPTIONS */
@@ -237,6 +251,8 @@ body {
     align-items: flex-end;
     margin-top: -40px;
 }
+
+
 .amount-box {
     display: inline-block;
 
@@ -262,7 +278,7 @@ body {
 
 /* STAMP */
 .stamp {
-    height: 60px;
+    height: 75px;
 }
 
 .signature > div {
@@ -274,10 +290,19 @@ body {
     top: 0px;
     bottom: 20px;
 
-    width: 105px;
+    width: 100px;
     height: 80%;   /* or 100% */
     object-fit: fill;
 }
+
+
+/* .ribbon-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 100%;
+} */
 </style>
 
 </head>
@@ -289,17 +314,21 @@ body {
 <div class="receipt-box">
 
 <!-- <div class="left-strip"></div> -->
- <img src="{{ request.build_absolute_uri }}{% static 'ribbon.png' %}" class="ribbon-img">
+ <!-- <img src="{{ request.build_absolute_uri }}{% static 'ribbon.png' %}" class="ribbon-img"> -->
+  <img src="file:///{{ static_path }}/ribbon.png" class="ribbon-img">
 
 <table class="header">
 <tr>
 <td width="20%">
-<img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo">
+<!-- <img src="{{ request.build_absolute_uri }}{% static 'logo6.png' %}" class="logo"> -->
+  <img src="file:///{{ static_path }}/logo6.png" class="logo">
 </td>
 
-<td width="50%" class="title" style="position: absolute;bottom: 360px;right: 250px;">
-PAYMENT RECEIPT
+<!-- <td width="50%" class="title" style="position: absolute;bottom: 320px;right: 250px;"> -->
+    <td width="50%" class="title">
+    PAYMENT RECEIPT
 </td>
+
 
 <td width="30%" class="right-info">
 +971566981200<br>
@@ -367,7 +396,7 @@ Mussaffa 45 - Abu Dhabi<br><br>
 
 <div class="row">
 <div class="label">Date:</div>
-<div class="line">{{ receipt.date }}</div>
+<div class="short-line">{{ receipt.date }}</div>
 </div>
 
 <!-- <div class="amount-box">
@@ -410,7 +439,8 @@ AED {{ receipt.amount_paid|floatformat:2 }}
 
     <!-- SIGNATURE -->
     <div style="text-align:center;">
-        <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" class="stamp"><br>
+        <!-- <img src="{{ request.build_absolute_uri }}{% static 'stamp.jpeg' %}" class="stamp"><br> -->
+         <img src="file:///{{ static_path }}/stamp.jpeg" class="stamp"><br>
         Authorized Signature
     </div>
 
