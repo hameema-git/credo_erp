@@ -4,6 +4,8 @@
 <head>
 <title>Search Results</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
@@ -38,7 +40,6 @@ body {
     color: #555;
 }
 
-/* TITLE */
 .title {
     font-size: 22px;
     font-weight: bold;
@@ -50,14 +51,6 @@ body {
     color: white;
 }
 
-.table th {
-    vertical-align: middle;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
 /* BOX */
 .info-box {
     background: #f1f2f6;
@@ -66,11 +59,34 @@ body {
     margin-bottom: 20px;
 }
 
-/* BUTTON */
-.btn-gradient {
-    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
-    border: none;
-    color: white;
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .logo {
+        height: 60px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .company-info {
+        font-size: 12px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+.table td, .table th {
+    white-space: nowrap;
 }
 
 </style>
@@ -92,7 +108,7 @@ body {
             <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
             TRN: 105189276600001<br>
             Abu Dhabi, UAE<br>
-             +971566981200
+            +971566981200
         </div>
     </div>
 
@@ -103,11 +119,12 @@ body {
 
 </div>
 
-<!-- CUSTOMERS -->
+<!-- ================= CUSTOMERS ================= -->
 {% if search_type == "customer" or search_type == "all" or not search_type %}
 <div class="info-box">
     <h5>Customers ({{ customers.count }})</h5>
 
+    <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -116,43 +133,36 @@ body {
                 <th>Action</th>
             </tr>
         </thead>
+
         <tbody>
-            {% for c in customers %}
-            <tr>
-                <td>{{ c.name }}</td>
-                <td>{{ c.phone }}</td>
-                <!-- <td class="d-flex gap-2"> -->
-                     <!-- <div class="d-flex gap-2"> -->
-                        <td class="d-flex gap-2">
-                    <a href="{% url 'customer_detail' c.id %}" class="btn btn-info btn-sm">👁 View</a>
-                    <a href="{% url 'edit_customer' c.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
-                                 <a href="{% url 'delete_customer' c.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Delete this customer?');">
-       🗑️
-    </a>
-                </td>
-                 <!--     
-            </div> -->
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="text-center text-muted">
-                    No customers found
-                </td>
-            </tr>
-            {% endfor %}
+        {% for c in customers %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.phone }}</td>
+            <td>
+                <div class="d-flex flex-wrap gap-1">
+                    <a href="{% url 'customer_detail' c.id %}" class="btn btn-info btn-sm">👁</a>
+                    <a href="{% url 'edit_customer' c.id %}" class="btn btn-warning btn-sm">✏️</a>
+                    <a href="{% url 'delete_customer' c.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this customer?');">🗑️</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">No customers found</td></tr>
+        {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endif %}
 
-
-<!-- QUOTATIONS -->
+<!-- ================= QUOTATIONS ================= -->
 {% if search_type == "quotation" or search_type == "all" or not search_type %}
 <div class="info-box">
     <h5>Quotations ({{ quotations.count }})</h5>
 
+    <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -162,46 +172,41 @@ body {
                 <th>Action</th>
             </tr>
         </thead>
+
         <tbody>
-            {% for q in quotations %}
-            <tr>
-                <td>
-                    <a href="{% url 'quotation_detail' q.id %}">
-                        {{ q.number }}
-                    </a>
-                </td>
-                <td>{{ q.customer.name }}</td>
-                <td>AED {{ q.total }}</td>
-                <td class="d-flex gap-2">
-                    <!-- <div class="d-flex gap-2"> -->
-                    <a href="{% url 'quotation_detail' q.id %}" class="btn btn-info btn-sm">👁 View</a>
-                    <a href="{% url 'edit_quotation' q.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
-                         <a href="{% url 'delete_quotation' q.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this quotation?');">
-       🗑️
-    </a>
-                </td>
-                 <!-- </div> -->
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="text-center text-muted">
-                    No quotations found
-                </td>
-            </tr>
-            {% endfor %}
+        {% for q in quotations %}
+        <tr>
+            <td>
+                <a href="{% url 'quotation_detail' q.id %}">
+                    {{ q.number }}
+                </a>
+            </td>
+            <td>{{ q.customer.name }}</td>
+            <td>AED {{ q.total }}</td>
+            <td>
+                <div class="d-flex flex-wrap gap-1">
+                    <a href="{% url 'quotation_detail' q.id %}" class="btn btn-info btn-sm">👁</a>
+                    <a href="{% url 'edit_quotation' q.id %}" class="btn btn-warning btn-sm">✏️</a>
+                    <a href="{% url 'delete_quotation' q.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this quotation?');">🗑️</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center">No quotations found</td></tr>
+        {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endif %}
 
-
-<!-- INVOICES -->
+<!-- ================= INVOICES ================= -->
 {% if search_type == "invoice" or search_type == "all" or not search_type %}
 <div class="info-box">
     <h5>Invoices ({{ invoices.count }})</h5>
 
+    <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -212,57 +217,50 @@ body {
                 <th>Action</th>
             </tr>
         </thead>
+
         <tbody>
-            {% for i in invoices %}
-            <tr>
-                <td>
-                    <a href="{% url 'invoice_detail' i.id %}">
-                        {{ i.number }}
-                    </a>
-                </td>
-                <td>{{ i.customer.name }}</td>
-                <td>AED {{ i.total }}</td>
-                <td>
-                    {% if i.payment_status == 'paid' %}
-                        <span class="badge bg-success">Paid</span>
-                    {% elif i.payment_status == 'partial' %}
-                        <span class="badge bg-warning">Partial</span>
-                    {% else %}
-                        <span class="badge bg-danger">Pending</span>
-                    {% endif %}
-                </td>
-                <!-- <td class="d-flex gap-2"> -->
-                    <div class="d-flex gap-2"></div>
-                    <a href="{% url 'invoice_detail' i.id %}" class="btn btn-info btn-sm">👁 View</a>
-                    <a href="{% url 'edit_invoice' i.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
-                                <a href="{% url 'delete_invoice' i.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this invoice?');">
-       🗑️
-    </a>
-       
-                <!-- </td> -->
-            </div>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center text-muted">
-                    No invoices found
-                </td>
-            </tr>
-            {% endfor %}
+        {% for i in invoices %}
+        <tr>
+            <td>
+                <a href="{% url 'invoice_detail' i.id %}">
+                    {{ i.number }}
+                </a>
+            </td>
+            <td>{{ i.customer.name }}</td>
+            <td>AED {{ i.total }}</td>
+            <td>
+                {% if i.payment_status == 'paid' %}
+                <span class="badge bg-success">Paid</span>
+                {% elif i.payment_status == 'partial' %}
+                <span class="badge bg-warning">Partial</span>
+                {% else %}
+                <span class="badge bg-danger">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                <div class="d-flex flex-wrap gap-1">
+                    <a href="{% url 'invoice_detail' i.id %}" class="btn btn-info btn-sm">👁</a>
+                    <a href="{% url 'edit_invoice' i.id %}" class="btn btn-warning btn-sm">✏️</a>
+                    <a href="{% url 'delete_invoice' i.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this invoice?');">🗑️</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center">No invoices found</td></tr>
+        {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endif %}
 
-
-<!-- SERVICES -->
+<!-- ================= SERVICES ================= -->
 {% if search_type == "service" or search_type == "all" or not search_type %}
 <div class="info-box">
-
     <h5>Services ({{ services.count }})</h5>
 
+    <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -273,48 +271,37 @@ body {
         </thead>
 
         <tbody>
-            {% for s in services %}
-            <tr>
-                <td>
-                    <a href="{% url 'service_detail' s.id %}">
-                        {{ s.name }}
-                    </a>
-                </td>
-                <td>AED {{ s.price }}</td>
-
-                <td>
-                    <a href="{% url 'service_detail' s.id %}" 
-                       class="btn btn-info btn-sm">👁 View</a>
-                        <a href="{% url 'edit_service' service.id %}" class="btn btn-warning btn-sm">
-        ✏️ Edit
-    </a>
-                                      <a href="{% url 'delete_service' s.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Delete this service?');">
-       🗑️
-    </a>
-                </td>
-            </tr>
-
-            {% empty %}
-            <tr>
-                <td colspan="3" class="text-center text-muted">
-                    No services found
-                </td>
-            </tr>
-            {% endfor %}
+        {% for s in services %}
+        <tr>
+            <td>
+                <a href="{% url 'service_detail' s.id %}">
+                    {{ s.name }}
+                </a>
+            </td>
+            <td>AED {{ s.price }}</td>
+            <td>
+                <div class="d-flex flex-wrap gap-1">
+                    <a href="{% url 'service_detail' s.id %}" class="btn btn-info btn-sm">👁</a>
+                    <a href="{% url 'edit_service' s.id %}" class="btn btn-warning btn-sm">✏️</a>
+                    <a href="{% url 'delete_service' s.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this service?');">🗑️</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">No services found</td></tr>
+        {% endfor %}
         </tbody>
     </table>
-
+    </div>
 </div>
 {% endif %}
-<!-- ACTION -->
-<div class="mt-4 d-flex justify-content-between">
 
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-        Back to Dashboard
+<!-- BACK BUTTON -->
+<div class="mt-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary w-100">
+        ← Back to Dashboard
     </a>
-
 </div>
 
 </div>
