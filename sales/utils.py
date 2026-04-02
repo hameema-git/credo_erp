@@ -8,20 +8,34 @@ from .models import Quotation,PaymentReceipt
 #     num = int(last.number.split('-')[-1]) + 1
 #     return f"CRD-QT-{num:04d}"
 
+# def generate_quotation_number():
+#     last = Quotation.objects.order_by('-id').first()
+
+#     if not last:
+#         return "CRD2573"   # starting number
+
+#     try:
+#         last_num = int(last.number.split('-')[-1])
+#     except:
+#         last_num = 2572   # fallback safety
+
+#     new_num = last_num + 1
+
+#     return f"CRD{new_num}"
+PREFIX = "CRD"
+
 def generate_quotation_number():
     last = Quotation.objects.order_by('-id').first()
 
     if not last:
-        return "CRD2573"   # starting number
+        return f"{PREFIX}2573"
 
     try:
-        last_num = int(last.number.split('-')[-1])
+        last_num = int(last.number.replace(PREFIX, ""))
     except:
-        last_num = 2572   # fallback safety
+        last_num = 2572
 
-    new_num = last_num + 1
-
-    return f"CRD{new_num}"
+    return f"{PREFIX}{last_num + 1}"
 
 from .models import Quotation, Invoice
 
@@ -46,20 +60,52 @@ from datetime import datetime
 #     num = int(last.number.split('-')[-1]) + 1
 #     return f"CRD-IN-{num:04d}"
 
+# def generate_invoice_number():
+#     last = Invoice.objects.order_by('-id').first()
+
+#     if not last:
+#         return "INVCRD2567"
+
+#     try:
+#         last_num = int(last.number.split('-')[-1])
+#     except:
+#         last_num = 2566
+
+#     new_num = last_num + 1
+
+#     return f"INVCRD{new_num}"
+
+# def generate_invoice_number():
+#     last = Invoice.objects.order_by('-id').first()
+
+#     if not last:
+#         return "INVCRD2567"
+
+#     try:
+#         # remove prefix and extract number
+#         last_num = int(last.number.replace("INVCRD", ""))
+#     except:
+#         last_num = 2566
+
+#     new_num = last_num + 1
+
+#     return f"INVCRD{new_num}"
+
+from django.db import transaction
+
 def generate_invoice_number():
-    last = Invoice.objects.order_by('-id').first()
+    with transaction.atomic():
+        last = Invoice.objects.select_for_update().order_by('-id').first()
 
-    if not last:
-        return "INVCRD2567"
+        if not last:
+            return "INVCRD2567"
 
-    try:
-        last_num = int(last.number.split('-')[-1])
-    except:
-        last_num = 2566
+        try:
+            last_num = int(last.number.replace("INVCRD", ""))
+        except:
+            last_num = 2566
 
-    new_num = last_num + 1
-
-    return f"INVCRD{new_num}"
+        return f"INVCRD{last_num + 1}"
 
 
 def generate_receipt_number():
