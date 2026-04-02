@@ -12,7 +12,7 @@ def generate_quotation_number():
     last = Quotation.objects.order_by('-id').first()
 
     if not last:
-        return "CRD-QT-2573"   # starting number
+        return "CRD2573"   # starting number
 
     try:
         last_num = int(last.number.split('-')[-1])
@@ -21,7 +21,7 @@ def generate_quotation_number():
 
     new_num = last_num + 1
 
-    return f"CRD-QT-{new_num}"
+    return f"CRD{new_num}"
 
 from .models import Quotation, Invoice
 
@@ -50,7 +50,7 @@ def generate_invoice_number():
     last = Invoice.objects.order_by('-id').first()
 
     if not last:
-        return "CRD-IN-2567"
+        return "INVCRD2567"
 
     try:
         last_num = int(last.number.split('-')[-1])
@@ -59,7 +59,7 @@ def generate_invoice_number():
 
     new_num = last_num + 1
 
-    return f"CRD-IN-{new_num}"
+    return f"INVCRD{new_num}"
 
 
 def generate_receipt_number():
