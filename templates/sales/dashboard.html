@@ -482,14 +482,18 @@ function loadData(query="", type="all") {
             el.innerText = item.text;
 
             // 🔥 CLICK → OPEN PAGE
-            el.addEventListener("click", function(e) {
-                e.preventDefault();
+            // el.addEventListener("click", function(e) {
+            //     e.preventDefault();
 
-                input.value = item.text;   // autofill input
-                listBox.style.display = "none";
+            //     input.value = item.text;   // autofill input
+            //     listBox.style.display = "none";
 
-                window.location.href = item.url; // redirect
-            });
+            //     window.location.href = item.url; // redirect
+            // });
+            el.addEventListener("click", function() {
+    input.value = item.text;   // only fill input
+    listBox.style.display = "none";
+});
 
             listBox.appendChild(el);
         });
