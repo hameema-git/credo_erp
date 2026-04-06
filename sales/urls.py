@@ -1,3 +1,36 @@
+# from django.urls import path
+# from .views import (
+#     create_quotation, quotation_detail,
+#     add_customer, add_service,
+#     invoice_detail, quotation_pdf,
+#     invoice_list, invoice_pdf,
+#     dashboard, update_payment,
+#     payment_receipt_pdf,
+#     search_ajax, search_results,
+#     receipt_preview,
+#     create_invoice ,edit_invoice,edit_quotation,customer_detail ,edit_customer,
+#      service_detail,edit_service,delete_invoice,delete_quotation,delete_customer,delete_service 
+#      create_lpo,lpo_detail,lpo_pdf# ✅ NEW
+# )
+
+# from django.urls import path
+# from .views import (
+#     create_quotation, quotation_detail,
+#     add_customer, add_service,
+#     invoice_detail, quotation_pdf,
+#     invoice_list, invoice_pdf,
+#     dashboard, update_payment,
+#     payment_receipt_pdf,
+#     search_ajax, search_results,
+#     receipt_preview,
+#     create_invoice, edit_invoice, edit_quotation,
+#     customer_detail, edit_customer,
+#     service_detail, edit_service,
+#     delete_invoice, delete_quotation,
+#     delete_customer, delete_service,   # ✅ FIXED HERE
+#     create_lpo, lpo_detail, lpo_pdf    # ✅ NEW
+# )
+
 from django.urls import path
 from .views import (
     create_quotation, quotation_detail,
@@ -8,10 +41,13 @@ from .views import (
     payment_receipt_pdf,
     search_ajax, search_results,
     receipt_preview,
-    create_invoice ,edit_invoice,edit_quotation,customer_detail ,edit_customer,
-     service_detail,edit_service,delete_invoice,delete_quotation,delete_customer,delete_service # ✅ NEW
+    create_invoice, edit_invoice, edit_quotation,
+    customer_detail, edit_customer,
+    service_detail, edit_service,
+    delete_invoice, delete_quotation,
+    delete_customer, delete_service,   # ✅ comma added
+    create_lpo, lpo_detail, lpo_pdf ,add_supplier,edit_supplier,delete_supplier,supplier_detail   # ✅ clean line
 )
-
 urlpatterns = [
 
     # -------- QUOTATION --------
@@ -51,4 +87,15 @@ urlpatterns = [
     path('invoice/delete/<int:pk>/', delete_invoice, name='delete_invoice'),
     path('customer/delete/<int:pk>/', delete_customer, name='delete_customer'),
     path('service/delete/<int:pk>/', delete_service, name='delete_service'),
+
+
+    path('lpo/create/', create_lpo, name='create_lpo'),
+    path('lpo/<int:pk>/', lpo_detail, name='lpo_detail'),
+    path('lpo/<int:pk>/pdf/', lpo_pdf, name='lpo_pdf'),
+
+    path('supplier/add/', add_supplier, name='add_supplier'),
+
+    path('supplier/<int:pk>/edit/', edit_supplier, name='edit_supplier'),
+    path('supplier/<int:pk>/delete/', delete_supplier, name='delete_supplier'),
+    path('supplier/<int:pk>/', supplier_detail, name='supplier_detail'),
 ]

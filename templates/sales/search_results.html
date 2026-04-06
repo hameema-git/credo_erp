@@ -201,6 +201,32 @@ body {
 </div>
 {% endif %}
 
+
+{% if search_type == "supplier" or search_type == "all" or not search_type %}
+<div class="info-box">
+    <h5>Suppliers ({{ suppliers.count }})</h5>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Action</th>
+        </tr>
+
+        {% for s in suppliers %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.phone }}</td>
+            <td>
+                <a href="{% url 'edit_supplier' s.id %}" class="btn btn-warning btn-sm">✏️</a>
+                <a href="{% url 'delete_supplier' s.id %}" class="btn btn-danger btn-sm">🗑️</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
 <!-- ================= INVOICES ================= -->
 {% if search_type == "invoice" or search_type == "all" or not search_type %}
 <div class="info-box">
@@ -296,6 +322,53 @@ body {
     </div>
 </div>
 {% endif %}
+
+<!-- ================= LPO ================= -->
+{% if search_type == "lpo" or search_type == "all" or not search_type %}
+<div class="info-box">
+    <h5>LPOs ({{ lpos.count }})</h5>
+
+    <div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>LPO Number</th>
+                <th>Supplier</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for lpo in lpos %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="{% url 'lpo_detail' lpo.id %}">
+                    {{ lpo.number }}
+                </a>
+            </td>
+            <td>{{ lpo.supplier.name }}</td>
+            <td>AED {{ lpo.total }}</td>
+            <td>
+                <a href="{% url 'lpo_detail' lpo.id %}" class="btn btn-info btn-sm">👁</a>
+                <a href="{% url 'edit_lpo' s.id %}" class="btn btn-warning btn-sm">✏️</a>
+                    <a href="{% url 'delete_lpo' s.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this lpo?');">🗑️</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center">No LPO found</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endif %}
+
+
+
 
 <!-- BACK BUTTON -->
 <div class="mt-4">

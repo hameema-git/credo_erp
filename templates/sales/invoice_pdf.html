@@ -350,6 +350,15 @@ html, body {
 {% endfor %}
 </table>
 
+{% if quotation.note %}
+<div style="margin-top:15px; font-size:13px;">
+    <span style="color:#555;">Note:</span><br>
+    <span style="color:#d90429;">
+        {{ invoice.note|linebreaksbr }}
+    </span>
+</div>
+{% endif %}
+
 <!-- BOTTOM PUSH -->
 <!-- <div class="bottom-section" style="position: absolute;top: 400px;"> -->
     <!-- <div style="height:325px;"></div> -->

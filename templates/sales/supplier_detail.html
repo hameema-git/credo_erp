@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Supplier Details</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body {
+    font-family: Calibri, sans-serif;
+    background: #f5f6fa;
+}
+
+.container-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-top: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    height: 80px;
+}
+
+.company-info {
+    font-size: 13px;
+    color: #555;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.info-box {
+    background: #f1f2f6;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.table thead {
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+    color: white;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
+    border: none;
+    color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="container-box">
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="d-flex align-items-center gap-3">
+        <img src="{% static 'logo6.png' %}" class="logo">
+
+        <div class="company-info">
+            <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
+            Abu Dhabi, UAE<br>
+            +971566981200
+        </div>
+    </div>
+
+    <div class="text-end">
+        <div class="title">SUPPLIER DETAILS</div>
+
+        <a href="{% url 'edit_supplier' supplier.id %}" 
+           class="btn btn-warning btn-sm mt-2">
+           ✏️ Edit
+        </a>
+    </div>
+
+</div>
+
+<!-- SUPPLIER INFO -->
+<div class="info-box">
+    <h5><b>{{ supplier.name }}</b></h5>
+
+    <p><b>Phone:</b> {{ supplier.phone }}</p>
+    <p><b>Email:</b> {{ supplier.email }}</p>
+    <p><b>TRN:</b> {{ supplier.trn_number }}</p>
+    <p><b>Website:</b> {{ supplier.website }}</p>
+    <p><b>Address:</b> {{ supplier.address|linebreaksbr }}</p>
+</div>
+
+<!-- LPO LIST -->
+<div class="info-box">
+    <h5>Purchase Orders (LPO)</h5>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for l in lpos %}
+                <tr>
+                    <td>
+                        <a href="{% url 'lpo_detail' l.id %}">
+                            {{ l.number }}
+                        </a>
+                    </td>
+
+                    <td>AED {{ l.total }}</td>
+                    <td>{{ l.order_date }}</td>
+
+                    <td>
+                        <a href="{% url 'lpo_pdf' l.id %}" 
+                           class="btn btn-danger btn-sm">
+                            PDF
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        No LPO found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<!-- ACTION -->
+<div class="mt-4 d-flex justify-content-between">
+
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        Back
+    </a>
+
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

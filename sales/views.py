@@ -9,16 +9,51 @@ from weasyprint import HTML
 from num2words import num2words
 
 from .models import *
-from .utils import generate_quotation_number, generate_invoice_number, generate_receipt_number
+from .utils import generate_quotation_number, generate_invoice_number, generate_receipt_number,generate_lpo_number
 
 
-# ---------------- DASHBOARD ----------------
+# # ---------------- DASHBOARD ----------------
+# def dashboard(request):
+#     query = request.GET.get('q')
+
+#     customers = Customer.objects.all()
+#     quotations = Quotation.objects.all()
+#     invoices = Invoice.objects.all()
+#     suppliers = Supplier.objects.all()
+
+#     search_type = request.GET.get('type', 'all')
+
+#     if query:
+#         if search_type in ['all', 'customer']:
+#             customers = customers.filter(Q(name__icontains=query) | Q(phone__icontains=query))
+
+#         if search_type in ['all', 'quotation']:
+#             quotations = quotations.filter(Q(number__icontains=query) | Q(customer__name__icontains=query))
+
+#         if search_type in ['all', 'invoice']:
+#             invoices = invoices.filter(Q(number__icontains=query) | Q(customer__name__icontains=query))
+
+#     return render(request, "sales/dashboard.html", {
+#         "customers_count": customers.count(),
+#         "quotations_count": quotations.count(),
+#         "invoices_count": invoices.count(),
+#         "recent_quotations": quotations.order_by('-id')[:5],
+#         "recent_invoices": invoices.order_by('-id')[:5],
+#         "query": query
+#     })
+
+
+from .models import Supplier
+
 def dashboard(request):
     query = request.GET.get('q')
 
     customers = Customer.objects.all()
+    suppliers = Supplier.objects.all()   # ✅ ADD
     quotations = Quotation.objects.all()
     invoices = Invoice.objects.all()
+    lpos = LPO.objects.all()
+    services=Service.objects.all()
 
     search_type = request.GET.get('type', 'all')
 
@@ -32,15 +67,30 @@ def dashboard(request):
         if search_type in ['all', 'invoice']:
             invoices = invoices.filter(Q(number__icontains=query) | Q(customer__name__icontains=query))
 
+        if search_type in ['all', 'supplier']:
+            suppliers = suppliers.filter(Q(name__icontains=query))  
+        if search_type in ['all', 'service']:
+            services = services.filter(Q(name__icontains=query))      
+
+        if search_type in ['all', 'lpo']:
+            lpos = lpos.filter(Q(number__icontains=query)) 
+
     return render(request, "sales/dashboard.html", {
         "customers_count": customers.count(),
+        "supplier_count": suppliers.count(),   # ✅ ADD THIS 🔥
         "quotations_count": quotations.count(),
+        "services_count":services.count(),
+        "lpos_count": lpos.count(),
         "invoices_count": invoices.count(),
         "recent_quotations": quotations.order_by('-id')[:5],
         "recent_invoices": invoices.order_by('-id')[:5],
-        "query": query
+        "query": query,
+        "recent_customers": customers.order_by('-id')[:5],
+        "recent_suppliers": suppliers.order_by('-id')[:5],
+        "recent_services": services.order_by('-id')[:5],
+        "recent_lpos": lpos.order_by('-id')[:5],
+        
     })
-
 
 # ---------------- CUSTOMER ----------------
 def add_customer(request):
@@ -274,12 +324,14 @@ def create_invoice(request):
 
     if request.method == "POST":
         customer = Customer.objects.get(id=request.POST.get("customer"))
+        note = request.POST.get("note")
 
         invoice = Invoice.objects.create(
             number=generate_invoice_number(),
             customer=customer,
             attention=request.POST.get("attention") or "",
             sales_person=request.POST.get("sales_person") or "",
+            note=note
             # trn_number=customer.trn_number   # ✅ ADD HERE
         )
 
@@ -511,6 +563,8 @@ def search_ajax(request):
     quotations = []
     invoices = []
     services = []
+    lpos = []
+    suppliers=[]
 
     if search_type == "customer" or not search_type:
         customers = list(Customer.objects.filter(name__icontains=query).values('id','name')[:5])
@@ -523,11 +577,19 @@ def search_ajax(request):
     if search_type == "service" or not search_type:
         services = list(Service.objects.filter(name__icontains=query).values('id','name')[:5])
 
+    if search_type == "supplier" or not search_type:
+        suppliers = list(Supplier.objects.filter(name__icontains=query).values('id','name')[:5])
+
+    if search_type == "lpo" or not search_type:
+        lpos = list(LPO.objects.filter(number__icontains=query).values('id','number')[:5])
+
     return JsonResponse({
         "customers": customers,
         "quotations": quotations,
         "invoices": invoices,
-        "services":services
+        "services":services,
+        "suppliers":suppliers,
+        "lpos":lpos
     })
 
 
@@ -550,6 +612,8 @@ def search_results(request):
     quotations = Quotation.objects.none()
     invoices = Invoice.objects.none()
     services = Service.objects.none()
+    suppliers = Supplier.objects.none()
+    lpos = LPO.objects.none()
 
     # 🔥 APPLY FILTER
     if search_type == "customer":
@@ -563,11 +627,18 @@ def search_results(request):
     elif search_type == "service":
         services = Service.objects.filter(name__icontains=query)
 
+    elif search_type == "supplier":
+        suppliers = Supplier.objects.filter(name__icontains=query)
+
+    elif search_type == "lpo":
+        lpos = LPO.objects.filter(number__icontains=query)
     else:  # default = all
         customers = Customer.objects.filter(name__icontains=query)
         quotations = Quotation.objects.filter(number__icontains=query)
         invoices = Invoice.objects.filter(number__icontains=query)
         services = Service.objects.filter(name__icontains=query)
+        suppliers = Supplier.objects.filter(name__icontains=query)
+        lpos = LPO.objects.filter(number__icontains=query)
 
     return render(request, "sales/search_results.html", {
         "customers": customers,
@@ -575,7 +646,9 @@ def search_results(request):
         "invoices": invoices,
         "query": query,
         "services": services,
-        "search_type": search_type   # 🔥 PASS THIS
+        "search_type": search_type ,  # 🔥 PASS THIS
+        "suppliers": suppliers,
+        "lpos": lpos,
     })
 
 
@@ -774,3 +847,180 @@ def delete_service(request, pk):
     s = get_object_or_404(Service, id=pk)
     s.delete()
     return redirect('dashboard')
+
+# def create_lpo(request):
+#     customers = Customer.objects.all()
+
+#     if request.method == "POST":
+#         supplier = Customer.objects.get(id=request.POST.get("supplier"))
+
+#         lpo = LPO.objects.create(
+#             number=generate_lpo_number(),
+#             supplier=supplier,
+#             note=request.POST.get("note")
+#         )
+
+#         descriptions = request.POST.getlist("description")
+#         quantities = request.POST.getlist("quantity")
+#         prices = request.POST.getlist("price")
+
+#         subtotal = 0
+
+#         for i in range(len(quantities)):
+#             qty = int(quantities[i])
+#             price = float(prices[i])
+#             total = qty * price
+
+#             LPOItem.objects.create(
+#                 lpo=lpo,
+#                 description=descriptions[i],
+#                 quantity=qty,
+#                 price=price,
+#                 total=total
+#             )
+
+#             subtotal += total
+
+#         lpo.subtotal = subtotal
+#         lpo.vat = subtotal * 0.05
+#         lpo.total = lpo.subtotal + lpo.vat
+#         lpo.save()
+
+#         return redirect("lpo_detail", pk=lpo.id)
+
+#     return render(request, "sales/create_lpo.html", {
+#         "customers": customers
+#     })
+
+
+from .models import Supplier   # ✅ make sure this is imported
+
+def create_lpo(request):
+    suppliers = Supplier.objects.all()   # ✅ CHANGE
+
+    if request.method == "POST":
+        supplier = Supplier.objects.get(id=request.POST.get("supplier"))  # ✅ CHANGE
+
+        lpo = LPO.objects.create(
+            number=generate_lpo_number(),
+            supplier=supplier,
+            note=request.POST.get("note"),
+            delivery_date=request.POST.get("delivery_date") or None  # ✅ optional
+        )
+
+        descriptions = request.POST.getlist("description")
+        quantities = request.POST.getlist("quantity")
+        prices = request.POST.getlist("price")
+
+        subtotal = 0
+
+        for i in range(len(quantities)):
+            qty = int(quantities[i])
+            price = float(prices[i])
+            total = qty * price
+
+            LPOItem.objects.create(
+                lpo=lpo,
+                description=descriptions[i],
+                quantity=qty,
+                price=price,
+                total=total
+            )
+
+            subtotal += total
+
+        lpo.subtotal = subtotal
+        lpo.vat = subtotal * 0.05
+        lpo.total = subtotal + lpo.vat
+        lpo.save()
+
+        return redirect("lpo_detail", pk=lpo.id)
+
+    return render(request, "sales/create_lpo.html", {
+        "suppliers": suppliers   # ✅ CHANGE
+    })
+
+def lpo_pdf(request, pk):
+    lpo = get_object_or_404(LPO, id=pk)
+
+    html = render_to_string(
+        "sales/lpo_pdf.html",
+        {
+            "lpo": lpo,
+            "static_path": settings.STATIC_ROOT
+        }
+    )
+
+    pdf = HTML(
+        string=html,
+        base_url=settings.STATIC_ROOT
+    ).write_pdf()
+
+    return HttpResponse(pdf, content_type='application/pdf')
+
+def lpo_detail(request, pk):
+    lpo = get_object_or_404(LPO, id=pk)
+
+    return render(request, "sales/lpo_detail.html", {
+        "lpo": lpo
+    })
+
+
+def add_supplier(request):
+    if request.method == "POST":
+        Supplier.objects.create(
+            name=request.POST.get("name"),
+            phone=request.POST.get("phone"),
+            email=request.POST.get("email"),
+            address=request.POST.get("address"),
+            trn_number=request.POST.get("trn_number"),
+            website=request.POST.get("website")
+        )
+        return redirect('dashboard')   # or redirect to create_lpo
+
+    return render(request, "sales/add_supplier.html")
+
+
+def edit_supplier(request, pk):
+    supplier = get_object_or_404(Supplier, id=pk)
+
+    if request.method == "POST":
+        supplier.name = request.POST.get("name")
+        supplier.phone = request.POST.get("phone")
+        supplier.email = request.POST.get("email")
+        supplier.address = request.POST.get("address")
+        supplier.trn_number = request.POST.get("trn_number")
+        supplier.website = request.POST.get("website")
+
+        supplier.save()
+
+        return redirect("dashboard")
+
+    return render(request, "sales/edit_supplier.html", {
+        "supplier": supplier
+    })
+
+def delete_supplier(request, pk):
+    supplier = get_object_or_404(Supplier, id=pk)
+    supplier.delete()
+    return redirect("dashboard")
+
+# def supplier_detail(request, pk):
+#     supplier = get_object_or_404(Supplier, id=pk)
+
+#     return render(request, "sales/supplier_detail.html", {
+#         "supplier": supplier
+#     })
+
+from django.shortcuts import render, get_object_or_404
+from .models import Supplier, LPO
+
+def supplier_detail(request, pk):
+    supplier = get_object_or_404(Supplier, id=pk)
+
+    lpos = LPO.objects.filter(supplier=supplier)
+
+    return render(request, "sales/supplier_detail.html", {
+        "supplier": supplier,
+        "lpos": lpos
+    })

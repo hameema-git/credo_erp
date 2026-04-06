@@ -120,3 +120,39 @@ def generate_receipt_number():
         last_num = 2566
 
     return f"CRD-RCPT-{last_num + 1}"
+
+
+# def generate_lpo_number():
+#     import datetime
+#     from .models import LPO
+
+#     year = datetime.datetime.now().year
+
+#     last = LPO.objects.filter(number__startswith=f"LPO-{year}")\
+#                       .order_by('-id').first()
+
+#     if last:
+#         last_num = int(last.number.split('-')[-1])
+#         new_num = last_num + 1
+#     else:
+#         new_num = 1
+
+#     return f"LPO-{year}-{new_num:04d}"
+
+
+def generate_lpo_number():
+    from .models import LPO
+
+    last = LPO.objects.filter(number__startswith="LPO-CRD")\
+                      .order_by('-id').first()
+
+    if last:
+        try:
+            last_num = int(last.number.replace("LPO-CRD", ""))
+            new_num = last_num + 1
+        except:
+            new_num = 1001   # fallback if format broken
+    else:
+        new_num = 1001   # starting number
+
+    return f"LPO-CRD{new_num}"

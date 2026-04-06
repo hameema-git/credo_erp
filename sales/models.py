@@ -89,6 +89,7 @@ class Invoice(models.Model):
 
     # 🔥 OPTIONAL (for future use only)
     quotation = models.ForeignKey(Quotation, on_delete=models.SET_NULL, null=True, blank=True)
+    note = models.TextField(blank=True, null=True)
 
     date = models.DateField(auto_now_add=True)
     due_date = models.DateField(null=True, blank=True)
@@ -160,3 +161,49 @@ class PaymentReceipt(models.Model):
 
     def __str__(self):
         return self.receipt_number
+    
+class Supplier(models.Model):
+    name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    trn_number = models.CharField(max_length=50, blank=True, null=True)
+    # website = models.URLField(blank=True, null=True)
+    website = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+# ---------- LPO ----------
+class LPO(models.Model):
+    number = models.CharField(max_length=50, unique=True)
+
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+
+    order_date = models.DateField(auto_now_add=True)
+    delivery_date = models.DateField(null=True, blank=True)
+
+    note = models.TextField(blank=True, null=True)
+
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    vat = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return self.number
+
+
+# ---------- LPO ITEMS ----------
+class LPOItem(models.Model):
+    lpo = models.ForeignKey(LPO, on_delete=models.CASCADE, related_name="items")
+
+    description = models.TextField()
+    quantity = models.IntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        self.total = self.quantity * self.price
+        super().save(*args, **kwargs)
+
+
