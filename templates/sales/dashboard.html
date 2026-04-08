@@ -183,6 +183,11 @@
     </div>
 
 </div>
+<div class="text-end mb-3">
+    <button id="installBtn" class="btn btn-gradient" style="display:none;">
+        📲 Install App
+    </button>
+</div>
 
 <!-- ACTION + SEARCH -->
 <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 action-section">
@@ -762,6 +767,33 @@ document.addEventListener("click", function(e) {
         !e.target.closest("#searchInput") &&
         !e.target.closest("#searchType")) {
         listBox.style.display = "none";
+    }
+});
+</script>
+
+<script>
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.style.display = 'inline-block';
+    }
+});
+
+document.getElementById('installBtn')?.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('User response:', outcome);
+
+        deferredPrompt = null;
+
+        document.getElementById('installBtn').style.display = 'none';
     }
 });
 </script>
