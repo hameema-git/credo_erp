@@ -171,10 +171,12 @@
         <div class="d-flex gap-2 flex-wrap">
 
             <!-- EDIT -->
-            <a href="{% url 'edit_supplier' lpo.supplier.id %}" class="btn btn-warning">
+            <!-- <a href="{% url 'edit_supplier' lpo.supplier.id %}" class="btn btn-warning">
     ✏️ Edit
 
-            </a>
+            </a> -->
+
+             <a href="{% url 'edit_lpo' lpo.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
 
             <!-- PDF -->
             <a href="{% url 'lpo_pdf' lpo.id %}" class="btn btn-danger pdf-btn">

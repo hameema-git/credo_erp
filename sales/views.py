@@ -1070,3 +1070,17 @@ def edit_lpo(request, pk):
         "lpo": lpo,
         "suppliers": suppliers
     })
+
+# def delete_lpo(request, pk):
+#     lpo = get_object_or_404(LPO, id=pk)
+#     lpo.delete()
+#     return redirect('dashboard')
+
+def delete_lpo(request, pk):
+    lpo = get_object_or_404(LPO, id=pk)
+
+    if request.method == "POST":
+        lpo.delete()
+        return redirect('dashboard')
+
+    return redirect('dashboard')

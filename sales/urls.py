@@ -46,7 +46,7 @@ from .views import (
     service_detail, edit_service,
     delete_invoice, delete_quotation,
     delete_customer, delete_service,   # ✅ comma added
-    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail   # ✅ clean line
+    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail,delete_lpo   # ✅ clean line
 )
 urlpatterns = [
 
@@ -93,6 +93,7 @@ urlpatterns = [
     path('lpo/<int:pk>/', lpo_detail, name='lpo_detail'),
     path('lpo/<int:pk>/pdf/', lpo_pdf, name='lpo_pdf'),
     path('lpo/edit/<int:pk>/', edit_lpo, name='edit_lpo'),
+    path('lpo/delete/<int:pk>/', delete_lpo, name='delete_lpo'),
 
     path('supplier/add/', add_supplier, name='add_supplier'),
 
