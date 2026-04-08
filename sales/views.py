@@ -1024,3 +1024,49 @@ def supplier_detail(request, pk):
         "supplier": supplier,
         "lpos": lpos
     })
+
+def edit_lpo(request, pk):
+    lpo = get_object_or_404(LPO, id=pk)
+    suppliers = Supplier.objects.all()
+
+    if request.method == "POST":
+        lpo.supplier_id = request.POST.get("supplier")
+        lpo.note = request.POST.get("note")
+        lpo.delivery_date = request.POST.get("delivery_date") or None
+        lpo.save()
+
+        # delete old items
+        lpo.items.all().delete()
+
+        descriptions = request.POST.getlist("description")
+        quantities = request.POST.getlist("quantity")
+        prices = request.POST.getlist("price")
+
+        subtotal = 0
+
+        for i in range(len(quantities)):
+            qty = int(quantities[i])
+            price = float(prices[i])
+            total = qty * price
+
+            LPOItem.objects.create(
+                lpo=lpo,
+                description=descriptions[i],
+                quantity=qty,
+                price=price,
+                total=total
+            )
+
+            subtotal += total
+
+        lpo.subtotal = subtotal
+        lpo.vat = subtotal * 0.05
+        lpo.total = subtotal + lpo.vat
+        lpo.save()
+
+        return redirect("lpo_detail", pk=lpo.id)
+
+    return render(request, "sales/edit_lpo.html", {
+        "lpo": lpo,
+        "suppliers": suppliers
+    })

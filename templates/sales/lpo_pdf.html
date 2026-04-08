@@ -185,12 +185,14 @@ body {
  <div class="section-title">Supplier Details</div><br>
 
 {{ lpo.supplier.name }}<br>
+TRN No: {{lpo.supplier.trn_number}}<br>
 <!-- {{ lpo.supplier.address }}<br> -->
   {{ lpo.supplier.address|linebreaksbr }}<br>
 
 Tel: {{ lpo.supplier.phone }}<br>
 Email: {{ lpo.supplier.email }}
 Website: {{ lpo.supplier.website }}
+
 
 <div class="order-box">
 <b>Purchase Order No:</b> {{ lpo.number }}
