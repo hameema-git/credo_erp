@@ -175,6 +175,70 @@ class Supplier(models.Model):
         return self.name
 
 # ---------- LPO ----------
+# class LPO(models.Model):
+#     number = models.CharField(max_length=50, unique=True)
+
+#     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+
+#     order_date = models.DateField(auto_now_add=True)
+#     delivery_date = models.DateField(null=True, blank=True)
+
+#     note = models.TextField(blank=True, null=True)
+
+#     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+#     vat = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+#     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+#     def __str__(self):
+#         return self.number
+
+
+# # ---------- LPO ITEMS ----------
+# # class LPOItem(models.Model):
+# #     lpo = models.ForeignKey(LPO, on_delete=models.CASCADE, related_name="items")
+
+# #     description = models.TextField()
+# #     quantity = models.IntegerField(default=1)
+# #     price = models.DecimalField(max_digits=10, decimal_places=2)
+# #     total = models.DecimalField(max_digits=10, decimal_places=2)
+
+# #     def save(self, *args, **kwargs):
+# #         self.total = self.quantity * self.price
+# #         super().save(*args, **kwargs)
+
+
+# from decimal import Decimal
+
+# # class LPOItem(models.Model):
+# #     lpo = models.ForeignKey(LPO, on_delete=models.CASCADE, related_name="items")
+
+# #     description = models.TextField()
+# #     quantity = models.IntegerField(default=1)
+# #     price = models.DecimalField(max_digits=10, decimal_places=2)
+
+# #     total = models.DecimalField(max_digits=10, decimal_places=2)   # base total
+# #     vat = models.DecimalField(max_digits=10, decimal_places=2, default=0)   # ✅ NEW
+
+#     # def save(self, *args, **kwargs):
+#     #     base_total = Decimal(self.quantity) * self.price
+#     #     self.vat = base_total * Decimal("0.05")   # ✅ VAT per item
+#     #     self.total = base_total + self.vat        # ✅ final total WITH VAT
+#     #     super().save(*args, **kwargs)
+
+
+
+# class LPOItem(models.Model):
+#     lpo = models.ForeignKey(LPO, on_delete=models.CASCADE, related_name="items")
+
+#     description = models.TextField()
+#     quantity = models.IntegerField(default=1)
+#     price = models.DecimalField(max_digits=10, decimal_places=2)
+#     total = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+from decimal import Decimal
+
+# ---------- LPO ----------
 class LPO(models.Model):
     number = models.CharField(max_length=50, unique=True)
 
@@ -200,10 +264,6 @@ class LPOItem(models.Model):
     description = models.TextField()
     quantity = models.IntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def save(self, *args, **kwargs):
-        self.total = self.quantity * self.price
-        super().save(*args, **kwargs)
-
-
+    vat = models.DecimalField(max_digits=10, decimal_places=2, default=0)   # ✅ VAT PER ITEM
+    total = models.DecimalField(max_digits=10, decimal_places=2)            # ✅ FINAL (WITH VAT)

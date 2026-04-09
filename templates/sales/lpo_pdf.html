@@ -234,7 +234,7 @@ Abu Dhabi<br><br>
     <th style="width:50%;">Description</th>
     <th style="width:10%; text-align:center;">Qty</th>
     <th style="width:15%; text-align:center;">Unit Price</th>
-    <th style="width:10%; text-align:center;">Tax 5%</th>
+    <th style="width:10%; text-align:center;">Vat 5%</th>
     <th style="width:15%; text-align:center;">Price</th>
 </tr>
 </thead>
@@ -243,17 +243,29 @@ Abu Dhabi<br><br>
 
 {% for item in lpo.items.all %}
 <tr>
-<td><b>{{ forloop.counter }}. {{ item.description }}</b></td>
-<td style="text-align:center;">{{ item.quantity }}</td>
-<td style="text-align:center;">{{ item.price }}</td>
-<td style="text-align:center;">{{ item.vat|floatformat:2 }}</td>
-<td style="text-align:center;">{{ item.total|floatformat:2 }}</td>
+    <td><b>{{ forloop.counter }}. {{ item.description }}</b></td>
+
+    <td style="text-align:center;">
+        {{ item.quantity }}
+    </td>
+
+    <td style="text-align:center;">
+        AED {{ item.price|floatformat:2 }}
+    </td>
+
+    <td style="text-align:center;">
+        AED {{ item.vat|floatformat:2 }}
+    </td>
+
+    <td style="text-align:center;">
+        AED {{ item.total|floatformat:2 }}
+    </td>
 </tr>
 {% endfor %}
 
 <tr class="total-row">
-<td colspan="4" style="text-align:right;">Total</td>
-<td>AED {{ lpo.total }}</td>
+    <td colspan="4" style="text-align:right;">Total</td>
+    <td>AED {{ lpo.total|floatformat:2 }}</td>
 </tr>
 
 </tbody>
