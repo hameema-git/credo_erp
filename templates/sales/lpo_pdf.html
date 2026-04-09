@@ -246,8 +246,8 @@ Abu Dhabi<br><br>
 <td><b>{{ forloop.counter }}. {{ item.description }}</b></td>
 <td style="text-align:center;">{{ item.quantity }}</td>
 <td style="text-align:center;">{{ item.price }}</td>
+<td style="text-align:center;">{{ item.vat|floatformat:2 }}</td>
 <td style="text-align:center;">{{ item.total|floatformat:2 }}</td>
-<td style="text-align:center;">{{ item.total }}</td>
 </tr>
 {% endfor %}
 
