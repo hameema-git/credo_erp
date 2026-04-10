@@ -202,14 +202,16 @@ Website: {{ lpo.supplier.website }}
 
 <td style="text-align: right;">
 <!-- <b><u>Delivery Address</u></b><br> -->
- <div class="section-title">Delivery Address</div><br>
+ <!-- <div class="section-title">Delivery Address</div><br> -->
+  <div class="section-title">Invoice To</div><br>
+ 
 
 Credo International Digital Designs LLC<br>
 TRN No: 105189276600001<br>
 Abu Dhabi<br><br>
 
 <b>Order Date:</b> {{ lpo.order_date }}<br>
-<b>PR Ref:</b> {{ lpo.number }}<br>
+<b>Quote Ref:</b> {{ lpo.quote_ref }}<br>
 <b>Delivery Date:</b> {{ lpo.delivery_date }}
 
 </td>
@@ -231,11 +233,11 @@ Abu Dhabi<br><br>
 </thead> -->
 <thead>
 <tr>
-    <th style="width:50%;">Description</th>
-    <th style="width:10%; text-align:center;">Qty</th>
+    <th style="width:45%;">Description</th>
+    <th style="width:7%; text-align:center;">Qty</th>
     <th style="width:15%; text-align:center;">Unit Price</th>
-    <th style="width:10%; text-align:center;">Vat 5%</th>
-    <th style="width:15%; text-align:center;">Price</th>
+    <th style="width:15%; text-align:center;">Vat 5%</th>
+    <th style="width:18%; text-align:center;">Price</th>
 </tr>
 </thead>
 
@@ -272,21 +274,22 @@ Abu Dhabi<br><br>
 </table>
 
 <!-- TERMS -->
-<div style="margin-top:25px;">
+<!-- <div style="margin-top:25px;">
 <b>Terms & Conditions:</b><br>
 - All payments through bank transfer
-</div>
+</div> -->
 
 <!-- INVOICE TO -->
-<div style="margin-top:25px;font-weight: bold;">
+<!-- <div style="margin-top:25px;font-weight: bold;">
 <b>INVOICE TO:</b><br>
 Credo International Digital Designs LLC<br>
 TRN No: 105189276600001<br>
 Abu Dhabi
-</div>
+</div> -->
 
 <!-- PARAGRAPH -->
 <div style="margin-top:25px;">
+    <b>Dear Suppliers ,</b><br>
 We kindly request you to proceed with the supply and/or services as per the specifications,
 quantities, and terms mentioned in this LPO. All items should meet the agreed quality standards
 and be delivered within the stipulated time frame.
@@ -325,11 +328,40 @@ Credo Digital Designs LLC
 </table> -->
 
 
-<table style="width:100%; margin-top:60px;">
+<table style="width:100%; margin-top:80px; padding-top:20px;">
 
 <tr>
 
-<!-- LEFT: PREPARED BY -->
+<!-- LEFT -->
+<td style="width:40%; vertical-align:top; font-size:13px;">
+    <b>Prepared By</b><br><br>
+    Adwaitha<br>
+    Operations Manager<br>
+    Credo Digital Designs LLC
+</td>
+
+<!-- CENTER -->
+<td style="width:20%; text-align:center; vertical-align:middle;">
+    <img src="file:///{{ static_path }}/stamp.jpeg" style="height:100px;">
+</td>
+
+<!-- RIGHT -->
+<td style="width:40%; text-align:right; vertical-align:top; font-size:13px;">
+    <b>Approved By</b><br><br>
+    Shilthra Surendran<br>
+    Director – Operations & Accounts<br>
+    Credo Digital Designs LLC
+</td>
+
+</tr>
+
+</table>
+
+<!-- <table style="width:100%; margin-top:60px;">
+
+<tr>
+
+
 <td style="width:40%; vertical-align:top; font-weight:bold;">
 Prepared By:<br>
 Adwaitha<br>
@@ -337,12 +369,12 @@ Operations Manager<br>
 Credo Digital Designs LLC
 </td>
 
-<!-- CENTER: STAMP -->
+
 <td style="width:20%; text-align:center; vertical-align:middle;">
 <img src="file:///{{ static_path }}/stamp.jpeg" style="height:110px;">
 </td>
 
-<!-- RIGHT: THANKS -->
+
 <td style="width:40%; text-align:right; vertical-align:top; font-weight:bold;">
 Approved By :<br>
 Shilthra Surendran<br>
@@ -352,7 +384,7 @@ Credo Digital Designs LLC
 
 </tr>
 
-</table>
+</table> -->
 <!-- FOOTER -->
 <div class="footer">
 

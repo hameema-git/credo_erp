@@ -86,6 +86,7 @@
 <div class="mb-4">
     <label><b>Supplier</b></label>
 
+ 
     <select name="supplier" class="form-select" required>
         {% for s in suppliers %}
         <option value="{{ s.id }}" {% if s.id == lpo.supplier.id %}selected{% endif %}>
@@ -94,6 +95,13 @@
         {% endfor %}
     </select>
 </div>
+   <div class="mb-3">
+    <label><b>Quotation Ref</b></label>
+    <input type="text" name="quote_ref"
+           value="{{ lpo.quote_ref }}"
+           class="form-control">
+</div>
+
 
 <!-- DATE -->
 <div class="row mb-4">
@@ -190,32 +198,77 @@
 </div>
 
 <script>
+// function calculateRow(el) {
+//     let row = el.closest("tr");
+
+//     let price = parseFloat(row.querySelector(".price").value) || 0;
+//     let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+
+//     let total = price * qty;
+//     row.querySelector(".row-total").value = total.toFixed(2);
+
+//     calculateTotal();
+// }
+
+// function calculateTotal() {
+//     let subtotal = 0;
+
+//     document.querySelectorAll(".row-total").forEach(el => {
+//         subtotal += parseFloat(el.value) || 0;
+//     });
+
+//     let vat = subtotal * 0.05;
+//     let grandTotal = subtotal + vat;
+
+//     document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+//     document.getElementById("vat").innerText = vat.toFixed(2);
+//     document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
+// }
+
 function calculateRow(el) {
     let row = el.closest("tr");
 
     let price = parseFloat(row.querySelector(".price").value) || 0;
     let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
 
-    let total = price * qty;
+    let base = price * qty;
+    let vat = base * 0.05;
+    let total = base + vat;
+
     row.querySelector(".row-total").value = total.toFixed(2);
 
     calculateTotal();
 }
 
+
+
+
 function calculateTotal() {
     let subtotal = 0;
+    let totalVat = 0;
+    let grandTotal = 0;
 
-    document.querySelectorAll(".row-total").forEach(el => {
-        subtotal += parseFloat(el.value) || 0;
+    document.querySelectorAll("#items-table tbody tr").forEach(row => {
+        let price = parseFloat(row.querySelector(".price").value) || 0;
+        let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+
+        let base = price * qty;
+        let vat = base * 0.05;
+        let total = base + vat;
+
+        subtotal += base;
+        totalVat += vat;
+        grandTotal += total;
     });
 
-    let vat = subtotal * 0.05;
-    let grandTotal = subtotal + vat;
-
     document.getElementById("subtotal").innerText = subtotal.toFixed(2);
-    document.getElementById("vat").innerText = vat.toFixed(2);
+    document.getElementById("vat").innerText = totalVat.toFixed(2);
     document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
 }
+
+
+
+
 
 function addRow() {
     let table = document.querySelector("#items-table tbody");
@@ -232,7 +285,16 @@ function deleteRow(btn) {
     calculateTotal();
 }
 
-window.onload = calculateTotal;
+// window.onload = calculateTotal;
+
+window.onload = function() {
+    document.querySelectorAll("#items-table tbody tr").forEach(row => {
+        let priceInput = row.querySelector(".price");
+        if (priceInput) {
+            calculateRow(priceInput);  // 🔥 force recalculation
+        }
+    });
+};
 </script>
 
 </body>

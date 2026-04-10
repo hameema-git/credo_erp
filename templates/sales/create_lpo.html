@@ -87,6 +87,7 @@
 <div class="mb-4">
     <label><b>Supplier</b></label>
 
+
     <select name="supplier" class="form-select" required>
         <option value="">Select Supplier</option>
         {% for s in suppliers %}
@@ -98,6 +99,11 @@
         + Add Supplier
     </a>
 </div>
+    <div class="mb-3">
+    <label><b>Quotation Ref</b></label>
+    <input type="text" name="quote_ref" class="form-control" placeholder="Enter quotation reference">
+</div>
+
 
 <!-- DATES -->
 <div class="row mb-4">

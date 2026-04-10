@@ -243,6 +243,7 @@ class LPO(models.Model):
     number = models.CharField(max_length=50, unique=True)
 
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    quote_ref = models.CharField(max_length=50, blank=True, null=True)  # ✅ NEW FIELD
 
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(null=True, blank=True)

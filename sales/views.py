@@ -1032,6 +1032,7 @@ def create_lpo(request):
 
         lpo = LPO.objects.create(
             number=generate_lpo_number(),
+            quote_ref=request.POST.get("quote_ref"),   # ✅ ADD THIS LINE
             supplier=supplier,
             note=request.POST.get("note"),
             delivery_date=request.POST.get("delivery_date") or None
@@ -1175,6 +1176,7 @@ def edit_lpo(request, pk):
 
     if request.method == "POST":
         lpo.supplier_id = request.POST.get("supplier")
+        lpo.quote_ref = request.POST.get("quote_ref")
         lpo.note = request.POST.get("note")
         lpo.delivery_date = request.POST.get("delivery_date") or None
         lpo.save()
@@ -1186,26 +1188,61 @@ def edit_lpo(request, pk):
         quantities = request.POST.getlist("quantity")
         prices = request.POST.getlist("price")
 
-        subtotal = 0
+        # subtotal = 0
+
+        # for i in range(len(quantities)):
+        #     qty = int(quantities[i])
+        #     price = float(prices[i])
+        #     total = qty * price
+
+        #     LPOItem.objects.create(
+        #         lpo=lpo,
+        #         description=descriptions[i],
+        #         quantity=qty,
+        #         price=price,
+        #         total=total
+        #     )
+
+        #     subtotal += total
+
+        # lpo.subtotal = subtotal
+        # lpo.vat = subtotal * 0.05
+        # lpo.total = subtotal + lpo.vat
+
+
+        from decimal import Decimal
+
+        subtotal = Decimal("0")
+        total_vat = Decimal("0")
+        grand_total = Decimal("0")
 
         for i in range(len(quantities)):
-            qty = int(quantities[i])
-            price = float(prices[i])
-            total = qty * price
+            if not descriptions[i].strip():
+                continue
+
+            qty = Decimal(quantities[i])
+            price = Decimal(prices[i])
+
+            item_total = qty * price
+            item_vat = item_total * Decimal("0.05")
+            item_grand = item_total + item_vat
 
             LPOItem.objects.create(
                 lpo=lpo,
                 description=descriptions[i],
                 quantity=qty,
                 price=price,
-                total=total
+                vat=item_vat,          # ✅ FIX
+                total=item_grand       # ✅ FIX
             )
 
-            subtotal += total
+            subtotal += item_total
+            total_vat += item_vat
+            grand_total += item_grand
 
         lpo.subtotal = subtotal
-        lpo.vat = subtotal * 0.05
-        lpo.total = subtotal + lpo.vat
+        lpo.vat = total_vat
+        lpo.total = grand_total
         lpo.save()
 
         return redirect("lpo_detail", pk=lpo.id)

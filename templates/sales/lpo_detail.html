@@ -114,6 +114,10 @@
     <!-- SUPPLIER -->
     <div class="mb-4">
         <p><b>Supplier:</b> {{ lpo.supplier.name }}</p>
+
+         {% if lpo.quote_ref %}
+    <p><b>Quotation Ref:</b> {{ lpo.quote_ref }}</p>
+    {% endif %}
         <p><b>Delivery Date:</b> {{ lpo.delivery_date }}</p>
     </div>
 
