@@ -178,7 +178,11 @@
 <!-- ACTION -->
 <div class="mt-4 d-flex justify-content-between">
     <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
-    <button type="submit" class="btn btn-gradient">Save LPO</button>
+    <!-- <button type="submit" class="btn btn-gradient">Save LPO</button> -->
+
+    <button type="submit" class="btn btn-gradient" id="saveBtn">
+    Save LPO
+</button>
 </div>
 
 </form>
@@ -257,6 +261,15 @@ function deleteRow(btn) {
 }
 
 window.onload = calculateTotal;
+</script>
+
+<script>
+document.querySelector("form").addEventListener("submit", function () {
+    let btn = document.getElementById("saveBtn");
+
+    btn.disabled = true;
+    btn.innerHTML = "Saving... ⏳";
+});
 </script>
 
 </body>
