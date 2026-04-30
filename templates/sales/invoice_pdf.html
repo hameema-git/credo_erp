@@ -341,7 +341,11 @@ html, body {
 
 {% for item in invoice.items.all %}
 <tr>
-    <td style="font-weight: 100;">{{ forloop.counter }}. {{ item.description }}</td>
+    <!-- <td style="font-weight: 100;">{{ forloop.counter }}. {{ item.description }}</td> -->
+
+    <td style="font-weight: 100;">
+    {{ forloop.counter }}. {{ item.description|linebreaksbr }}
+</td>
     <td style="text-align:center;">{{ item.quantity }}</td>
     <td style="text-align:center;">AED {{ item.price|floatformat:2 }}</td>
     <td style="text-align:center;">AED {{ item.total|floatformat:2 }}</td>

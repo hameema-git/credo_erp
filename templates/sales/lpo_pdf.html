@@ -245,7 +245,9 @@ Abu Dhabi<br><br>
 
 {% for item in lpo.items.all %}
 <tr>
-    <td><b>{{ forloop.counter }}. {{ item.description }}</b></td>
+    <!-- <td><b>{{ forloop.counter }}. {{ item.description }}</b></td> -->
+
+    <td><b>{{ forloop.counter }}. {{ item.description|linebreaksbr }}</b></td>
 
     <td style="text-align:center;">
         {{ item.quantity }}

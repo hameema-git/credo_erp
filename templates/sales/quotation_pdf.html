@@ -545,12 +545,22 @@ background: linear-gradient(
     {% for item in quotation.items.all %}
     <tr>
         <!-- <td>{{ forloop.counter }}. {{ item.service.name }}</td> -->
-         <td>
+         <!-- <td>
     {{ forloop.counter }}. 
     {% if item.description %}
         {{ item.description }}
     {% elif item.service %}
         {{ item.service.name }}
+    {% endif %}
+</td> -->
+
+
+<td>
+    {{ forloop.counter }}. 
+    {% if item.description %}
+        {{ item.description|linebreaksbr }}
+    {% elif item.service %}
+        {{ item.service.name|linebreaksbr }}
     {% endif %}
 </td>
         <td><center>{{ item.quantity }}</center></td>
