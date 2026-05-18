@@ -379,6 +379,78 @@ body {
 </div>
 {% endif %}
 
+<!-- ================= RECEIPTS ================= -->
+{% if search_type == "receipt" or search_type == "all" or not search_type %}
+<div class="info-box">
+
+    <h5>Receipts ({{ receipts.count }})</h5>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered">
+
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Receipt Number</th>
+                    <th>Invoice</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for r in receipts %}
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>
+                    {{ r.receipt_number }}
+                </td>
+
+                <td>
+                    {{ r.invoice.number }}
+                </td>
+
+                <td>
+                    AED {{ r.amount_paid }}
+                </td>
+
+                <td>
+
+                    <a href="{% url 'receipt_preview' r.id %}"
+                       class="btn btn-info btn-sm">
+                       👁
+                    </a>
+
+                    <a href="{% url 'receipt_pdf' r.id %}"
+                       class="btn btn-danger btn-sm">
+                       PDF
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">
+                    No receipts found
+                </td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+{% endif %}
+
 
 
 

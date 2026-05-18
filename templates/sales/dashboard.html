@@ -235,6 +235,7 @@
             <option value="service">Service</option>
              <option value="supplier">Supplier</option>
              <option value="lpo">LPO</option>
+            <option value="receipt">Receipt</option>
         </select>
 
         <!-- 🔥 DROPDOWN BELOW TYPE -->
@@ -331,6 +332,13 @@
             <h2>{{ lpos_count }}</h2>
         </div>
     </div>
+
+    <div class="col-md-4">
+    <div class="dashboard-card card-1">
+        Total Receipts
+        <h2>{{ receipts_count }}</h2>
+    </div>
+</div>
 
 
 </div>
@@ -670,6 +678,77 @@
     </div>
 </div>
 
+
+<div class="col-md-6">
+    <div class="card shadow">
+
+        <div class="card-header-custom">
+            Recent Receipts
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Receipt No</th>
+                            <th>Invoice</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for r in recent_receipts %}
+                        <tr>
+
+                            <td>
+                                {{ r.receipt_number }}
+                            </td>
+
+                            <td>
+                                {{ r.invoice.number }}
+                            </td>
+
+                            <td>
+                                AED {{ r.amount_paid }}
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'receipt_preview' r.id %}"
+                                   class="btn btn-primary btn-sm">
+                                   View
+                                </a>
+
+                                <a href="{% url 'receipt_pdf' r.id %}"
+                                   class="btn btn-danger btn-sm">
+                                   PDF
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No receipts found</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
 </div>
 
 
@@ -739,6 +818,11 @@ function loadData(query="", type="all") {
     url: `/quotation/lpo/${i.id}/`
 }));
 
+
+else if (type === "receipt") items = data.receipts.map(i => ({
+    text: i.receipt_number,
+    url: `/quotation/receipt-preview/${i.id}/`
+}));
 
 
         if (items.length === 0) {

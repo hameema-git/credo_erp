@@ -43,7 +43,7 @@ from .utils import generate_quotation_number, generate_invoice_number, generate_
 #     })
 
 
-from .models import Supplier
+from .models import Supplier,PaymentReceipt
 
 def dashboard(request):
     query = request.GET.get('q')
@@ -54,6 +54,7 @@ def dashboard(request):
     invoices = Invoice.objects.all()
     lpos = LPO.objects.all()
     services=Service.objects.all()
+    receipts = PaymentReceipt.objects.all()   # ✅ ADD
 
     search_type = request.GET.get('type', 'all')
 
@@ -82,6 +83,9 @@ def dashboard(request):
         "services_count":services.count(),
         "lpos_count": lpos.count(),
         "invoices_count": invoices.count(),
+        "receipts_count": receipts.count(),   # ✅ ADD
+
+
         "recent_quotations": quotations.order_by('-id')[:5],
         "recent_invoices": invoices.order_by('-id')[:5],
         "query": query,
@@ -89,6 +93,7 @@ def dashboard(request):
         "recent_suppliers": suppliers.order_by('-id')[:5],
         "recent_services": services.order_by('-id')[:5],
         "recent_lpos": lpos.order_by('-id')[:5],
+        "recent_receipts": receipts.order_by('-id')[:5],
         
     })
 
@@ -565,6 +570,8 @@ def search_ajax(request):
     services = []
     lpos = []
     suppliers=[]
+    receipts=[]
+    
 
     if search_type == "customer" or not search_type:
         customers = list(Customer.objects.filter(name__icontains=query).values('id','name')[:5])
@@ -583,13 +590,21 @@ def search_ajax(request):
     if search_type == "lpo" or not search_type:
         lpos = list(LPO.objects.filter(number__icontains=query).values('id','number')[:5])
 
+    if search_type == "receipt" or not search_type:
+        receipts = list(
+            PaymentReceipt.objects.filter(
+                receipt_number__icontains=query
+            ).values('id', 'receipt_number')[:20]
+        )
+
     return JsonResponse({
         "customers": customers,
         "quotations": quotations,
         "invoices": invoices,
         "services":services,
         "suppliers":suppliers,
-        "lpos":lpos
+        "lpos":lpos,
+        "receipts": receipts,
     })
 
 
@@ -614,6 +629,7 @@ def search_results(request):
     services = Service.objects.none()
     suppliers = Supplier.objects.none()
     lpos = LPO.objects.none()
+    receipts = PaymentReceipt.objects.none()
 
     # 🔥 APPLY FILTER
     if search_type == "customer":
@@ -632,6 +648,12 @@ def search_results(request):
 
     elif search_type == "lpo":
         lpos = LPO.objects.filter(number__icontains=query)
+
+
+    elif search_type == "receipt":
+        receipts = PaymentReceipt.objects.filter(
+            receipt_number__icontains=query
+        )
     else:  # default = all
         customers = Customer.objects.filter(name__icontains=query)
         quotations = Quotation.objects.filter(number__icontains=query)
@@ -639,6 +661,9 @@ def search_results(request):
         services = Service.objects.filter(name__icontains=query)
         suppliers = Supplier.objects.filter(name__icontains=query)
         lpos = LPO.objects.filter(number__icontains=query)
+        receipts = PaymentReceipt.objects.filter(
+    receipt_number__icontains=query
+)
 
     return render(request, "sales/search_results.html", {
         "customers": customers,
@@ -649,6 +674,7 @@ def search_results(request):
         "search_type": search_type ,  # 🔥 PASS THIS
         "suppliers": suppliers,
         "lpos": lpos,
+        "receipts": receipts,
     })
 
 
