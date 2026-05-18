@@ -737,7 +737,7 @@ def edit_quotation(request, pk):
         quotation.customer_id = request.POST.get("customer")
         quotation.attention = request.POST.get("attention")
         quotation.sales_person = request.POST.get("sales_person")
-        quotation.notes = request.POST.get("notes")
+        quotation.note= request.POST.get("note")
 
         quotation.save()
 
@@ -786,7 +786,7 @@ def edit_invoice(request, pk):
         invoice.customer_id = request.POST.get("customer")
         invoice.attention = request.POST.get("attention")
         invoice.sales_person = request.POST.get("sales_person")
-        invoice.notes = request.POST.get("notes")
+        invoice.note = request.POST.get("note")
 
         invoice.save()
 

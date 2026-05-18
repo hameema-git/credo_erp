@@ -32,7 +32,8 @@ class Quotation(models.Model):
     ]
 
     number = models.CharField(max_length=50, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    # customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
     note = models.TextField(blank=True, null=True)
 
@@ -85,7 +86,8 @@ class Invoice(models.Model):
     ]
 
     number = models.CharField(max_length=50, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    # customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
     # 🔥 OPTIONAL (for future use only)
     quotation = models.ForeignKey(Quotation, on_delete=models.SET_NULL, null=True, blank=True)
@@ -147,7 +149,8 @@ class InvoiceItem(models.Model):
 
 # ---------- Payment Receipt ----------
 class PaymentReceipt(models.Model):
-    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name="receipts")
+    # invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name="receipts")
+    invoice = models.ForeignKey(Invoice, on_delete=models.PROTECT, related_name="receipts")
 
     receipt_number = models.CharField(max_length=50, unique=True)
     date = models.DateField(auto_now_add=True)
@@ -242,7 +245,8 @@ from decimal import Decimal
 class LPO(models.Model):
     number = models.CharField(max_length=50, unique=True)
 
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    # supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT)
     quote_ref = models.CharField(max_length=50, blank=True, null=True)  # ✅ NEW FIELD
 
     order_date = models.DateField(auto_now_add=True)
