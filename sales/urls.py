@@ -46,7 +46,7 @@ from .views import (
     service_detail, edit_service,
     delete_invoice, delete_quotation,
     delete_customer, delete_service,   # ✅ comma added
-    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail,delete_lpo   # ✅ clean line
+    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail,delete_lpo ,delete_receipt  # ✅ clean line
 )
 urlpatterns = [
 
