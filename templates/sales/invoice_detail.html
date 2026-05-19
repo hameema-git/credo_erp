@@ -228,7 +228,7 @@ body {
             </form>
 
             {% if invoice.paid_amount > 0 %}
-            <a href="{% url 'receipt_preview' invoice.id %}" class="btn btn-success btn-sm mt-2">
+            <a href="{% url 'receipt_preview' invoice.id %}"  target="_blank" class="btn btn-success btn-sm mt-2">
                 Generate Receipt
             </a>
             {% endif %}
