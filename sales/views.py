@@ -515,14 +515,60 @@ def update_payment(request, pk):
 
 #     return response
 
+# def payment_receipt_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+#     receipt = PaymentReceipt.objects.filter(invoice=invoice).last()
+
+#     if not receipt:
+#         return HttpResponse("No payment receipt found for this invoice")
+
+#     amount_words = num2words(receipt.amount_paid, lang='en').title() + " AED Only"
+
+#     html = render_to_string(
+#         "sales/payment_receipt_pdf.html",
+#         {
+#             "receipt": receipt,
+#             "amount_words": amount_words,
+#             "static_path": settings.STATIC_ROOT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+
+#     return response
+
+
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from num2words import num2words
+from django.conf import settings
+
+from .models import PaymentReceipt
+
+
 def payment_receipt_pdf(request, pk):
-    invoice = get_object_or_404(Invoice, id=pk)
-    receipt = PaymentReceipt.objects.filter(invoice=invoice).last()
 
-    if not receipt:
-        return HttpResponse("No payment receipt found for this invoice")
+    # ✅ GET RECEIPT DIRECTLY
+    receipt = get_object_or_404(
+        PaymentReceipt,
+        id=pk
+    )
 
-    amount_words = num2words(receipt.amount_paid, lang='en').title() + " AED Only"
+    amount_words = (
+        num2words(
+            receipt.amount_paid,
+            lang='en'
+        ).title()
+        + " AED Only"
+    )
 
     html = render_to_string(
         "sales/payment_receipt_pdf.html",
@@ -538,12 +584,16 @@ def payment_receipt_pdf(request, pk):
         base_url=settings.STATIC_ROOT
     ).write_pdf()
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+    response = HttpResponse(
+        pdf,
+        content_type='application/pdf'
+    )
+
+    response['Content-Disposition'] = (
+        f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+    )
 
     return response
-
-
 
 
 # ---------------- SEARCH ----------------

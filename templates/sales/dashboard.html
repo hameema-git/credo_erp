@@ -717,7 +717,7 @@
                                 AED {{ r.amount_paid }}
                             </td>
 
-                            <td>
+                            <!-- <td>
 
                                 <a href="{% url 'receipt_preview' r.id %}"
                                    class="btn btn-primary btn-sm">
@@ -729,7 +729,26 @@
                                    PDF
                                 </a>
 
-                            </td>
+                            </td> -->
+
+
+                            <td>
+
+    {% if r.invoice %}
+
+        <a href="{% url 'receipt_preview' r.id %}"
+           class="btn btn-primary btn-sm">
+           View
+        </a>
+
+    {% endif %}
+
+    <a href="{% url 'receipt_pdf' r.id %}"
+       class="btn btn-danger btn-sm">
+       PDF
+    </a>
+
+</td>
 
                         </tr>
 

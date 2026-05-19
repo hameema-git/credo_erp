@@ -349,9 +349,27 @@ Mussaffa 45 - Abu Dhabi<br><br>
 <div class="line">{{ receipt.receipt_number }}</div>
 </div>
 
-<div class="row">
+<!-- <div class="row">
 <div class="label">Received with thanks from</div>
 <div class="line">{{ receipt.invoice.customer.name }}</div>
+</div> -->
+
+<div class="row">
+<div class="label">Received with thanks from</div>
+
+<div class="line">
+
+{% if receipt.invoice %}
+
+    {{ receipt.invoice.customer.name }}
+
+{% else %}
+
+    Deleted Customer
+
+{% endif %}
+
+</div>
 </div>
 
 <div class="row">
@@ -382,7 +400,7 @@ Mussaffa 45 - Abu Dhabi<br><br>
 {% endwith %}
 </div>
 
-<div class="row">
+<!-- <div class="row">
 <div class="label">For the purpose of</div>
 <div class="line">
 {% if receipt.short_description %}
@@ -393,6 +411,36 @@ Mussaffa 45 - Abu Dhabi<br><br>
 {% endfor %}
 {% endif %}
 </div>
+</div> -->
+
+<div class="row">
+
+<div class="label">For the purpose of</div>
+
+<div class="line">
+
+{% if receipt.short_description %}
+
+    {{ receipt.short_description }}
+
+{% else %}
+
+    {% if receipt.invoice %}
+
+        {% for item in receipt.invoice.items.all %}
+            {{ item.description }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+
+    {% else %}
+
+        Payment Receipt
+
+    {% endif %}
+
+{% endif %}
+
+</div>
+
 </div>
 
 <div class="row">
