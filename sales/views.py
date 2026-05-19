@@ -1347,3 +1347,12 @@ def delete_lpo(request, pk):
     lpo = get_object_or_404(LPO, id=pk)
     lpo.delete()
     return redirect('dashboard')
+
+
+def delete_receipt(request, pk):
+
+    receipt = get_object_or_404(PaymentReceipt, id=pk)
+
+    receipt.delete()
+
+    return redirect("dashboard")

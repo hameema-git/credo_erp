@@ -433,14 +433,14 @@ body {
                 </td> -->
                 <td>
 
-    {% if r.invoice %}
+    <!-- {% if r.invoice %} -->
 
-        <a href="{% url 'receipt_preview' r.id %}"
+        <!-- <a href="{% url 'receipt_preview' r.id %}"
            class="btn btn-info btn-sm">
            👁
-        </a>
+        </a> -->
 
-    {% endif %}
+    <!-- {% endif %} -->
 
     <!-- <a href="{% url 'receipt_pdf' r.id %}"
        class="btn btn-danger btn-sm">
@@ -452,6 +452,11 @@ body {
    PDF
 </a>
 
+    <a href="{% url 'delete_receipt' r.id %}"
+       class="btn btn-dark btn-sm"
+       onclick="return confirm('Delete this receipt?')">
+       🗑️
+    </a>
 </td>
 
             </tr>

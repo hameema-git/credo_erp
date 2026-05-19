@@ -76,6 +76,11 @@ urlpatterns = [
     path('invoice/<int:pk>/update-payment/', update_payment, name='update_payment'),
     path('receipt/<int:pk>/pdf/', payment_receipt_pdf, name='receipt_pdf'),
     path('receipt-preview/<int:pk>/', receipt_preview, name='receipt_preview'),
+    path(
+    "receipt/delete/<int:pk>/",
+    delete_receipt,
+    name="delete_receipt"
+),
 
     # -------- SEARCH --------
     path('search/', search_ajax, name='search_ajax'),
