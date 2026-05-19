@@ -799,7 +799,7 @@ def receipt_preview(request, pk):
             
         )
 
-        return redirect("receipt_pdf", pk=invoice.id)
+        return redirect("receipt_pdf", pk=receipt.id)
 
     return render(request, "sales/receipt_preview.html", {
         "invoice": invoice
