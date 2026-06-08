@@ -90,6 +90,78 @@
         font-weight: bold;
     }
 
+    .btn-task{
+
+    background: linear-gradient(
+        135deg,
+        #ff9800,
+        #ff5722
+    );
+
+    color:white !important;
+
+    border:none;
+
+    font-weight:700;
+
+    padding:10px 25px;
+
+    border-radius:8px;
+
+    box-shadow:
+    0 4px 15px rgba(255,87,34,.35);
+
+    animation:pulseTask 2s infinite;
+}
+
+.btn-task:hover{
+
+    color:white !important;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 6px 20px rgba(255,87,34,.5);
+}
+
+.task-card{
+
+    background:linear-gradient(
+        135deg,
+        #ff9800,
+        #ff5722
+    );
+
+    color:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 20px rgba(255,87,34,.3);
+
+    transition:.3s;
+}
+
+.task-card:hover{
+
+    transform:translateY(-5px);
+}
+
+@keyframes pulseTask{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
     /* 🔥 MOBILE RESPONSIVE */
     @media (max-width: 768px) {
 
@@ -149,6 +221,112 @@
             overflow-x: auto;
         }
 
+        .btn-task{
+
+    background: linear-gradient(
+        135deg,
+        #ff9800,
+        #ff5722
+    );
+
+    color:white;
+
+    border:none;
+
+    font-weight:bold;
+
+    padding:10px 20px;
+
+    box-shadow:
+    0 4px 15px rgba(255,87,34,0.4);
+
+    animation:pulseTask 2s infinite;
+
+}
+/* MOBILE BUTTONS */
+
+.action-buttons a,
+.btn-gradient,
+.btn-task,
+.task-management-card,
+#installBtn {
+
+    width: 100% !important;
+    display: block;
+    text-align: center;
+
+}
+
+/* SEARCH FORM */
+
+.row.g-2 > div {
+    width: 100%;
+}
+
+/* TASK CARD MOBILE */
+
+.task-management-card {
+
+    padding: 15px;
+    border-radius: 12px;
+
+}
+
+.task-management-card .row {
+
+    flex-direction: column;
+    text-align: center;
+
+}
+
+.task-management-card .col-md-4 {
+
+    margin-top: 15px;
+
+}
+
+.task-management-card .btn {
+
+    width: 100%;
+
+}
+
+/* INSTALL BUTTON */
+
+#installBtn {
+
+    width: 100%;
+    margin-top: 10px;
+
+}
+
+
+
+.btn-task:hover{
+
+    color:white;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 6px 20px rgba(255,87,34,0.6);
+}
+
+@keyframes pulseTask{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.05);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
     }
 
 </style>
@@ -158,10 +336,31 @@
 
 <body>
 
+
+
 <div class="container">
 <div class="container-box">
 
+    <NAV>
 
+<div class="d-flex justify-content-end mb-3">
+
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'profile' %}"
+           class="btn btn-outline-primary">
+            👤 Profile
+        </a>
+
+        <a href="{% url 'logout' %}"
+           class="btn btn-danger">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+    </NAV>
 <!-- HEADER -->
 <div class="header">
 
@@ -177,118 +376,165 @@
         </div>
     </div>
 
-    <div class="text-end">
-        <div class="title">DASHBOARD</div>
-        <small class="text-muted">Overview & quick actions</small>
+
+
+</div>
+<!-- SEARCH + INSTALL APP -->
+
+<div class="row align-items-center mb-4">
+
+    <div class="col-lg-9">
+
+        <form method="GET"
+              action="{% url 'search_results' %}"
+              class="row g-2">
+
+            <div class="col-md-6">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    name="q"
+                    class="form-control"
+                    placeholder="Search Customers, Quotations, Invoices, Suppliers...">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select id="searchType"
+                        name="type"
+                        class="form-select">
+
+                    <option value="all">All</option>
+                    <option value="customer">Customer</option>
+                    <option value="supplier">Supplier</option>
+                    <option value="service">Service</option>
+                    <option value="quotation">Quotation</option>
+                    <option value="invoice">Invoice</option>
+                    <option value="lpo">LPO</option>
+                    <option value="receipt">Receipt</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <button class="btn btn-gradient w-100">
+                    🔍 Search
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="col-lg-3 text-lg-end mt-3 mt-lg-0">
+
+        <button id="installBtn"
+                class="btn btn-gradient px-4"
+                style="display:none;">
+
+            📲 Install App
+
+        </button>
+
     </div>
 
 </div>
-<div class="text-end mb-3">
-    <button id="installBtn" class="btn btn-gradient" style="display:none;">
-        📲 Install App
-    </button>
+
+
+<!-- QUICK ACTIONS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+<a href="{% url 'manager_dashboard' %}"
+   class="text-decoration-none">
+
+    <div class="task-management-card mb-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-8">
+
+                <!-- <h3 class="mb-2">
+                    🚀 Task Management
+                </h3> -->
+
+                <!-- <p class="mb-0">
+
+                    Manage Employees, Freelancers,
+                    Assign Tasks, Track Progress,
+                    Monitor Deadlines and Productivity.
+
+                </p> -->
+
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                <!-- <span class="btn btn-gradient">
+                    📋Task Managemnet
+                </span> -->
+                <div class="btn btn-task w-100">
+    📋 Task Management
 </div>
 
-<!-- ACTION + SEARCH -->
-<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 action-section">
+            </div>
 
-    <!-- SEARCH -->
-    <!-- <form method="GET" action="{% url 'search_results' %}" class="d-flex flex-wrap gap-2 w-100">
-
-        <input type="text" 
-               id="searchInput"
-               name="q" 
-               class="form-control"
-               placeholder="Search...">
-
-        <select name="type" class="form-select" style="max-width: 180px;">
-            <option value="all">All</option>
-            <option value="customer">Customers</option>
-            <option value="quotation">Quotations</option>
-            <option value="invoice">Invoices</option>
-            <option value="invoice">Service</option>
-        </select>
-
-        <button type="submit" class="btn btn-gradient">
-            🔍 Search
-        </button>
-
-    </form> -->
-    <div class="mb-4 position-relative">
-
-<form method="GET" action="{% url 'search_results' %}" class="d-flex gap-2 flex-wrap align-items-start">
-
-    <!-- SEARCH INPUT -->
-    <input type="text" id="searchInput" name="q"
-           class="form-control"
-           placeholder="Search..."
-           style="flex:1;">
-
-    <!-- TYPE SELECT + DROPDOWN WRAPPER -->
-    <div style="position: relative; width: 200px;">
-
-        <select id="searchType" name="type" class="form-select">
-            <option value="all">All</option>
-            <option value="customer">Customer</option>
-            <option value="quotation">Quotation</option>
-            <option value="invoice">Invoice</option>
-            <option value="service">Service</option>
-             <option value="supplier">Supplier</option>
-             <option value="lpo">LPO</option>
-            <option value="receipt">Receipt</option>
-        </select>
-
-        <!-- 🔥 DROPDOWN BELOW TYPE -->
-        <div id="typeListBox"
-             class="list-group mt-1"
-             style="
-                max-height:200px;
-                overflow-y:auto;
-                display:none;
-                position:absolute;
-                width:100%;
-                z-index:1000;
-             ">
         </div>
 
     </div>
 
-    <!-- SEARCH BUTTON -->
-    <button class="btn btn-gradient">Search</button>
-
-</form>
-
-</div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="d-flex flex-wrap gap-2 action-buttons w-100">
-
-        <a href="{% url 'add_customer' %}" class="btn btn-gradient">
-            + Add Customer
-        </a>
-          <a href="{% url 'add_supplier' %}" class="btn btn-gradient">
-            + Add Supplier
-        </a>
-
-        <a href="{% url 'add_service' %}" class="btn btn-gradient">
-            + Add Service
-        </a>
-
-        <a href="{% url 'create_quotation' %}" class="btn btn-gradient">
-            + Create Quotation
-        </a>
-        
-        <a href="{% url 'create_invoice' %}" class="btn btn-gradient">
-            + Create Invoice
-        </a>
-        <a href="{% url 'create_lpo' %}" class="btn btn-gradient">
-    + Create LPO
 </a>
-        
+
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a href="{% url 'add_customer' %}"
+               class="btn btn-gradient">
+                ➕ Customer
+            </a>
+
+            <a href="{% url 'add_supplier' %}"
+               class="btn btn-gradient">
+                ➕ Supplier
+            </a>
+
+            <a href="{% url 'add_service' %}"
+               class="btn btn-gradient">
+                ➕ Service
+            </a>
+
+            <a href="{% url 'create_quotation' %}"
+               class="btn btn-gradient">
+                ➕ Quotation
+            </a>
+
+            <a href="{% url 'create_invoice' %}"
+               class="btn btn-gradient">
+                ➕ Invoice
+            </a>
+
+            <a href="{% url 'create_lpo' %}"
+               class="btn btn-gradient">
+                ➕ LPO
+            </a>
+
+        </div>
 
     </div>
 
 </div>
+
+
+<!-- TASK MANAGEMENT MODULE -->
+
+
+
 
 <!-- STATS -->
 <div class="row mb-4">

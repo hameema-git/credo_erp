@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Task Status | Credo ERP</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f5f7fa;
+            min-height:100vh;
+        }
+
+        .update-card{
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+        }
+
+        .card-header-custom{
+             background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            color:white;
+            padding:18px;
+            text-align:center;
+        }
+
+        .task-box{
+            background:#f8f9fa;
+            border:1px solid #e9ecef;
+            border-radius:12px;
+            padding:15px;
+        }
+
+        .form-control,
+        .form-select{
+            border-radius:10px;
+        }
+
+        .form-control:focus,
+        .form-select:focus{
+            box-shadow:none;
+            border-color:#4e73df;
+        }
+
+        .status-box{
+            background:#eef4ff;
+            border-left:4px solid #4e73df;
+            border-radius:10px;
+            padding:12px;
+        }
+
+        .btn-copy{
+            background:#198754;
+            color:white;
+            border:none;
+        }
+
+        .btn-copy:hover{
+            background:#157347;
+            color:white;
+        }
+
+        .btn-update{
+            background:#0d6efd;
+            color:white;
+            border:none;
+        }
+
+        .btn-update:hover{
+            background:#0b5ed7;
+            color:white;
+        }
+
+        .task-title{
+            font-weight:600;
+        }
+
+        .badge-status{
+            font-size:13px;
+            padding:6px 10px;
+        }
+
+        @media(max-width:768px){
+
+            .container{
+                margin-top:15px !important;
+                padding:10px;
+            }
+
+            .card-body{
+                padding:20px !important;
+            }
+
+            .btn{
+                width:100%;
+            }
+
+            textarea{
+                font-size:16px;
+            }
+
+            .task-title{
+                font-size:18px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-lg update-card">
+
+                <div class="card-header-custom">
+
+                    <h4 class="mb-0">
+                        📝 Update Task Status
+                    </h4>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- TASK INFO -->
+
+                    <div class="task-box mb-3">
+
+                        <h5 class="text-primary task-title">
+                            {{ task.title }}
+                        </h5>
+
+                        <p class="text-muted mb-3">
+                            {{ task.description|truncatechars:150 }}
+                        </p>
+
+                        <div class="row">
+
+                            <div class="col-6 mb-2">
+
+                                <strong>📅 Deadline</strong><br>
+
+                                {{ task.deadline|default:"No Deadline" }}
+
+                            </div>
+
+                            <div class="col-6 mb-2">
+
+                                <strong>⚡ Priority</strong><br>
+
+                                <span class="badge
+                                    {% if task.priority == 'high' %}
+                                        bg-danger
+                                    {% elif task.priority == 'medium' %}
+                                        bg-info text-dark
+                                    {% else %}
+                                        bg-secondary
+                                    {% endif %}
+                                ">
+                                    {{ task.priority|title }}
+                                </span>
+
+                            </div>
+
+                            <div class="col-12">
+
+                                <strong>📊 Current Status</strong><br>
+
+                                <span class="badge badge-status
+                                    {% if task.status == 'pending' %}
+                                        bg-warning text-dark
+                                    {% elif task.status == 'in_progress' %}
+                                        bg-primary
+                                    {% else %}
+                                        bg-success
+                                    {% endif %}
+                                ">
+                                    {{ task.status|title }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="status-box mb-3">
+
+                        <strong>💡 Tip:</strong>
+
+                        Select the latest status and optionally add a short
+                        update message before copying the WhatsApp notification.
+
+                    </div>
+
+                    <!-- FORM -->
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                <strong>Status</strong>
+
+                            </label>
+
+                            <select name="status"
+                                    class="form-select">
+
+                                <option value="pending"
+                                    {% if task.status == 'pending' %}selected{% endif %}>
+                                    Pending
+                                </option>
+
+                                <option value="in_progress"
+                                    {% if task.status == 'in_progress' %}selected{% endif %}>
+                                    In Progress
+                                </option>
+
+                                <option value="completed"
+                                    {% if task.status == 'completed' %}selected{% endif %}>
+                                    Completed
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Update Message (Optional)
+
+                            </label>
+
+                            <textarea id="customMsg"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe your current progress, completed work, issues, etc..."></textarea>
+
+                        </div>
+
+                        <div class="d-grid gap-2">
+
+                            <button type="button"
+                                    class="btn btn-copy"
+                                    onclick="copyWhatsApp()">
+
+                                📤 Copy WhatsApp Message
+
+                            </button>
+
+                            <button type="submit"
+                                    class="btn btn-update">
+
+                                ✅ Save Status Update
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <hr>
+
+                    <a href="{% url 'freelancer_dashboard' %}"
+                       class="btn btn-secondary w-100">
+
+                        ← Back to Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function copyWhatsApp(){
+
+    let custom =
+        document.getElementById("customMsg").value;
+
+    let currentStatus =
+        "{{ task.status|title }}";
+
+    let newStatus =
+        document.querySelector(
+            'select[name="status"]'
+        ).value;
+
+    newStatus =
+        newStatus.replace('_',' ');
+
+    newStatus =
+        newStatus.charAt(0).toUpperCase() +
+        newStatus.slice(1);
+
+    let message = `Hello 👋,
+
+📝 TASK UPDATE
+
+📌 Task : {{ task.title }}
+
+📄 Description :
+{{ task.description }}
+
+📅 Deadline : {{ task.deadline|default:"No Deadline" }}
+
+⚡ Priority : {{ task.priority|title }}
+
+📊 Current Status : ${currentStatus}
+
+🔄 Updated Status : ${newStatus}
+`;
+
+    if(custom.trim() !== ""){
+
+        message += `
+
+💬 Employee/Freelancer Update:
+
+${custom}
+`;
+
+    }
+
+    message += `
+
+-------------------------
+Generated from Credo ERP
+`;
+
+    navigator.clipboard.writeText(message);
+
+    alert("✅ Task update copied successfully!");
+
+}
+
+</script>
+
+</body>
+</html>

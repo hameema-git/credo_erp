@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Freelancer</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:linear-gradient(
+                135deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            min-height:100vh;
+        }
+
+        .edit-card{
+            border:none;
+            border-radius:20px;
+            overflow:hidden;
+        }
+
+        .card-header-custom{
+            background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            color:white;
+            padding:15px;
+            text-align:center;
+        }
+
+        .profile-preview{
+            width:120px;
+            height:120px;
+            object-fit:cover;
+            border-radius:50%;
+            border:4px solid #fff;
+            box-shadow:0 5px 20px rgba(0,0,0,.15);
+        }
+
+        .form-control,
+        .form-select{
+            border-radius:10px;
+        }
+
+        .btn-update{
+            background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            color:white;
+            border:none;
+        }
+
+        .btn-update:hover{
+            color:white;
+            opacity:.95;
+        }
+
+        .user-info{
+            background:#f8f9fa;
+            border-radius:12px;
+            padding:10px;
+            margin-bottom:20px;
+        }
+
+        @media(max-width:768px){
+
+            .container{
+                padding:10px;
+            }
+
+            .profile-preview{
+                width:90px;
+                height:90px;
+            }
+
+            .card-body{
+                padding:20px !important;
+            }
+
+            .btn{
+                width:100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-lg edit-card">
+
+                <div class="card-header-custom">
+
+                    <h4 class="mb-0">
+                        ✏️ Edit Freelancer
+                    </h4>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- PROFILE IMAGE -->
+
+                    <div class="text-center mb-4">
+
+                        {% if form.instance.profile_image %}
+
+                            <img id="preview"
+                                 src="{{ form.instance.profile_image.url }}"
+                                 class="profile-preview">
+
+                        {% else %}
+
+                            {% if form.instance.gender == 'female' %}
+
+                                <img id="preview"
+                                     src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
+                                     class="profile-preview">
+
+                            {% elif form.instance.gender == 'male' %}
+
+                                <img id="preview"
+                                     src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
+                                     class="profile-preview">
+
+                            {% else %}
+
+                                <img id="preview"
+                                     src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                                     class="profile-preview">
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- USER INFO -->
+
+                    <div class="user-info text-center">
+
+                        <h5 class="mb-1">
+                            
+                             {{ freelancer.username }}
+                        </h5>
+
+                        <small class="text-muted">
+                            
+                              {{ freelancer.email }}
+                        </small>
+
+                    </div>
+
+                    {% if form.errors %}
+
+                    <div class="alert alert-danger">
+
+                        Please correct the errors below.
+
+                    </div>
+
+                    {% endif %}
+
+                    <form method="POST"
+                          enctype="multipart/form-data">
+
+                        {% csrf_token %}
+<!-- 
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            {{ freelancer.username }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            {{ freelancer.email }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Phone
+                            </label>
+
+                            {{ form.phone }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Gender
+                            </label>
+
+                            {{ form.gender }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Profile Image
+                            </label>
+
+                            {{ form.profile_image }}
+
+                        </div> -->
+
+                        
+                        <!-- USERNAME -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Username
+                            </label>
+
+                            <input type="text"
+                                   class="form-control readonly-box"
+                                   value="{{ freelancer.username }}"
+                                   readonly>
+
+                        </div>
+
+                        <!-- EMAIL -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                   class="form-control readonly-box"
+                                   value="{{ freelancer.email }}"
+                                   readonly>
+
+                        </div>
+
+                        <!-- PHONE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Phone
+                            </label>
+
+                            {{ form.phone }}
+
+                        </div>
+
+                        <!-- GENDER -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Gender
+                            </label>
+
+                            {{ form.gender }}
+
+                        </div>
+
+                        <!-- PROFILE IMAGE -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+                                Profile Image
+                            </label>
+
+                            {{ form.profile_image }}
+
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-update">
+
+                                💾 Update Freelancer
+
+                            </button>
+
+                            <a href="{% url 'manager_dashboard' %}"
+                               class="btn btn-secondary">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const imageField =
+        document.getElementById("id_profile_image");
+
+    const genderField =
+        document.getElementById("id_gender");
+
+    const preview =
+        document.getElementById("preview");
+
+    let uploaded = false;
+
+    if(imageField){
+
+        imageField.addEventListener("change", function(e){
+
+            if(e.target.files.length > 0){
+
+                preview.src =
+                    URL.createObjectURL(
+                        e.target.files[0]
+                    );
+
+                uploaded = true;
+            }
+
+        });
+
+    }
+
+    if(genderField){
+
+        genderField.addEventListener("change", function(){
+
+            if(uploaded) return;
+
+            if(this.value === "female"){
+
+                preview.src =
+                "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
+
+            }
+
+            else if(this.value === "male"){
+
+                preview.src =
+                "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
+
+            }
+
+            else{
+
+                preview.src =
+                "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

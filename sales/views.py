@@ -1356,3 +1356,71 @@ def delete_receipt(request, pk):
     receipt.delete()
 
     return redirect("dashboard")
+
+
+# from django.shortcuts import render, redirect
+# from django.contrib.auth import authenticate, login
+
+# def login_view(request):
+
+#     if request.method == 'POST':
+
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         user = authenticate(
+#             request,
+#             username=username,
+#             password=password
+#         )
+
+#         if user:
+
+#             login(request, user)
+
+#             if user.is_superuser:
+#                 return redirect('dashboard')
+
+#             # Later we will add employee/freelancer role check
+
+#             return redirect('dashboard')
+
+#     return render(request, 'login.html')
+
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+
+def login_view(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            login(request, user)
+
+            # Admin
+            if user.is_superuser:
+                return redirect('dashboard')
+
+            # Employee / Freelancer
+            try:
+                profile = user.userprofile
+
+                if profile.role in ['employee', 'freelancer']:
+                    # return redirect('/tasks/freelancer_dashboard/')
+                    return redirect('freelancer_dashboard')
+            except:
+                pass
+
+            return redirect('dashboard')
+
+    return render(request, 'login.html')

@@ -1,0 +1,269 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CODE LEAF ERP</title>
+
+    <!-- Disable Cache -->
+    <meta http-equiv="Cache-Control"
+          content="no-cache, no-store, must-revalidate">
+
+    <meta http-equiv="Pragma"
+          content="no-cache">
+
+    <meta http-equiv="Expires"
+          content="0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:linear-gradient(
+                135deg,
+                #4e73df,
+                #1cc88a
+            );
+            min-height:100vh;
+        }
+
+        .login-card{
+            border-radius:20px;
+            overflow:hidden;
+            border:none;
+        }
+
+        .card-hover:hover{
+            transform:translateY(-3px);
+            transition:.3s;
+            box-shadow:0 10px 30px rgba(0,0,0,.2);
+        }
+
+        .login-logo{
+            width:100px;
+            height:100px;
+            object-fit:contain;
+        }
+
+        .erp-title{
+            font-weight:700;
+            color:#2c3e50;
+        }
+
+        .erp-subtitle{
+            color:#6c757d;
+            font-size:14px;
+        }
+
+        .form-control{
+            border-radius:10px;
+        }
+
+        .btn-login{
+            border-radius:10px;
+            padding:10px;
+        }
+
+        .signup-btn{
+            min-width:170px;
+        }
+
+        @media(max-width:576px){
+
+            .login-logo{
+                width:80px;
+                height:80px;
+            }
+
+            .erp-title{
+                font-size:24px;
+            }
+
+            .card-body{
+                padding:20px !important;
+            }
+
+            .form-control{
+                font-size:16px;
+                padding:12px;
+            }
+
+            .btn{
+                font-size:15px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body class="d-flex align-items-center justify-content-center">
+
+<div class="container px-3">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+            <div class="card login-card shadow-lg card-hover">
+
+                <div class="card-body p-4">
+
+                    <!-- LOGO -->
+
+                    <div class="text-center mb-3">
+
+                        <img src="{% static 'logo-192.png' %}?v=2"
+                             alt="Code Leaf ERP"
+                             class="login-logo">
+
+                    </div>
+
+                    <!-- TITLE -->
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="erp-title">
+                            🔐 CODE LEAF ERP
+                        </h2>
+
+                        <p class="erp-subtitle mb-0">
+                            Operations Management System
+                        </p>
+
+                    </div>
+
+                    <!-- MESSAGES -->
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="alert
+                                {% if message.tags == 'error' %}
+                                    alert-danger
+                                {% elif message.tags == 'warning' %}
+                                    alert-warning
+                                {% else %}
+                                    alert-success
+                                {% endif %}
+                                text-center">
+
+                                {{ message }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    <!-- LOGIN FORM -->
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   placeholder="Enter Username"
+                                   autocomplete="off"
+                                   required>
+
+                                   
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="Enter Password"
+                                   autocomplete="off"
+                                   required>
+
+                        </div>
+
+                        <div class="d-grid">
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-login">
+
+                                Login
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <hr class="my-4">
+
+                    <!-- SIGNUP -->
+
+                    <div class="text-center">
+
+                        <p class="text-muted mb-3">
+                            New User Registration
+                        </p>
+
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                            <a href="{% url 'freelancer_signup' %}"
+                               class="btn btn-outline-primary signup-btn">
+
+                                👤 Freelancer Signup
+
+                            </a>
+
+                            <a href="{% url 'employee_signup' %}"
+                               class="btn btn-outline-success signup-btn">
+
+                                🧑‍💼 Employee Signup
+
+                            </a>
+
+                        </div>
+
+                        <p class="text-danger mt-3 mb-0">
+
+                            <small>
+                                Accounts require admin approval before login.
+                            </small>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

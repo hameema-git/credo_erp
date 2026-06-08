@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tasks</title>
+
+    <!-- 🔥 IMPORTANT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-size: 14px;
+            overflow-x:hidden ;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-3px);
+            transition: 0.2s;
+        }
+
+        .urgent {
+            border: 2px solid red !important;
+            background-color: #fff5f5;
+        }
+
+        /* 🔥 MOBILE FIX */
+        @media (max-width: 768px) {
+
+            h2 {
+                font-size: 20px;
+            }
+
+            h4 {
+                font-size: 18px;
+            }
+
+            .btn {
+                font-size: 13px;
+                padding: 8px;
+            }
+
+            .card-body {
+                padding: 15px !important;
+            }
+
+            .d-flex {
+                flex-wrap: wrap;
+            }
+
+            .gap-2 {
+                gap: 6px !important;
+            }
+        }
+        /* .task-card{
+    max-width: 650px;
+    margin: 0 auto 15px auto;
+} */
+
+/* .task-card{
+    width:100%;
+    max-width:320px;
+    min-height:220px;
+} */
+
+.task-card{
+    width:100%;
+    min-height:220px;
+}
+
+        .progress{
+    height:22px;
+    border-radius:20px;
+}
+
+.progress-bar{
+    font-weight:600;
+}
+
+.card{
+    border-radius:15px;
+}
+ /* .card{
+    border-radius:15px;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+} */
+
+
+
+.card-hover:hover{
+    transform:translateY(-5px);
+    transition:.3s;
+}
+
+.badge{
+    font-size:12px;
+}
+
+.list-group-item{
+    cursor:pointer;
+    transition:.2s;
+}
+
+.list-group-item:hover{
+    background:#f8f9fa;
+    padding-left:25px;
+}
+
+.modal-body p{
+    line-height:1.8;
+}
+
+.list-group-item{
+    transition:.2s;
+    cursor:pointer;
+}
+
+.list-group-item:hover{
+    background:#f8f9fa;
+    padding-left:25px;
+}
+    </style>
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-3">
+
+    <!-- HEADER -->
+    <!-- <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 class="mb-2">👨‍💻 My Tasks</h5>
+
+        <div class="d-flex gap-2">
+            <a href="/profile/" class="btn btn-outline-primary btn-sm">Profile</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+        </div>
+    </div> -->
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+    <div>
+        <!-- <h5 class="mb-0">
+            👨‍💻 {{ request.user.username }}
+        </h5> -->
+
+
+        <h5 class="mb-0">
+    Welcome, {{ request.user.first_name|default:request.user.username }}
+</h5>
+        <small class="text-muted">
+            {{ request.user.get_role_display }}
+        </small>
+    </div>
+
+    <div class="d-flex gap-2">
+        <!-- <a href="/profile/" class="btn btn-outline-primary btn-sm">
+            Profile
+        </a> -->
+
+        <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
+    Profile
+</a>
+
+        <a href="{% url 'logout' %}"
+           class="btn btn-danger btn-sm">
+            Logout
+        </a>
+ 
+          <!-- <a href="{% url 'dashboard' %}"
+       class="btn btn-secondary">
+       ← Back to ERP
+    </a> -->
+        <!-- <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a> -->
+    </div>
+
+</div>
+
+<form method="GET" class="card shadow-sm p-3 mb-3">
+
+    <div class="row g-2">
+
+        <!-- <div class="col-md-5">
+            <input type="text"
+                   name="q"
+                   value="{{ request.GET.q }}"
+                   class="form-control"
+                   placeholder="Search task name, description...">
+        </div> -->
+
+        <div class="col-md-5">
+
+    <!-- <select name="task_id" class="form-select">
+
+        <option value="">
+            All Tasks
+        </option>
+
+        {% for task in user_tasks %}
+
+        <option value="{{ task.id }}"
+            {% if task_id == task.id|stringformat:"s" %}
+                selected
+            {% endif %}
+        >
+            {{ task.title }}
+        </option>
+
+        {% endfor %}
+
+    </select> -->
+<select name="task_id" class="form-select">
+
+    <option value="">All Tasks</option>
+<!-- 
+    {% for task in user_tasks %}
+
+    <option value="{{ task.id }}">
+        {% if task.priority == 'high' %}
+            🔴
+        {% elif task.priority == 'medium' %}
+            🟡
+        {% else %}
+            🟢
+        {% endif %}
+
+        {{ task.title }}
+    </option>
+
+    {% endfor %} -->
+    {% for task in user_tasks %}
+
+    {% if task.status != 'completed' %}
+
+    <option value="{{ task.id }}">
+        {% if task.priority == 'high' %}
+            🔴
+        {% elif task.priority == 'medium' %}
+            🟡
+        {% else %}
+            🟢
+        {% endif %}
+
+        {{ task.title }}
+    </option>
+
+    {% endif %}
+
+{% endfor %}
+
+</select>
+</div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+
+                <option value="pending"
+                    {% if request.GET.status == 'pending' %}selected{% endif %}>
+                    Pending
+                </option>
+
+                <option value="in_progress"
+                    {% if request.GET.status == 'in_progress' %}selected{% endif %}>
+                    In Progress
+                </option>
+
+                <!-- <option value="completed"
+                    {% if request.GET.status == 'completed' %}selected{% endif %}>
+                    Completed
+                </option> -->
+
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="priority" class="form-select">
+
+                <option value="">All Priority</option>
+
+                <option value="high"
+                    {% if request.GET.priority == 'high' %}selected{% endif %}>
+                    High
+                </option>
+
+                <option value="medium"
+                    {% if request.GET.priority == 'medium' %}selected{% endif %}>
+                    Medium
+                </option>
+
+                <option value="low"
+                    {% if request.GET.priority == 'low' %}selected{% endif %}>
+                    Low
+                </option>
+
+            </select>
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary">
+                Search
+            </button>
+        </div>
+        <button
+    type="button"
+    class="btn btn-success w-100"
+    data-bs-toggle="modal"
+    data-bs-target="#completedTasksModal">
+
+    ✅ Completed
+    <span class="badge bg-light text-dark ms-1">
+        {{ completed_count }}
+    </span>
+
+</button>
+
+    </div>
+
+</form>
+
+    <!-- SUMMARY -->
+    <!-- <div class="row text-center mb-3">
+        <div class="col-4 col-md-4 mb-2">
+            <div class="card bg-warning p-2 shadow">
+                <small>Pending</small>
+                <h6>{{ pending|length }}</h6>
+            </div>
+        </div>
+
+        <div class="col-4 col-md-4 mb-2">
+            <div class="card bg-primary text-white p-2 shadow">
+                <small>Progress</small>
+                <h6>{{ in_progress|length }}</h6>
+            </div>
+        </div>
+
+        <div class="col-4 col-md-4 mb-2">
+            <div class="card bg-success text-white p-2 shadow">
+                <small>Done</small>
+                <h6>{{ completed|length }}</h6>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- DASHBOARD STATS -->
+
+<div class="row mb-4">
+
+    <div class="col-md-3 col-6 mb-2">
+        <div class="card bg-dark text-white shadow">
+            <div class="card-body text-center">
+                <h6>Total</h6>
+                <h2>
+                    {{ pending_count|add:progress_count|add:completed_count }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6 mb-2">
+        <div class="card bg-warning shadow">
+            <div class="card-body text-center">
+                <h6>Pending</h6>
+                <h2>{{ pending_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6 mb-2">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body text-center">
+                <h6>Progress</h6>
+                <h2>{{ progress_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6 mb-2">
+        <div class="card bg-success text-white shadow">
+            <div class="card-body text-center">
+                <h6>Done</h6>
+                <h2>{{ completed_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div> <!-- End of Task Statistics Row -->
+
+
+<!-- PAYMENT SUMMARY -->
+
+<!-- <div class="row mb-4">
+
+    <div class="col-md-4 mb-2">
+        <div class="card border-danger shadow">
+            <div class="card-body text-center">
+                <h6>🔴 Pending Payment</h6>
+                <h4>₹{{ pending_payment }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-2">
+        <div class="card border-warning shadow">
+            <div class="card-body text-center">
+                <h6>🟡 Partial Payment</h6>
+                <h4>₹{{ partial_payment }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-2">
+        <div class="card border-success shadow">
+            <div class="card-body text-center">
+                <h6>🟢 Paid</h6>
+                <h4>₹{{ paid_payment }}</h4>
+            </div>
+        </div>
+    </div>
+
+</div> -->
+
+<!-- <div class="row mb-4"> -->
+    <div class="row justify-content-center g-4 mb-4">
+
+    <div class="col-md-4 col-12 mb-3">
+
+        <div class="card shadow border-primary">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-primary">
+                    💰 Total Work Value
+                </h6>
+
+                <h3 class="fw-bold">
+                    ₹{{ total_earnings }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 col-12 mb-3">
+
+        <div class="card shadow border-success">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-success">
+                    💵 Received
+                </h6>
+
+                <h3 class="fw-bold">
+                    ₹{{ received_payment }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 col-12 mb-3">
+
+        <div class="card shadow border-warning">
+
+            <div class="card-body text-center">
+
+                <h6 class="text-warning">
+                    ⏳ Balance
+                </h6>
+
+                <h3 class="fw-bold">
+                    ₹{{ balance_payment }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card shadow-sm mb-4">
+
+<div class="card shadow-sm mb-4">
+
+    <!-- <div class="card-body"> -->
+
+        <!-- <div class="d-flex justify-content-between">
+
+            <strong>Task Completion</strong>
+
+            <span>
+                {{ completed_count }}
+                /
+                {{ pending_count|add:progress_count|add:completed_count }}
+            </span>
+
+        </div> -->
+
+        <!-- <div class="progress mt-3">
+
+            <div class="progress-bar bg-success"
+                 style="width:
+                 {% widthratio completed_count pending_count|add:progress_count|add:completed_count 100 %}%">
+
+                {% widthratio completed_count pending_count|add:progress_count|add:completed_count 100 %}%
+
+            </div>
+
+        </div> -->
+
+    <!-- </div> -->
+
+</div>
+
+    <!-- 🔶 PENDING -->
+<!-- 🔶 PENDING SECTION -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-warning">
+
+        <div class="d-flex justify-content-between">
+
+            <strong>
+                ⏳ Pending Tasks
+            </strong>
+
+            <span class="badge bg-dark">
+                {{ pending_count }}
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if pending %}
+
+        <!-- <div class="row"> -->
+            <div class="row justify-content-center">
+
+            {% for task in pending %}
+
+            <!-- <div class="col-xl-4 col-lg-4 col-md-6 mb-3"> -->
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+
+                <div class="card task-card h-100 shadow-sm
+                    {% if task.priority == 'high' %}
+                        border-danger border-2
+                    {% endif %}
+                ">
+
+                    <div class="card-body">
+
+                        <!-- Header -->
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <h6 class="fw-bold text-primary mb-0">
+                                {{ task.title }}
+                            </h6>
+
+                            {% if task.priority == 'high' %}
+
+                                <span class="badge bg-danger">
+                                    High
+                                </span>
+
+                            {% elif task.priority == 'medium' %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Description -->
+
+                        <!-- <p class="text-muted small mt-2 mb-2">
+                            {{ task.description|truncatechars:100 }}
+                        </p> -->
+
+                        <!-- Details -->
+
+                        <div class="small mb-3">
+
+                            <!-- <div>
+                                📅 {{ task.deadline|default:"No Deadline" }}
+                            </div> -->
+                            <div>
+    📅 Due: {{ task.deadline|default:"No Deadline" }}
+</div>
+
+<div>
+    🕒 Created: {{ task.created_at|date:"d M Y" }}
+</div>
+
+                            <div class="mt-1">
+
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                        </div>
+                        {% if task.payment_amount %}
+
+<hr>
+
+<div class="small">
+
+    <div>
+        💰 Amount :
+        ₹{{ task.payment_amount }}
+    </div>
+
+    <div>
+        💵 Paid :
+        ₹{{ task.paid_amount }}
+    </div>
+
+    <div class="fw-bold text-danger">
+        ⏳ Balance :
+        ₹{{ task.balance_amount }}
+    </div>
+
+    <div class="mt-2">
+
+        {% if task.payment_status == 'paid' %}
+
+            <span class="badge bg-success">
+                Paid
+            </span>
+
+        {% elif task.payment_status == 'partial' %}
+
+            <span class="badge bg-warning text-dark">
+                Partial
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-danger">
+                Pending
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+                        <!-- Buttons -->
+
+                        <div class="d-grid gap-2">
+
+                            <a href="{% url 'task_detail' task.id %}"
+                               class="btn btn-info btn-sm">
+
+                                <i class="bi bi-eye"></i> View
+
+                            </a>
+
+                            <a href="{% url 'update_status' task.id %}"
+                               class="btn btn-warning btn-sm">
+
+                             <i class="bi bi-play-circle"></i> Start
+
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-warning text-center mb-0">
+
+            🎉 No pending tasks
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+    <!-- 🔵 IN PROGRESS -->
+<!-- 🚀 IN PROGRESS SECTION -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-primary text-white">
+
+        <div class="d-flex justify-content-between">
+
+            <strong>
+                🚀 In Progress Tasks
+            </strong>
+
+            <span class="badge bg-light text-dark">
+                {{ progress_count }}
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if in_progress %}
+
+        <!-- <div class="row"> -->
+            <div class="row justify-content-center">
+
+            {% for task in in_progress %}
+
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+
+                <div class="card task-card h-100 shadow-sm
+                    {% if task.priority == 'high' %}
+                        border-danger border-2
+                    {% endif %}
+                ">
+
+                    <div class="card-body">
+
+                        <!-- Header -->
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <h6 class="fw-bold text-primary mb-0">
+                                {{ task.title }}
+                            </h6>
+
+                            {% if task.priority == 'high' %}
+
+                                <span class="badge bg-danger">
+                                    High
+                                </span>
+
+                            {% elif task.priority == 'medium' %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Description -->
+
+                        <!-- <p class="text-muted small mt-2 mb-2">
+                            {{ task.description|truncatechars:100 }}
+                        </p> -->
+
+                        <!-- Details -->
+
+                        <div class="small mb-3">
+
+                            <!-- <div>
+                                📅 {{ task.deadline|default:"No Deadline" }}
+                            </div> -->
+
+                            <div>
+    📅 Due: {{ task.deadline|default:"No Deadline" }}
+</div>
+
+<div>
+    🕒 Created: {{ task.created_at|date:"d M Y" }}
+</div>
+
+                            <div class="mt-1">
+
+                                <span class="badge bg-primary">
+                                    In Progress
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% if task.payment_amount %}
+
+<hr>
+
+<div class="small">
+
+    <div>
+        💰 Amount :
+        ₹{{ task.payment_amount }}
+    </div>
+
+    <div>
+        💵 Paid :
+        ₹{{ task.paid_amount }}
+    </div>
+
+    <div class="fw-bold text-danger">
+        ⏳ Balance :
+        ₹{{ task.balance_amount }}
+    </div>
+
+    <div class="mt-2">
+
+        {% if task.payment_status == 'paid' %}
+
+            <span class="badge bg-success">
+                Paid
+            </span>
+
+        {% elif task.payment_status == 'partial' %}
+
+            <span class="badge bg-warning text-dark">
+                Partial
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-danger">
+                Pending
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+                        <!-- Buttons -->
+
+                        <!-- <div class="d-grid gap-2"> -->
+
+                            <!-- <a href="{% url 'task_detail' task.id %}"
+                               class="btn btn-info btn-sm">
+
+                              <i class="bi bi-eye"></i> View
+
+                            </a> -->
+
+                            <!-- <a href="{% url 'update_status' task.id %}"
+                               class="btn btn-success btn-sm"> -->
+
+                                <!-- <a href="{% url 'update_status' task.id %}"
+   class="btn btn-success btn-sm w-100">
+   ✅ Complete
+</a> -->
+
+                            <!-- </a> -->
+
+                        <!-- </div> -->
+
+                        <div class="d-grid gap-2">
+
+    <a href="{% url 'task_detail' task.id %}"
+       class="btn btn-info btn-sm">
+       <i class="bi bi-eye"></i> View
+    </a>
+
+    <a href="{% url 'update_status' task.id %}"
+       class="btn btn-success btn-sm">
+       <i class="bi bi-check-circle"></i> Complete
+    </a>
+
+</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-primary text-center mb-0">
+
+            🚀 No tasks in progress
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+    <!-- 🟢 COMPLETED -->
+   <!-- <h6 class="text-success mt-4 mb-3">
+    ✅ Completed Tasks
+</h6>
+
+<div class="list-group shadow-sm">
+
+    {% for task in completed %}
+
+    <a href="#"
+       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+
+       data-bs-toggle="modal"
+       data-bs-target="#completedTaskModal{{ task.id }}">
+
+        <span>
+            ✓ {{ task.title }}
+        </span>
+
+        <span class="badge bg-success">
+            Completed
+        </span>
+
+    </a>
+
+    {% empty %}
+
+    <div class="list-group-item text-muted">
+        No completed tasks
+    </div>
+
+    {% endfor %}
+
+</div> -->
+
+<!-- <h6 class="text-success mt-4">
+    <a class="text-success text-decoration-none"
+       data-bs-toggle="collapse"
+       href="#completedTasks">
+
+        ✅ Completed Tasks ({{ completed|length }})
+    </a>
+</h6> -->
+
+<!-- <button
+    class="btn btn-success"
+    data-bs-toggle="modal"
+    data-bs-target="#completedTasksModal">
+
+    ✅ Completed Tasks ({{ completed|length }})
+
+</button> -->
+
+<div class="collapse" id="completedTasks">
+
+    <div class="list-group shadow-sm">
+
+        {% for task in completed %}
+
+        <a href="#"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           data-bs-toggle="modal"
+           data-bs-target="#completedTaskModal{{ task.id }}">
+
+            <span>
+                ✓ {{ task.title }}
+            </span>
+
+            <span class="badge bg-success">
+                Completed
+            </span>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% for task in completed %}
+
+<div class="modal fade"
+     id="completedTaskModal{{ task.id }}"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+
+                <h5 class="modal-title">
+                    {{ task.title }}
+                </h5>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <p>
+                    <strong>Description:</strong><br>
+                    {{ task.description }}
+                </p>
+
+                <hr>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <strong>Priority</strong><br>
+
+                        {% if task.priority == 'high' %}
+                            <span class="badge bg-danger">High</span>
+
+                        {% elif task.priority == 'medium' %}
+                            <span class="badge bg-warning text-dark">Medium</span>
+
+                        {% else %}
+                            <span class="badge bg-success">Low</span>
+
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Status</strong><br>
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Deadline</strong><br>
+                        {{ task.deadline|default:"No Deadline" }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <a href="{% url 'task_detail' task.id %}"
+                   class="btn btn-info">
+
+                    View Details
+
+                </a>
+
+                <a href="{% url 'update_status' task.id %}"
+                   class="btn btn-warning">
+
+                    Update
+
+                </a>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<div class="modal fade"
+     id="completedTasksModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+
+                <h5 class="modal-title">
+                    Completed Tasks
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                {% if completed %}
+
+                    <div class="list-group">
+
+                        {% for task in completed %}
+
+                        <a
+                            href="#"
+                            class="list-group-item list-group-item-action"
+
+                            data-bs-toggle="modal"
+                            data-bs-target="#completedTaskModal{{ task.id }}">
+
+                            ✓ {{ task.title }}
+
+                            <span class="badge bg-success float-end">
+                                Completed
+                            </span>
+
+                        </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="alert alert-info">
+                        No completed tasks found.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% for task in completed %}
+
+<div class="modal fade"
+     id="completedTaskModal{{ task.id }}"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    {{ task.title }}
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <p>
+                    <strong>Description:</strong><br>
+                    {{ task.description }}
+                </p>
+
+                <hr>
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ task.get_priority_display }}
+                </p>
+
+                <p>
+                    <strong>Deadline:</strong>
+                    {{ task.deadline|default:"No Deadline" }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="badge bg-success">
+                        Completed
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <a href="{% url 'task_detail' task.id %}"
+                   class="btn btn-info">
+
+                    View Details
+
+                </a>
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<!-- 🔥 MODAL -->
+<div class="modal fade" id="whatsappModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+        <div class="modal-header bg-success text-white">
+            <h6>Send Update</h6>
+            <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+            <textarea id="customMsg" class="form-control"
+                rows="4"
+                placeholder="Type update..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-success w-100" onclick="sendWhatsApp()">
+                Copy Message
+            </button>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

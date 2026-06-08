@@ -1,0 +1,463 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Task</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:linear-gradient(
+                135deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            min-height:100vh;
+            padding:20px 0;
+        }
+           .logo{
+
+            width:90px;
+            height:auto;
+        }
+
+
+        .main-card{
+
+            background:#fff;
+
+            border:none;
+
+            border-radius:25px;
+
+            overflow:hidden;
+
+            box-shadow:
+            0 15px 40px rgba(0,0,0,.15);
+        }
+
+        .card-hover:hover{
+
+            transform:translateY(-3px);
+
+            transition:.3s;
+        }
+
+        .page-title{
+
+            font-size:28px;
+
+            font-weight:700;
+
+            background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .form-control,
+        .form-select{
+
+            border-radius:12px;
+
+            padding:12px;
+        }
+
+        .form-control:focus,
+        .form-select:focus{
+
+            border-color:#741960;
+
+            box-shadow:
+            0 0 0 .2rem rgba(116,25,96,.15);
+        }
+
+        .section-label{
+
+            font-weight:600;
+
+            color:#362c7a;
+        }
+
+        .btn-gradient{
+
+            background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+
+            color:white;
+
+            border:none;
+
+            border-radius:12px;
+
+            padding:12px;
+
+            font-weight:600;
+        }
+
+        .btn-gradient:hover{
+
+            color:white;
+
+            transform:translateY(-2px);
+        }
+
+        .payment-card{
+
+            border:none;
+
+            border-radius:15px;
+
+            overflow:hidden;
+
+            box-shadow:
+            0 5px 15px rgba(255,193,7,.2);
+        }
+
+        .payment-header{
+
+            background:#ffc107;
+
+            padding:15px;
+
+            font-weight:600;
+        }
+
+        .top-buttons .btn{
+
+            border-radius:10px;
+        }
+
+        .info-box{
+
+            background:#f8f9fa;
+
+            border-left:4px solid #741960;
+
+            padding:12px;
+
+            border-radius:10px;
+
+            color:#555;
+        }
+
+        @media(max-width:768px){
+
+            body{
+                padding:10px;
+            }
+
+            .page-title{
+                font-size:22px;
+            }
+
+            .card-body{
+                padding:20px !important;
+            }
+
+            .top-buttons{
+
+                flex-direction:column;
+            }
+
+            .top-buttons .btn{
+
+                width:100%;
+            }
+
+            .btn{
+
+                font-size:14px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-md-10">
+
+            <div class="main-card card-hover">
+
+                <div class="card-body p-4">
+
+                    <!-- TOP BUTTONS -->
+
+               
+
+                    <!-- TITLE -->
+
+                    <div class="text-center mb-4">
+
+                         <div class="text-center mb-3">
+
+                        <img src="{% static 'logo6.png' %}"
+                             class="logo">
+
+                    </div>
+
+                        <h2 class="page-title">
+                            📋 Create Task
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Assign tasks to employees and freelancers
+                        </p>
+
+                    </div>
+
+                    <!-- ALERT -->
+
+                    <!-- <div class="alert alert-info text-center">
+
+                        Fill all required details before assigning the task.
+
+                    </div> -->
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Please fix the errors below.
+                    </div>
+                    {% endif %}
+
+                    <!-- FORM -->
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- TITLE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label section-label">
+                                Task Title
+                            </label>
+
+                            {{ form.title }}
+
+                        </div>
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label section-label">
+                                Description
+                            </label>
+
+                            <!-- {{ form.description }} -->
+
+                            <textarea
+    name="description"
+    id="id_description"
+    class="form-control"
+    rows="3"
+    placeholder="Task description..."
+>{{ form.description.value|default:'' }}</textarea>
+
+                        </div>
+
+                        <!-- ASSIGN -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label section-label">
+                                Assign To
+                            </label>
+
+                            {{ form.assigned_to }}
+
+                        </div>
+
+                        <!-- TASK TYPE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label section-label">
+                                Task Type
+                            </label>
+
+                            {{ form.task_type }}
+
+                        </div>
+
+                        <!-- DEADLINE -->
+
+                        <div class="mb-3" id="deadlineField">
+
+                            <label class="form-label section-label">
+                                Deadline
+                            </label>
+
+                            {{ form.deadline }}
+
+                        </div>
+
+                        <!-- PAYMENT SECTION -->
+
+                        <div class="payment-card mt-4 mb-4">
+
+                            <div class="payment-header">
+
+                                💰 Payment Tracking (Optional)
+
+                            </div>
+
+                            <div class="p-3">
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label section-label">
+                                            Task Amount
+                                        </label>
+
+                                        {{ form.payment_amount }}
+
+                                        <small class="text-muted d-block mt-1">
+                                            Leave empty for employee tasks
+                                        </small>
+
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label section-label">
+                                            Paid Amount
+                                        </label>
+
+                                        {{ form.paid_amount }}
+
+                                        <small class="text-muted d-block mt-1">
+                                            Usually 0 when creating
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- PRIORITY + STATUS -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label section-label">
+                                    Priority
+                                </label>
+
+                                {{ form.priority }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label section-label">
+                                    Status
+                                </label>
+
+                                {{ form.status }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-grid gap-2 mt-4">
+
+                            <button class="btn btn-gradient">
+
+                                🚀 Create Task
+
+                            </button>
+
+                            <a href="{% url 'manager_dashboard' %}"
+                               class="btn btn-secondary">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                    <!-- NOTE -->
+
+                    <!-- <div class="info-box mt-4 text-center">
+
+                        📌 Assigned tasks become visible immediately to the selected employee or freelancer.
+
+                    </div> -->
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    let taskType = document.getElementById("id_task_type");
+    let deadlineField = document.getElementById("deadlineField");
+
+    function toggleDeadline(){
+
+        if(
+            taskType.value === "ongoing" ||
+            taskType.value === "monthly"
+        ){
+            deadlineField.style.display = "none";
+        }
+        else{
+            deadlineField.style.display = "block";
+        }
+
+    }
+
+    toggleDeadline();
+
+    taskType.addEventListener(
+        "change",
+        toggleDeadline
+    );
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Detail</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f5f6fa;
+        }
+
+        .detail-card{
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+        }
+
+        .header-section{
+            background:linear-gradient(
+                90deg,
+                #362c7a,
+                #741960,
+                #d0153e
+            );
+            color:white;
+            padding:20px;
+        }
+
+        .badge-large{
+            font-size:14px;
+            padding:8px 12px;
+        }
+
+        .info-box{
+            background:#f8f9fa;
+            border-radius:12px;
+            padding:15px;
+            height:100%;
+        }
+
+        .action-btn{
+            min-width:120px;
+        }
+
+        @media(max-width:768px){
+
+            .header-section{
+                padding:15px;
+            }
+
+            .header-section h3{
+                font-size:22px;
+            }
+
+            .action-btn{
+                width:100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <div class="card shadow-lg detail-card">
+
+        <!-- HEADER -->
+
+        <div class="header-section">
+
+            <h3 class="mb-2">
+                📋 {{ task.title }}
+            </h3>
+
+            <small>
+                Created on {{ task.created_at|date:"d M Y" }}
+            </small>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- DESCRIPTION -->
+
+            <div class="mb-4">
+
+                <h5>Description</h5>
+
+                <div class="info-box">
+
+                    {{ task.description|linebreaks }}
+
+                </div>
+
+            </div>
+
+            <!-- DETAILS -->
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <strong>👤 Assigned To</strong>
+
+                        <div class="mt-2">
+                            {{ task.assigned_to.username }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <strong>📌 Task Type</strong>
+
+                        <div class="mt-2">
+
+                            {% if task.task_type == "ongoing" %}
+
+                                <span class="badge bg-info badge-large">
+                                    🔁 Ongoing
+                                </span>
+
+                            {% elif task.task_type == "monthly" %}
+
+                                <span class="badge bg-primary badge-large">
+                                    📆 Monthly
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary badge-large">
+                                    📅 One-Time
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% if task.task_type == "one_time" and task.deadline %}
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <strong>📅 Deadline</strong>
+
+                        <div class="mt-2">
+
+                            {{ task.deadline }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <strong>🚦 Status</strong>
+
+                        <div class="mt-2">
+
+                            <span class="badge badge-large
+                                {% if task.status == 'pending' %}
+                                    bg-warning text-dark
+                                {% elif task.status == 'in_progress' %}
+                                    bg-primary
+                                {% else %}
+                                    bg-success
+                                {% endif %}
+                            ">
+
+                                {{ task.status|title }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <strong>⚡ Priority</strong>
+
+                        <div class="mt-2">
+
+                            <span class="badge badge-large
+                                {% if task.priority == 'high' %}
+                                    bg-danger
+                                {% elif task.priority == 'medium' %}
+                                    bg-info text-dark
+                                {% else %}
+                                    bg-secondary
+                                {% endif %}
+                            ">
+
+                                {{ task.priority|title }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PAYMENT SECTION -->
+
+            <hr class="my-4">
+
+            <h5 class="mb-3">
+                💰 Payment Information
+            </h5>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+
+                    <div class="info-box text-center">
+
+                        <small class="text-muted">
+                            Task Amount
+                        </small>
+
+                        <h5 class="mt-2">
+
+                            {% if task.payment_amount %}
+                                ₹{{ task.payment_amount }}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="info-box text-center">
+
+                        <small class="text-muted">
+                            Paid Amount
+                        </small>
+
+                        <h5 class="mt-2">
+
+                            {% if task.payment_amount %}
+                                ₹{{ task.paid_amount }}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="info-box text-center">
+
+                        <small class="text-muted">
+                            Balance
+                        </small>
+
+                        <h5 class="mt-2">
+
+                            {% if task.payment_amount %}
+                                ₹{{ task.balance_amount }}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="info-box text-center">
+
+                        <small class="text-muted">
+                            Payment Status
+                        </small>
+
+                        <div class="mt-2">
+
+                            {% if task.payment_status == 'paid' %}
+
+                                <span class="badge bg-success badge-large">
+                                    🟢 Paid
+                                </span>
+
+                            {% elif task.payment_status == 'partial' %}
+
+                                <span class="badge bg-warning text-dark badge-large">
+                                    🟡 Partial
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger badge-large">
+                                    🔴 Pending
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+
+            <hr class="my-4">
+
+            <div class="d-flex flex-wrap gap-2">
+
+                {% if profile.role == 'manager' %}
+
+                    <a href="{% url 'edit_task' task.id %}"
+                       class="btn btn-warning action-btn">
+
+                        ✏ Edit
+
+                    </a>
+
+                    <a href="{% url 'delete_task' task.id %}"
+                       class="btn btn-danger action-btn"
+                       onclick="return confirm('Delete this task?')">
+
+                        🗑 Delete
+
+                    </a>
+
+                {% endif %}
+
+                {% if profile.role == 'employee' or profile.role == 'freelancer' %}
+
+                    <a href="{% url 'update_status' task.id %}"
+                       class="btn btn-success action-btn">
+
+                        🔄 Update Status
+
+                    </a>
+
+                {% endif %}
+
+                <button onclick="history.back()"
+                        class="btn btn-secondary action-btn">
+
+                    ⬅ Back
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

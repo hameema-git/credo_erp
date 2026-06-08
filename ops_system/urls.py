@@ -19,9 +19,29 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include   # 👈 include added
 
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#      path('', include('sales.urls')),
+#     path('quotation/', include('sales.urls')),  # 👈 IMPORTANT
+#     # path('customer/', include('customers.urls')),
+#     path('tasks/', include('tasks.urls'))
+# ]
+from django.conf import settings
+from django.conf.urls.static import static
+
+from sales.views import login_view
+
 urlpatterns = [
+    path('', login_view, name='login'),
+
     path('admin/', admin.site.urls),
-     path('', include('sales.urls')),
-    path('quotation/', include('sales.urls')),  # 👈 IMPORTANT
-    # path('customer/', include('customers.urls')),
+
+    path('erp/', include('sales.urls')),
+
+    path('tasks/', include('tasks.urls')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )

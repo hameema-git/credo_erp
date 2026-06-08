@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Edit Task</title>
+
+```
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<style>
+
+    body{
+        background:linear-gradient(
+            135deg,
+            #362c7a,
+            #741960,
+            #d0153e
+        );
+        min-height:100vh;
+    }
+
+    .edit-card{
+        border:none;
+        border-radius:20px;
+        overflow:hidden;
+    }
+
+    .card-header-custom{
+        background:linear-gradient(
+            90deg,
+            #362c7a,
+            #741960,
+            #d0153e
+        );
+        color:white;
+        padding:18px;
+        text-align:center;
+    }
+
+    .form-control,
+    .form-select{
+        border-radius:10px;
+    }
+
+    textarea{
+        min-height:120px !important;
+        resize:vertical;
+    }
+
+    .info-box{
+        background:#f8f9fa;
+        border-radius:12px;
+        padding:15px;
+    }
+
+    .payment-card{
+        border:none;
+        border-radius:15px;
+        overflow:hidden;
+    }
+
+    .payment-header{
+        background:#ffc107;
+        font-weight:600;
+    }
+
+    .btn-update{
+        background:linear-gradient(
+            90deg,
+            #362c7a,
+            #741960,
+            #d0153e
+        );
+        color:white;
+        border:none;
+    }
+
+    .btn-update:hover{
+        color:white;
+        opacity:.95;
+    }
+
+    @media(max-width:768px){
+
+        .container{
+            padding:10px;
+        }
+
+        .card-body{
+            padding:20px !important;
+        }
+
+        .btn{
+            width:100%;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-lg edit-card">
+
+            <div class="card-header-custom">
+
+                <h4 class="mb-0">
+                    ✏️ Edit Task
+                </h4>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                <!-- TASK INFO -->
+
+                <div class="info-box text-center mb-4">
+
+                    <h5 class="mb-1">
+                        {{ form.instance.title }}
+                    </h5>
+
+                    <small class="text-muted">
+                        Update task information and payment details
+                    </small>
+
+                </div>
+
+                {% if form.errors %}
+
+                <div class="alert alert-danger">
+
+                    Please correct the errors below.
+
+                </div>
+
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <!-- TITLE -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Task Title
+                        </label>
+
+                        {{ form.title }}
+
+                    </div>
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        {{ form.description }}
+
+                    </div>
+
+                    <!-- ASSIGNED TO -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Assigned To
+                        </label>
+
+                        {{ form.assigned_to }}
+
+                    </div>
+
+                    <!-- TASK TYPE -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Task Type
+                        </label>
+
+                        {{ form.task_type }}
+
+                    </div>
+
+                    <!-- DEADLINE -->
+
+                    <div class="mb-3"
+                         id="deadlineField">
+
+                        <label class="form-label">
+                            Deadline
+                        </label>
+
+                        {{ form.deadline }}
+
+                    </div>
+
+                    <!-- PAYMENT SECTION -->
+
+                    <div class="card payment-card shadow-sm mt-3 mb-3">
+
+                        <div class="card-header payment-header">
+
+                            💰 Payment Information
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+                                        Task Amount
+                                    </label>
+
+                                    {{ form.payment_amount }}
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+                                        Paid Amount
+                                    </label>
+
+                                    {{ form.paid_amount }}
+
+                                </div>
+
+                            </div>
+
+                            {% if task.payment_amount %}
+
+                            <div class="alert alert-light border mb-0">
+
+                                <div class="row text-center">
+
+                                    <div class="col-md-4">
+
+                                        <strong>Amount</strong>
+
+                                        <br>
+
+                                        ₹{{ task.payment_amount }}
+
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <strong>Balance</strong>
+
+                                        <br>
+
+                                        ₹{{ task.balance_amount }}
+
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <strong>Status</strong>
+
+                                        <br>
+
+                                        {% if task.payment_status == 'paid' %}
+
+                                            <span class="badge bg-success">
+                                                Paid
+                                            </span>
+
+                                        {% elif task.payment_status == 'partial' %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                Partial
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-danger">
+                                                Pending
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- PRIORITY + STATUS -->
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Priority
+                            </label>
+
+                            {{ form.priority }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
+                            {{ form.status }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTONS -->
+
+                    <div class="d-grid gap-2 mt-4">
+
+                        <button type="submit"
+                                class="btn btn-update">
+
+                            💾 Update Task
+
+                        </button>
+
+                        <a href="{% url 'manager_dashboard' %}"
+                           class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const taskType =
+        document.getElementById("id_task_type");
+
+    const deadlineField =
+        document.getElementById("deadlineField");
+
+    function toggleDeadline(){
+
+        if(
+            taskType.value === "ongoing" ||
+            taskType.value === "monthly"
+        ){
+
+            deadlineField.style.display = "none";
+
+        }
+        else{
+
+            deadlineField.style.display = "block";
+
+        }
+
+    }
+
+    toggleDeadline();
+
+    taskType.addEventListener(
+        "change",
+        toggleDeadline
+    );
+
+});
+
+</script>
+
+</body>
+</html>
