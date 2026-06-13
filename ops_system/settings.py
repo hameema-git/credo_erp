@@ -24,12 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_2ix6r$@cvkbb8wq8_r80p@q7q$dbo-^#b8*7jh1d=p!!5805*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+
+DEBUG = False
 
 
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'credo-erp-v1rz.onrender.com'
+]
 
 
 # Application definition
@@ -55,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
@@ -85,7 +89,7 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
+#         'ENGINE': 'django.db.backends.sqlite3',     use this when in local
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
@@ -147,5 +151,12 @@ STATICFILES_DIRS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.ngrok-free.dev'
+    'https://*.ngrok-free.dev',
+    'https://credo-erp-v1rz.onrender.com',
 ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
+SESSION_COOKIE_AGE = 604800
