@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'customers',
     # 'services',
     'sales',
-    'tasks'
+    'tasks',
+     'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -86,10 +88,10 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
+#use this when in local
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',     use this when in local
+#         'ENGINE': 'django.db.backends.sqlite3',    
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
@@ -101,7 +103,8 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
+        conn_max_age=0,
+        conn_health_checks=True
     )
 }
 
@@ -160,3 +163,17 @@ SESSION_COOKIE_SECURE = True
 
 
 SESSION_COOKIE_AGE = 604800
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

@@ -182,9 +182,17 @@
                 Back
             </a>
 
-            <button type="submit" class="btn btn-gradient">
+            <!-- <button type="submit" class="btn btn-gradient">
                 Save Supplier
-            </button>
+            </button> -->
+            <button
+    type="submit"
+    class="btn btn-gradient"
+    id="saveSupplierBtn">
+
+    Save Supplier
+
+</button>
 
         </div>
 
@@ -192,6 +200,32 @@
 
 </div>
 </div>
+
+<script>
+
+document.querySelector("form").addEventListener(
+    "submit",
+    function(){
+
+        let btn =
+            document.getElementById(
+                "saveSupplierBtn"
+            );
+
+        if(btn.disabled){
+            return false;
+        }
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Saving Supplier...
+        `;
+    }
+);
+
+</script>
 
 </body>
 </html>

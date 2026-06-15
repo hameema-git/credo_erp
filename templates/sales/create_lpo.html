@@ -264,12 +264,25 @@ window.onload = calculateTotal;
 </script>
 
 <script>
-document.querySelector("form").addEventListener("submit", function () {
-    let btn = document.getElementById("saveBtn");
+document.querySelector("form").addEventListener(
+    "submit",
+    function(){
 
-    btn.disabled = true;
-    btn.innerHTML = "Saving... ⏳";
-});
+        let btn =
+            document.getElementById("saveBtn");
+
+        if(btn.disabled){
+            return false;
+        }
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Saving LPO...
+        `;
+    }
+);
 </script>
 
 </body>

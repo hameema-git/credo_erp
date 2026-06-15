@@ -275,13 +275,22 @@
 
             <div class="d-grid">
 
-                <button
+                <!-- <button
                     type="submit"
                     class="btn btn-login">
 
                     Login
 
-                </button>
+                </button> -->
+
+                <button
+    type="submit"
+    class="btn btn-login"
+    id="loginBtn">
+
+    Login
+
+</button>
 
             </div>
 
@@ -363,6 +372,26 @@ function togglePassword(){
         icon.classList.add("bi-eye");
     }
 }
+
+</script>
+
+<script>
+
+document.querySelector("form").addEventListener(
+    "submit",
+    function(){
+
+        let btn =
+            document.getElementById("loginBtn");
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Logging In...
+        `;
+    }
+);
 
 </script>
 

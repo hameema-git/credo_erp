@@ -181,9 +181,17 @@
                 Back
             </a>
 
-            <button type="submit" class="btn btn-gradient">
+            <!-- <button type="submit" class="btn btn-gradient">
                 Save Customer
-            </button>
+            </button> -->
+            <button
+    type="submit"
+    class="btn btn-gradient"
+    id="saveCustomerBtn">
+
+    Save Customer
+
+</button>
 
         </div>
 
@@ -191,6 +199,29 @@
 
 </div>
 </div>
+
+<script>
+
+document.querySelector("form").addEventListener(
+    "submit",
+    function(){
+
+        let btn =
+            document.getElementById(
+                "saveCustomerBtn"
+            );
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Saving Customer...
+        `;
+
+    }
+);
+
+</script>
 
 </body>
 </html>

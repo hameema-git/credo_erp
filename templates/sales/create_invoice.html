@@ -332,15 +332,25 @@ function deleteRow(btn) {
 window.onload = calculateTotal;
 </script>
 <script>
-document.querySelector("form").addEventListener("submit", function () {
-    let btn = document.getElementById("saveBtn");
+document.querySelector("form").addEventListener(
+    "submit",
+    function(){
 
-    btn.disabled = true;
-    btn.innerText = "Saving...";   // 🔥 UX feedback
+        let btn =
+            document.getElementById("saveBtn");
 
-    // Optional: add spinner
-    btn.innerHTML = "Saving... ⏳";
-});
+        if(btn.disabled){
+            return false;
+        }
+
+        btn.disabled = true;
+
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Saving Invoice...
+        `;
+    }
+);
 </script>
 
 </body>
