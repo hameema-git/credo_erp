@@ -188,7 +188,13 @@
 
 <!-- ACTION -->
 <div class="mt-4 d-flex justify-content-between">
-    <a href="{% url 'lpo_detail' lpo.id %}" class="btn btn-secondary">Back</a>
+    <!-- <a href="{% url 'lpo_detail' lpo.id %}" class="btn btn-secondary">Back</a> -->
+     <button
+    type="button"
+    class="btn btn-secondary"
+    onclick="history.back()">
+    Back
+</button>
     <button type="submit" class="btn btn-gradient">Update LPO</button>
 </div>
 

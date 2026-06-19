@@ -483,9 +483,16 @@ body {
 
 <!-- BACK BUTTON -->
 <div class="mt-4">
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary w-100">
+    <!-- <a href="{% url 'dashboard' %}" class="btn btn-secondary w-100">
         ← Back to Dashboard
-    </a>
+    </a> -->
+
+    <button
+    type="button"
+    class="btn btn-secondary w-100"
+    onclick="history.back()">
+    Back
+</button>
 </div>
 
 </div>

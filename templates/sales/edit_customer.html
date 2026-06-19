@@ -109,9 +109,16 @@ body {
 
 <div class="d-flex justify-content-between mt-4">
 
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+    <!-- <a href="{% url 'dashboard' %}" class="btn btn-secondary">
         Back
-    </a>
+    </a> -->
+
+    <button
+    type="button"
+    class="btn btn-secondary"
+    onclick="history.back()">
+    Back
+</button>
 
     <button type="submit" class="btn btn-gradient">
         Update Customer

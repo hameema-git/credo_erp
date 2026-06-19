@@ -173,9 +173,15 @@
         <!-- ACTION -->
         <div class="mt-4 action-buttons">
 
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <!-- <a href="{% url 'dashboard' %}" class="btn btn-secondary">
                 Back
-            </a>
+            </a> -->
+            <button
+    type="button"
+    class="btn btn-secondary"
+    onclick="history.back()">
+    Back
+</button>
 
             <button type="submit" class="btn btn-gradient">
                 Save Service

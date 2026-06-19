@@ -349,9 +349,16 @@
            ⬅ Back to Dashboard
 
         </a> -->
-        <a href="{% url 'manager_dashboard' %}" class="btn btn-secondary">
+        <!-- <a href="{% url 'manager_dashboard' %}" class="btn btn-secondary">
     ⬅ Back to Dashboard
-</a>
+</a> -->
+
+<button
+    type="button"
+    class="btn btn-secondary"
+    onclick="history.back()">
+    Back
+</button>
 
     </div>
 
