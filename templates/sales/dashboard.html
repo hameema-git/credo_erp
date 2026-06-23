@@ -479,9 +479,12 @@
                 <!-- <span class="btn btn-gradient">
                     📋Task Managemnet
                 </span> -->
-                <div class="btn btn-task w-100">
+                <!-- <div class="btn btn-task w-100">
     📋 Task Management
-</div>
+</div> -->
+    <div class="btn btn-task w-100" id="taskBtnText">
+        📋 Task Management
+    </div>
 
             </div>
 
@@ -1205,6 +1208,21 @@ if ('serviceWorker' in navigator) {
         console.log("SW failed:", error);
     });
 }
+</script>
+
+<script>
+document.getElementById("taskBtn").addEventListener("click", function(e){
+
+    let btn = document.getElementById("taskBtnText");
+
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm"></span>
+        Loading...
+    `;
+
+    btn.style.pointerEvents = "none";
+
+});
 </script>
 
 </body>
