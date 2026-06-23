@@ -3351,12 +3351,29 @@ def edit_task(request, task_id):
         }
     )
 
+# @login_required
+# def delete_task(request, task_id):
+#     if request.user.role != 'manager':
+#         return redirect('login')
+
+#     task = get_object_or_404(Task, id=task_id)
+#     task.delete()
+
+#     return redirect('manager_dashboard')
+
 @login_required
 def delete_task(request, task_id):
-    if request.user.role != 'manager':
+
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    if profile.role != 'manager':
         return redirect('login')
 
     task = get_object_or_404(Task, id=task_id)
+
     task.delete()
 
     return redirect('manager_dashboard')
