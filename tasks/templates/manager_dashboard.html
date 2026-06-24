@@ -388,7 +388,8 @@
             text-align: center;
             background: #fff;
             width: 160px;
-            flex-shrink: 0;
+            /* flex-shrink: 0; */
+            max-width: 100%;
             transition: box-shadow .2s;
         }
         .person-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); }
@@ -681,6 +682,82 @@
             font-size: 18px;
             color: #555;
         }
+
+        /* ===== MOBILE FIXES ===== */
+
+@media (max-width: 576px) {
+
+    .content-area{
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .topbar{
+        padding: 0 12px;
+    }
+
+    .topbar-heading{
+        font-size: 15px !important;
+    }
+
+    .topbar-sub{
+        display: none;
+    }
+
+    .stat-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .people-grid{
+        justify-content: center;
+    }
+
+    .person-card{
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .search-row{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-select,
+    .search-btn{
+        width: 100%;
+    }
+
+    .action-buttons{
+        flex-direction: column;
+    }
+
+    .btn-action-outline,
+    .btn-action-solid{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .task-action-row{
+        flex-direction: column;
+    }
+
+    .task-action-row a{
+        width: 100%;
+    }
+
+    .task-payment-row{
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .pagination{
+        justify-content: center;
+    }
+
+    body{
+        overflow-x: hidden;
+    }
+}
     </style>
 </head>
 
