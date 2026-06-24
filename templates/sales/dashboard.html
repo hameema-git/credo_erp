@@ -1,5 +1,4 @@
 
-Dashboard · HTML
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -577,7 +576,7 @@ Dashboard · HTML
     <div class="content-area">
  
         <!-- Search + Task Management -->
-        <div class="search-task-row">
+        <!-- <div class="search-task-row">
             <div class="search-wrap" style="position:relative;">
                 <span class="s-icon"><i class="bi bi-search"></i></span>
                 <input
@@ -607,7 +606,75 @@ Dashboard · HTML
                 class="btn-task-mgmt" style="background:linear-gradient(90deg,#7c3aed,#db2777);">
                 <i class="bi bi-phone"></i> Install App
             </button>
+        </div> -->
+
+        <div class="search-task-row">
+
+    <form method="GET"
+          action="{% url 'search_results' %}"
+          class="d-flex gap-2 flex-wrap align-items-start flex-grow-1">
+
+        <!-- SEARCH INPUT -->
+        <input type="text"
+               id="searchInput"
+               name="q"
+               class="form-control"
+               placeholder="Search Customers, Quotations, Invoice..."
+               style="flex:1; min-width:250px;">
+
+        <!-- TYPE SELECT -->
+        <div style="position:relative; width:200px;">
+
+            <select id="searchType"
+                    name="type"
+                    class="form-select">
+
+                <option value="all">All</option>
+                <option value="customer">Customer</option>
+                <option value="supplier">Supplier</option>
+                <option value="service">Service</option>
+                <option value="quotation">Quotation</option>
+                <option value="invoice">Invoice</option>
+                <option value="lpo">LPO</option>
+                <option value="receipt">Receipt</option>
+
+            </select>
+
+            <div id="typeListBox"
+                 class="list-group mt-1"
+                 style="
+                    display:none;
+                    position:absolute;
+                    width:100%;
+                    max-height:200px;
+                    overflow-y:auto;
+                    z-index:1000;">
+            </div>
+
         </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Search
+        </button>
+
+    </form>
+
+    <a href="{% url 'manager_dashboard' %}"
+       class="btn-task-mgmt"
+       id="taskBtn">
+        <i class="bi bi-kanban-fill"></i>
+        <span id="taskBtnText">Task Management</span>
+    </a>
+
+    <button id="installBtn"
+            style="display:none;"
+            class="btn-task-mgmt">
+        <i class="bi bi-phone"></i>
+        Install App
+    </button>
+
+</div>
  
         <!-- ── STAT CARDS ────────────────────────────────── -->
         <div class="stats-grid">
@@ -879,7 +946,7 @@ Dashboard · HTML
             <div class="tbl-card">
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent Invoices</span>
-                    <a href="{% url 'invoice_list' %}" class="tbl-view-all">View All</a>
+                    <a href="{% url 'create_invoice' %}" class="tbl-view-all">View All</a>
                 </div>
                 <table>
                     <thead>
