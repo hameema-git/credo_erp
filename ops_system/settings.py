@@ -97,9 +97,22 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 # }
 
 # DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'credo_local',
+#         'USER': 'postgres',
+#         'PASSWORD': 'cheppu@89',
+#         'HOST': 'host.docker.internal',
+#         'PORT': '5432',
+#     }
+# }
+
+
+# DATABASES = {
 #     'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 # }
 
+#live database
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL'),

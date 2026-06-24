@@ -1,2938 +1,1504 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manager Dashboard</title>
-
-    <!-- MOBILE IMPORTANT -->
+    <meta charset="UTF-8">
+    <title>Manager Dashboard – Credo.intl</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
+        /* ══ RESET & BASE ══════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background: #f5f6fa;
+            color: #222;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar-logo{
+    text-align:center;
+    padding:20px 10px;
+    margin-bottom:20px;
+}
+
+.sidebar-logo-img{
+    width:140px;
+    height:auto;
+}
+
+        /* ══ SIDEBAR ═══════════════════════════════════════════ */
+        .sidebar {
+            width: 200px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #ebebeb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+
+        .sidebar-nav {
+            padding: 10px 8px;
+            flex: 1;
+        }
+
+        .nav-item-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            color: #555;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            transition: background .15s, color .15s;
+        }
+
+        .nav-item-link i {
+            font-size: 15px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .nav-item-link:hover {
+            background: #f3f0ff;
+            color: #7c3aed;
+        }
+
+        .nav-item-link.active {
+            background: #ede9fe;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        /* "Need Help" card at bottom */
+        .sidebar-help {
+            margin: 10px 10px 14px;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 14px;
+            padding: 14px 12px;
+            color: #fff;
+        }
+        .sidebar-help .sh-title { font-weight: 700; font-size: 13px; }
+        .sidebar-help .sh-sub   { font-size: 11px; opacity: .85; margin-top: 2px; }
+        .sidebar-help .sh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            background: rgba(255,255,255,.22);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+            transition: background .15s;
+        }
+        .sidebar-help .sh-btn:hover { background: rgba(255,255,255,.35); color: #fff; }
+
+        /* ══ MAIN WRAPPER ═══════════════════════════════════════ */
+        .page-wrapper {
+            margin-left: 200px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ══ TOPBAR ════════════════════════════════════════════ */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid #ebebeb;
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left .topbar-heading {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .topbar-left .topbar-sub {
+            font-size: 12px;
+            color: #888;
+            font-weight: 400;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid #e5e5e5;
+            display: flex; align-items: center; justify-content: center;
+            color: #666;
+            font-size: 17px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color .15s, color .15s;
+        }
+        .topbar-icon:hover { border-color: #7c3aed; color: #7c3aed; }
+
+        .topbar-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ebebeb;
+            cursor: pointer;
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-weight: 700;
             font-size: 14px;
         }
 
-        .card-hover:hover {
-            transform: scale(1.03);
-            transition: 0.2s;
-            cursor: pointer;
+        /* ══ CONTENT AREA ═══════════════════════════════════════ */
+        .content-area {
+            background: #fff;
+            margin: 20px 20px 0 20px;
+            border-radius: 14px;
+            border: 1px solid #ebebeb;
+            padding: 24px 24px 28px;
+            flex: 1;
         }
 
-.bg-light-warning{
-    background: #fff8e1;
-    border: 2px solid #ffc107 !important;
-}
+        .content-heading {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
 
-.bg-light-danger{
-    background: #ffe5e5;
-    border: 2px solid #dc3545 !important;
-}
+        /* ══ SEARCH ROW ═════════════════════════════════════════ */
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
 
-.bg-light-success{
-    background: #f0fff4;
-}
+        .search-input-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
 
-.profile-img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    margin: auto;
-    border: 2px solid #ddd;
-}
-        .stats-card {
+        .search-input-wrap i {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            background: #fafafa;
+            color: #333;
+            transition: border-color .15s;
+        }
+        .search-input-wrap input:focus { border-color: #7c3aed; background: #fff; }
+
+        .search-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            background: #fafafa;
+            color: #333;
+            transition: border-color .15s;
+            min-width: 90px;
+        }
+        .search-select:focus { border-color: #7c3aed; }
+
+        .search-btn {
+            padding: 8px 20px;
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+        .search-btn:hover { opacity: .88; }
+
+        /* ══ ACTION BUTTONS ═════════════════════════════════════ */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action-outline {
+            padding: 8px 18px;
+            border: 1.5px solid #7c3aed;
+            border-radius: 50px;
+            color: #7c3aed;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background .15s, color .15s;
+        }
+        .btn-action-outline:hover { background: #7c3aed; color: #fff; }
+
+        .btn-action-solid {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 3px 10px rgba(124,58,237,.35);
+            transition: opacity .15s;
+        }
+        .btn-action-solid:hover { opacity: .88; color: #fff; }
+
+        /* ══ STAT CARDS ═════════════════════════════════════════ */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            border: 1px solid #ebebeb;
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #fff;
+            transition: box-shadow .2s;
+        }
+        .stat-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+
+        .stat-card.sc-purple { border-left: 4px solid #7c3aed; }
+        .stat-card.sc-amber  { border-left: 4px solid #f59e0b; }
+        .stat-card.sc-green  { border-left: 4px solid #10b981; }
+        .stat-card.sc-red    { border-left: 4px solid #ef4444; }
+
+        .stat-icon-box {
+            width: 42px; height: 42px;
             border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .sib-purple { background: #ede9fe; color: #7c3aed; }
+        .sib-amber  { background: #fef3c7; color: #d97706; }
+        .sib-green  { background: #d1fae5; color: #059669; }
+        .sib-red    { background: #fee2e2; color: #dc2626; }
+
+        .stat-text .st-label { font-size: 12px; color: #888; font-weight: 500; }
+        .stat-text .st-value { font-size: 22px; font-weight: 700; color: #1a1a2e; line-height: 1.2; }
+
+        /* ══ EMPLOYEE + FREELANCE PANELS ════════════════════════ */
+        .ef-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .ef-panel {
+            border: 1px solid #ebebeb;
+            border-radius: 14px;
+            padding: 18px;
+            background: #fff;
+        }
+
+        .ef-panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 14px;
+        }
+
+        /* People cards inside panels */
+        .people-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .person-card {
+            border: 1px solid #ebebeb;
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            background: #fff;
+            width: 160px;
+            flex-shrink: 0;
+            transition: box-shadow .2s;
+        }
+        .person-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+
+        .person-card .person-img {
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0e0e0;
+            display: block;
+            margin: 0 auto 8px;
+        }
+
+        .person-card .person-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .badge-approved {
+            display: inline-block;
+            background: #10b981;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-bottom: 7px;
+        }
+        .badge-pending-approval {
+            display: inline-block;
+            background: #f59e0b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-bottom: 7px;
+        }
+
+        .person-total {
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .person-pdc {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .person-pdc .pdc-p { color: #f59e0b; font-weight: 700; }
+        .person-pdc .pdc-d { color: #3b82f6; font-weight: 700; }
+        .person-pdc .pdc-c { color: #10b981; font-weight: 700; }
+
+        .person-btns {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .person-btns a, .person-btns button {
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+        .person-btns a:hover, .person-btns button:hover { opacity: .82; }
+        .pb-view   { background: #ede9fe; color: #7c3aed; }
+        .pb-edit   { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a !important; }
+        .pb-delete { background: transparent; color: #ef4444; border: 1.5px solid #ef4444 !important; }
+
+        /* Empty state */
+        .no-data-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            color: #bbb;
+            gap: 10px;
+        }
+        .no-data-box .no-data-icon {
+            width: 80px; height: 80px;
+            background: #f3f0ff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px;
+            color: #c4b5fd;
+        }
+        .no-data-box p {
+            font-size: 13px;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        /* ══ TASKS SECTION ══════════════════════════════════════ */
+        .tasks-heading {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .task-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 14px;
+            padding: 18px;
+            background: #fff;
+            transition: box-shadow .2s;
+        }
+        .task-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+
+        .task-category {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #7c3aed;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .task-category i { font-size: 15px; }
+
+        .task-description {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.55;
+            margin-bottom: 12px;
+        }
+
+        .task-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12.5px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .task-meta-row i { color: #7c3aed; font-size: 13px; }
+
+        /* Status + Priority badges */
+        .task-badges-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0 10px;
+            flex-wrap: wrap;
+        }
+
+        .tbadge {
+            padding: 5px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+        }
+        .tb-pending     { background: #fde68a; color: #92400e; }
+        .tb-in_progress { background: #3b82f6; color: #fff; }
+        .tb-completed   { background: #10b981; color: #fff; }
+        .tb-high        { background: #ef4444; color: #fff; }
+        .tb-medium      { background: #a5f3fc; color: #0e7490; }
+        .tb-low         { background: #e5e7eb; color: #6b7280; }
+
+        /* Payment row */
+        .task-payment-row {
+            font-size: 12.5px;
+            color: #555;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .task-payment-row .balance { color: #ef4444; font-weight: 700; }
+
+        /* WhatsApp button */
+        .btn-wa {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            width: 100%;
+            background: #25d366;
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+        .btn-wa:hover { opacity: .88; color: #fff; }
+
+        /* View / Edit / Delete row */
+        .task-action-row {
+            display: flex;
+            gap: 6px;
+        }
+        .task-action-row a, .task-action-row button {
+            flex: 1;
+            padding: 7px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+        .task-action-row a:hover, .task-action-row button:hover { opacity: .82; }
+        .ta-view   { background: #ede9fe; color: #7c3aed; }
+        .ta-edit   { background: transparent; color: #333; border: 1px solid #ddd !important; }
+        .ta-delete { background: transparent; color: #ef4444; border: 1.5px solid #ef4444 !important; }
+
+        /* ══ PAGINATION ══════════════════════════════════════════ */
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 2px;
+            border: 1px solid #e0e0e0;
+            color: #7c3aed;
+            font-size: 13px;
+        }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        /* ══ MODALS ══════════════════════════════════════════════ */
+        .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,.14); }
+        .modal-header-grad {
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: #fff;
+            border-radius: 16px 16px 0 0;
+            border: none;
+            padding: 14px 20px;
+        }
+        .modal-header-grad .btn-close { filter: invert(1) brightness(2); }
+
+        /* ══ PROFILE IMG ══════════════════════════════════════════ */
+        .profile-img {
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        /* ══ RESPONSIVE ══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .stat-grid    { grid-template-columns: repeat(2, 1fr); }
+            .ef-grid      { grid-template-columns: 1fr; }
+            .tasks-grid   { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
-            h2 {
-                font-size: 20px;
-            }
+            .sidebar { transform: translateX(-100%); transition: transform .25s; }
+            .sidebar.sb-open { transform: translateX(0); }
+            .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 199; }
+            .sb-overlay.show { display: block; }
+            .page-wrapper { margin-left: 0; }
+            .mobile-toggle { display: flex !important; }
+            .stat-grid  { grid-template-columns: repeat(2, 1fr); }
+        }
 
-            .navbar-brand {
-                font-size: 16px;
-            }
-
-            .btn {
-                font-size: 12px;
-                padding: 5px 8px;
-            }
+        .mobile-toggle {
+            display: none;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
         }
     </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<!-- 🔝 NAVBAR -->
-<nav class="navbar navbar-dark bg-dark px-3">
-    <span class="navbar-brand">Task Management</span>
+<!-- ══ SIDEBAR OVERLAY (mobile) ════════════════════════ -->
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
 
-    <div class="d-flex gap-2 align-items-center">
-        <span class="text-white d-none d-md-inline">
-            {{ request.user.username }}
-        </span>
+<!-- ══ SIDEBAR ══════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
 
-        <!-- <a href="/profile/" class="btn btn-outline-light btn-sm">Profile</a> -->
-         <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">
-    Profile
-</a>
-        <!-- <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a> -->
-           <a href="{% url 'dashboard' %}"
-       class="btn btn-secondary">
-       ← Back to ERP
+    <!-- Logo -->
+    <!-- <div class="sidebar-logo">
+        <div class="logo-badge">
+            
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 7C16.5 4.5 14 3 11 3C6.58 3 3 6.58 3 11C3 15.42 6.58 19 11 19C14 19 16.5 17.5 18 15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="brand-text">
+            <div class="name">credo<span>.intl</span></div>
+            <div class="sub">Digital Designs</div>
+        </div>
+    </div> -->
+
+
+
+<div class="sidebar-logo">
+    <img src="{% static 'logo6.png' %}" class="sidebar-logo-img">
+</div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item-link active">
+            <i class="bi bi-grid-fill"></i> Dashboard
+        </a>
+        <a href="{% url 'create_employee' %}" class="nav-item-link">
+            <i class="bi bi-person-fill"></i> Employees
+        </a>
+        <a href="{% url 'create_freelancer' %}" class="nav-item-link">
+            <i class="bi bi-people-fill"></i> Freelancers
+        </a>
+        <a href="{% url 'create_task' %}" class="nav-item-link">
+            <i class="bi bi-check2-square"></i> Task
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-tag-fill"></i> Category
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-bar-chart-fill"></i> Reports
+        </a>
+        <!-- <a href="{% url 'dashboard' %}" class="nav-item-link">
+            <i class="bi bi-gear-fill"></i> Settings
+        </a> -->
+
+          <a href="{% url 'dashboard' %}" class="nav-item-link">
+        <i class="bi bi-arrow-left-circle-fill"></i> Back to ERP
     </a>
-<!-- 
-    <button
-    type="button"
-    class="btn btn-secondary"
-    onclick="history.back()">
-    Back
-</button> -->
+
+    <a href="{% url 'profile' %}" class="nav-item-link">
+        <i class="bi bi-gear-fill"></i> Settings
+    </a>
+    </nav>
+
+    <!-- Help card -->
+    <div class="sidebar-help">
+        <div class="sh-title">Need Help</div>
+        <div class="sh-sub">Contact Support For Assistance</div>
+        <a href="#" class="sh-btn">
+            <i class="bi bi-headset"></i> Contact Support
+        </a>
     </div>
-</nav>
 
+</aside>
 
-<div class="container mt-3">
+<!-- ══ PAGE WRAPPER ══════════════════════════════════════ -->
+<div class="page-wrapper">
 
-    <h4 class="mb-3">Manager Dashboard</h4>
-
-    <!-- 🔍 SEARCH -->
-    <form class="row g-2 mb-3" onsubmit="searchData(event)">
-
-        <div class="col-6 col-md-2">
-            <select id="typeSelect" class="form-select" onchange="handleTypeChange()">
-                <option value="all">All</option>
-                <option value="freelancer">Freelancers</option>
-                 <option value="employee">Employee</option>
-                <option value="task">Tasks</option>
-            </select>
+    <!-- ══ TOPBAR ══════════════════════════════════════════ -->
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="mobile-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="topbar-left">
+                <div class="topbar-heading">Welcome To Your Creative Hub</div>
+                <div class="topbar-sub">Manage Clients, Projects, Invoices, And Deadlines With Ease<b>.</b></div>
+            </div>
         </div>
 
-        <!-- <div class="col-6 col-md-4">
-            <input id="searchInput" type="text" class="form-control"
-                   placeholder="Search...">
-        </div> -->
+        <div class="topbar-right">
+            <a href="{% url 'profile' %}" class="topbar-icon" title="Notifications">
+                <i class="bi bi-bell"></i>
+            </a>
+            <div class="topbar-avatar" title="{{ request.user.username }}">
+                {{ request.user.username|first|upper }}
+            </div>
+        </div>
+    </header>
 
-<div class="col-md-4">
+    <!-- ══ CONTENT ══════════════════════════════════════════ -->
+    <div class="content-area">
 
-    <!-- 🔍 TEXT SEARCH -->
-    <input id="searchInput"
-           type="text"
-           name="q"
-           class="form-control"
-           placeholder="Search...">
+        <div class="content-heading">Manager Dashboard</div>
 
-    <!-- 👨‍💻 FREELANCER DROPDOWN -->
+        <!-- Search row -->
+        <form class="search-row" onsubmit="searchData(event)" style="margin-bottom:14px;">
+            <div class="search-input-wrap" style="max-width:420px;">
+                <i class="bi bi-search"></i>
+                <input id="searchInput" type="text" name="q" placeholder="Search...">
 
-    <select id="freelancerDropdown"
-            class="form-select d-none mt-1">
+                <!-- Hidden dropdowns -->
+                <select id="freelancerDropdown" class="search-select d-none" style="margin-top:6px;width:100%;">
+                    <option value="">Select Freelancer</option>
+                    {% for f in freelancer_data %}
+                        <option value="{{ f.user.id }}">{{ f.user.username }}</option>
+                    {% endfor %}
+                </select>
+                <select id="employeeDropdown" class="search-select d-none" style="margin-top:6px;width:100%;">
+                    <option value="">Select Employee</option>
+                    {% for e in employee_data %}
+                        <option value="{{ e.user.id }}">{{ e.user.username }}</option>
+                    {% endfor %}
+                </select>
+                <select id="taskDropdown" class="search-select d-none" style="margin-top:6px;width:100%;">
+                    <option value="">Select Task</option>
+                    {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <option value="">
-            Select Freelancer
-        </option>
-
-        {% for f in freelancer_data %}
-
-            <option value="{{ f.user.id }}">
-                {{ f.user.username }}
-            </option>
-
-        {% endfor %}
-
-    </select>
-
-    <!-- 👨‍💼 EMPLOYEE DROPDOWN -->
-
-    <select id="employeeDropdown"
-            class="form-select d-none mt-1">
-
-        <option value="">
-            Select Employee
-        </option>
-
-        {% for e in employee_data %}
-
-            <option value="{{ e.user.id }}">
-                {{ e.user.username }}
-            </option>
-
-        {% endfor %}
-
-    </select>
-
-    <!-- 📋 TASK DROPDOWN -->
-
-    <select id="taskDropdown"
-            class="form-select d-none mt-1">
-
-        <option value="">
-            Select Task
-        </option>
-
-        {% for task in tasks %}
-
-            <option value="{{ task.id }}">
-                {{ task.title }}
-            </option>
-
-        {% endfor %}
-
-    </select>
-
-</div>
-<!-- <select id="taskDropdown" class="form-select mt-1">
-
-    <option value="">Select Task</option>
-
-    {% for task in tasks %}
-        <option value="{{ task.id }}">
-            {{ task.title }}
-        </option>
-    {% endfor %}
-
-</select> -->
-
-<!-- <select id="taskDropdown" class="form-select mt-1">
-
-    <option value="">Select Task</option>
-
-    {% for task in tasks %}
-        <option value="{{ task.id }}">
-            {{ task.title }}
-        </option>
-    {% endfor %}
-
-</select> -->
-
-        <div class="col-6 col-md-2">
-            <select name="status" class="form-select">
+            <select id="typeSelect" class="search-select" onchange="handleTypeChange()">
+                <option value="all">All</option>
+                <option value="freelancer">Freelancers</option>
+                <option value="employee">Employee</option>
+                <option value="task">Tasks</option>
+            </select>
+            <select name="status" class="search-select">
                 <option value="">Status</option>
                 <option value="pending">Pending</option>
                 <option value="in_progress">In Progress</option>
                 <option value="completed">Completed</option>
             </select>
-        </div>
-
-        <div class="col-6 col-md-2">
-            <select name="priority" class="form-select">
+            <select name="priority" class="search-select">
                 <option value="">Priority</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
-        </div>
+            <button type="submit" class="search-btn">Search</button>
+        </form>
 
-        <div class="col-12 col-md-2">
-            <button class="btn btn-primary w-100">Search</button>
-        </div>
-
-    </form>
-
-    <!-- ➕ ACTION BUTTONS -->
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        <!-- <a href="/create-employee/" class="btn btn-success btn-sm">+ Employees</a>
-        <a href="/create-freelancer/" class="btn btn-primary btn-sm">+ Freelancer</a> -->
-
-        <a href="{% url 'create_employee' %}" class="btn btn-success btn-sm">
-    + Employee
-</a>
-
-<a href="{% url 'create_freelancer' %}" class="btn btn-primary btn-sm">
-    + Freelancer
-</a>
-        <a href="{% url 'create_task' %}" class="btn btn-success btn-sm">+ Task</a>
-    </div>
-
-    <!-- 🔥 DYNAMIC RESULTS -->
-    <div id="dynamicContent" class="row"></div>
-
-    <!-- 📊 STATS -->
-    <div class="row text-center mb-3">
-        <div class="col-6 col-md-3 mb-2">
-            <div class="card p-2 bg-primary text-white stats-card">
-                Total {{ tasks.paginator.count }}
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3 mb-2">
-            <div class="card p-2 bg-warning stats-card">
-                Pending {{ pending_count }}
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3 mb-2">
-            <div class="card p-2 bg-success text-white stats-card">
-                Completed {{ completed_count }}
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3 mb-2">
-            <div class="card p-2 bg-danger text-white stats-card">
-                Overdue {{ overdue_count }}
-            </div>
-        </div>
-    </div>
-
-    <!-- 👨‍💼 EMPLOYEES -->
-
-
-<div id="employeeSection" class="row">
-    <h5 class="mb-3 mt-4">Employees</h5>
-
-{% for e in employee_data %}
-
-<div class="col-6 col-md-3 mb-3">
-
-    <div class="card p-2 text-center shadow-sm card-hover">
-
-        <!-- PROFILE IMAGE -->
-<!-- 
-        {% if e.userprofile.profile_image and e.userprofile.profile_image.name %}
-            <img src="{{ e.userprofile.profile_image.url }}"
-                 class="profile-img mb-2">
-
-        {% else %}
-
-            {% if e.userprofile.gender == 'female' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-                     class="profile-img mb-2">
-
-            {% elif e.userprofile.gender == 'male' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-                     class="profile-img mb-2">
-
-            {% else %}
-                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                     class="profile-img mb-2">
-            {% endif %}
-
-        {% endif %} -->
-      {% if e.user.userprofile.profile_image %}
-
-    <img src="{{ e.user.userprofile.profile_image.url }}"
-         class="profile-img mb-2">
-
-{% else %}
-
-    {% if e.user.userprofile.gender == 'female' %}
-
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-             class="profile-img mb-2">
-
-    {% elif e.user.userprofile.gender == 'male' %}
-
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-             class="profile-img mb-2">
-
-    {% else %}
-
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-             class="profile-img mb-2">
-
-    {% endif %}
-
-{% endif %}
-
-
-        <!-- NAME -->
-
-        <h6 class="text-success mb-1">
-            {{ e.user.username }}
-        </h6>
-
-        <!-- APPROVAL -->
-
-        {% if e.user.userprofile.is_approved %}
-            <span class="badge bg-success mb-1">
-                Approved
-            </span>
-        {% else %}
-            <span class="badge bg-warning text-dark mb-1">
-                Pending
-            </span>
-        {% endif %}
-
-        <!-- STATS -->
-
-        <small>Total: {{ e.total }}</small>
-
-        <div class="small">
-            <span class="text-warning">
-                P {{ e.pending }}
-            </span> |
-
-            <span class="text-primary">
-                D {{ e.in_progress }}
-            </span> |
-
-            <span class="text-success">
-                C {{ e.completed }}
-            </span>
-        </div>
-
-        <!-- APPROVE BUTTON -->
-
-        {% if not e.user.userprofile.is_approved %}
-
-        <a href="{% url 'approve_user' e.user.id %}"
-           class="btn btn-success btn-sm mt-2 w-100">
-
-           Approve
-
-        </a>
-
-        {% endif %}
-
-        <!-- ACTIONS -->
-
-        <div class="mt-2 d-flex gap-1">
-
-            <!-- <a href="{% url 'freelancer_data' e.user.id %}" -->
-             <a href="{% url 'employee_data' e.user.id %}"
-               class="btn btn-info btn-sm w-50">
-
-               View
-
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'create_employee' %}" class="btn-action-outline">
+                + Employee
             </a>
-
-         
-
-            <a href="{% url 'edit_employee' e.user.id %}" class="btn btn-warning btn-sm w-50">Edit</a>
-
-            <!-- <a href="/delete-employee/{{ e.user.id }}/"
-               class="btn btn-danger btn-sm w-50"
-               onclick="return confirm('Delete this employee?')">
-
-               Delete
-
-            </a> -->
- <a href="{% url 'delete_employee' e.user.id %}"
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Delete this employee?')">
-   Delete
-</a>
-
+            <a href="{% url 'create_freelancer' %}" class="btn-action-outline">
+                + Freelancer
+            </a>
+            <a href="{% url 'create_task' %}" class="btn-action-solid">
+                + Freelancer
+            </a>
         </div>
 
-    </div>
+        <!-- ── STAT CARDS ──────────────────────────────────── -->
+        <div class="stat-grid">
+            <div class="stat-card sc-purple">
+                <div class="stat-icon-box sib-purple"><i class="bi bi-file-earmark-text"></i></div>
+                <div class="stat-text">
+                    <div class="st-label">Total</div>
+                    <div class="st-value">{{ tasks.paginator.count }}</div>
+                </div>
+            </div>
+            <div class="stat-card sc-amber">
+                <div class="stat-icon-box sib-amber"><i class="bi bi-hourglass-split"></i></div>
+                <div class="stat-text">
+                    <div class="st-label">Pending</div>
+                    <div class="st-value">{{ pending_count }}</div>
+                </div>
+            </div>
+            <div class="stat-card sc-green">
+                <div class="stat-icon-box sib-green"><i class="bi bi-check-circle-fill"></i></div>
+                <div class="stat-text">
+                    <div class="st-label">Complete</div>
+                    <div class="st-value">{{ completed_count }}</div>
+                </div>
+            </div>
+            <div class="stat-card sc-red">
+                <div class="stat-icon-box sib-red"><i class="bi bi-exclamation-circle-fill"></i></div>
+                <div class="stat-text">
+                    <div class="st-label">Overdue</div>
+                    <div class="st-value">{{ overdue_count }}</div>
+                </div>
+            </div>
+        </div>
 
-</div>
+        <!-- Dynamic search results -->
+        <div id="dynamicContent"></div>
 
-{% endfor %}
+        <!-- ── EMPLOYEE + FREELANCE PANELS ─────────────────── -->
+        <div class="ef-grid" id="efGrid">
 
-</div>
+            <!-- Employee panel -->
+            <div class="ef-panel" id="employeeSection">
+                <div class="ef-panel-title">Employee</div>
+                <div class="people-grid">
+                {% for e in employee_data %}
+                    <div class="person-card">
 
-   
+                        {% if e.user.userprofile.profile_image %}
+                            <img src="{{ e.user.userprofile.profile_image.url }}" class="person-img" alt="{{ e.user.username }}">
+                        {% elif e.user.userprofile.gender == 'female' %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" class="person-img" alt="{{ e.user.username }}">
+                        {% elif e.user.userprofile.gender == 'male' %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" class="person-img" alt="{{ e.user.username }}">
+                        {% else %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="person-img" alt="{{ e.user.username }}">
+                        {% endif %}
 
+                        <div class="person-name">{{ e.user.username }}</div>
 
+                        {% if e.user.userprofile.is_approved %}
+                            <span class="badge-approved">Approved</span>
+                        {% else %}
+                            <span class="badge-pending-approval">Pending</span>
+                        {% endif %}
 
-    <div id="freelancerSection" class="row">
+                        <div class="person-total">Total: {{ e.total }}</div>
 
-          <!-- 👥 TEAM -->
-    <h5 class="mb-3">Freelancers</h5>
-{% for f in freelancer_data %}
-        <div class="col-6 col-md-3 mb-3">
+                        <div class="person-pdc">
+                            <span class="pdc-p">P:{{ e.pending }}</span>
+                            <span style="color:#ccc;margin:0 2px">|</span>
+                            <span class="pdc-d">D:{{ e.in_progress }}</span>
+                            <span style="color:#ccc;margin:0 2px">|</span>
+                            <span class="pdc-c">C:{{ e.completed }}</span>
+                        </div>
 
-            <div class="card p-2 text-center shadow-sm card-hover">
+                        {% if not e.user.userprofile.is_approved %}
+                            <a href="{% url 'approve_user' e.user.id %}"
+                               style="display:block;width:100%;padding:5px;background:#d1fae5;color:#065f46;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;text-align:center;margin-bottom:6px;">
+                               Approve
+                            </a>
+                        {% endif %}
 
-                <!-- IMAGE -->
-                <!-- {% if f.user.profile_image %}
-                    <img src="{{ f.user.profile_image.url }}"
-                         class="rounded-circle mx-auto mb-2 profile-img">
-                {% else %}
-                    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                         class="rounded-circle mx-auto mb-2 profile-img">
-                {% endif %} -->
+                        <div class="person-btns">
+                            <a href="{% url 'employee_data' e.user.id %}" class="pb-view">View</a>
+                            <a href="{% url 'edit_employee' e.user.id %}" class="pb-edit">Edit</a>
+                            <a href="{% url 'delete_employee' e.user.id %}" class="pb-delete"
+                               onclick="return confirm('Delete this employee?')">Delete</a>
+                        </div>
 
-                <!-- {% if f.user.profile_image and f.user.profile_image.name %}
-    <img src="{{ f.user.profile_image.url }}">
-{% else %}
-    {% if f.user.gender == 'female' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png">
-    {% elif f.user.gender == 'male' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png">
-    {% else %}
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png">
-    {% endif %}
-{% endif %} -->
+                    </div>
+                {% empty %}
+                    <div class="no-data-box" style="width:100%;">
+                        <div class="no-data-icon"><i class="bi bi-person-x"></i></div>
+                        <p>No Employee Found</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
 
-<!-- {% if f.user.userprofile.profile_image and f.user.userprofile.profile_image.name %}
-    <img src="{{ f.user.userprofile.profile_image.url }}"
-         class="profile-img mb-2">
-{% else %}
-    {% if f.userprofile.gender == 'female' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-             class="profile-img mb-2">
-    {% elif f.userprofile.gender == 'male' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-             class="profile-img mb-2">
-    {% else %}
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-             class="profile-img mb-2">
-    {% endif %}
-{% endif %} -->
+            <!-- Freelance panel -->
+            <div class="ef-panel" id="freelancerSection">
+                <div class="ef-panel-title">Freelance</div>
+                <div class="people-grid">
+                {% for f in freelancer_data %}
+                    <div class="person-card">
 
-{% if f.user.userprofile.profile_image %}
-    <img src="{{ f.user.userprofile.profile_image.url }}"
-         class="profile-img mb-2">
-{% else %}
-    {% if f.user.userprofile.gender == 'female' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-             class="profile-img mb-2">
-    {% elif f.user.userprofile.gender == 'male' %}
-        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-             class="profile-img mb-2">
-    {% else %}
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-             class="profile-img mb-2">
-    {% endif %}
-{% endif %}
+                        {% if f.user.userprofile.profile_image %}
+                            <img src="{{ f.user.userprofile.profile_image.url }}" class="person-img" alt="{{ f.user.username }}">
+                        {% elif f.user.userprofile.gender == 'female' %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" class="person-img" alt="{{ f.user.username }}">
+                        {% elif f.user.userprofile.gender == 'male' %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" class="person-img" alt="{{ f.user.username }}">
+                        {% else %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="person-img" alt="{{ f.user.username }}">
+                        {% endif %}
 
-                <!-- NAME -->
-                <h6 class="text-primary mb-1"
-                    onclick="openFreelancer({{ f.user.id }})">
-                    {{ f.user.username }}
-                </h6>
+                        <div class="person-name" style="cursor:pointer;" onclick="openFreelancer({{ f.user.id }})">
+                            {{ f.user.username }}
+                        </div>
 
-                <!-- STATUS -->
-                {% if f.user.userprofile.is_approved %}
-                    <span class="badge bg-success mb-1">Approved</span>
-                {% else %}
-                    <span class="badge bg-warning text-dark mb-1">Pending</span>
-                {% endif %}
+                        {% if f.user.userprofile.is_approved %}
+                            <span class="badge-approved">Approved</span>
+                        {% else %}
+                            <span class="badge-pending-approval">Pending</span>
+                        {% endif %}
 
-                <!-- STATS -->
-                <small>Total: {{ f.total }}</small>
+                        <div class="person-total">Total: {{ f.total }}</div>
 
-                <div class="small">
-                    <span class="text-warning">P {{ f.pending }}</span> |
-                    <span class="text-primary">D {{ f.in_progress }}</span> |
-                    <span class="text-success">C {{ f.completed }}</span>
+                        <div class="person-pdc">
+                            <span class="pdc-p">P:{{ f.pending }}</span>
+                            <span style="color:#ccc;margin:0 2px">|</span>
+                            <span class="pdc-d">D:{{ f.in_progress }}</span>
+                            <span style="color:#ccc;margin:0 2px">|</span>
+                            <span class="pdc-c">C:{{ f.completed }}</span>
+                        </div>
+
+                        {% if not f.user.userprofile.is_approved %}
+                            <a href="{% url 'approve_user' f.user.id %}"
+                               style="display:block;width:100%;padding:5px;background:#d1fae5;color:#065f46;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;text-align:center;margin-bottom:6px;">
+                               Approve
+                            </a>
+                        {% endif %}
+
+                        <div class="person-btns">
+                            <a href="{% url 'freelancer_data' f.user.id %}" class="pb-view">View</a>
+                            <a href="{% url 'edit_freelancer' f.user.id %}" class="pb-edit">Edit</a>
+                            <a href="{% url 'delete_freelancer' f.user.id %}" class="pb-delete"
+                               onclick="return confirm('⚠️ Delete this freelancer?')">Delete</a>
+                        </div>
+
+                    </div>
+                {% empty %}
+                    <div class="no-data-box" style="width:100%;">
+                        <div class="no-data-icon"><i class="bi bi-people"></i></div>
+                        <p>No Freelancer Found</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+        </div><!-- /ef-grid -->
+
+        <!-- ── TASKS ────────────────────────────────────────── -->
+        <div id="taskSection">
+            <div class="tasks-heading">Tasks</div>
+            <div class="tasks-grid">
+            {% for task in tasks %}
+            <div class="task-card">
+
+                <!-- Category / title -->
+                <div class="task-category">
+                    {% if task.title == 'Quotations' or 'Quotation' in task.title %}
+                        <i class="bi bi-file-earmark-text"></i>
+                    {% elif 'SEO' in task.title %}
+                        <i class="bi bi-graph-up-arrow"></i>
+                    {% else %}
+                        <i class="bi bi-tag"></i>
+                    {% endif %}
+                    {{ task.title }}
                 </div>
 
-                <!-- APPROVE -->
-                {% if not f.user.userprofile.is_approved %}
-                    <a href="{% url 'approve_user' f.user.id %}" 
-                       class="btn btn-success btn-sm mt-2 w-100">
-                       Approve
-                    </a>
-                {% endif %}
+                <div class="task-description">
+                    {{ task.description|truncatechars:90 }}
+                </div>
 
-                <!-- ACTIONS -->
-                <div class="mt-2 d-flex gap-1">
+                <div class="task-meta-row">
+                    <i class="bi bi-person-fill"></i> {{ task.assigned_to.username }}
+                </div>
+                <div class="task-meta-row">
+                    <i class="bi bi-calendar3"></i> {{ task.deadline }}
+                </div>
 
-                    <a href="{% url 'freelancer_data' f.user.id %}"class="btn btn-info btn-sm w-50">
-        View </a>
-            
+                <!-- Status + Priority badges -->
+                <div class="task-badges-row">
+                    <span class="tbadge tb-{{ task.status }}">
+                        {{ task.status|title }}
+                    </span>
+                    <span class="tbadge tb-{{ task.priority }}">
+                        {{ task.priority|title }}
+                    </span>
+                </div>
 
-<a href="{% url 'edit_freelancer' f.user.id %}"
-   class="btn btn-warning btn-sm w-50">
-    Edit
-</a>
+                <!-- Payment info -->
+                <div class="task-payment-row">
+                    <span>Total : ₹{{ task.payment_amount }}</span>
+                    <span>Paid : ₹{{ task.paid_amount }}</span>
+                    <span class="balance">Balance :₹{{ task.balance_amount }}</span>
+                </div>
 
-                    <a href="{% url 'delete_freelancer' f.user.id %}"
-                       class="btn btn-danger btn-sm w-50"  onclick="return confirm('⚠️ Are you sure you want to delete this? This action cannot be undone!')">Delete</a>
+                <!-- WhatsApp -->
+                <button class="btn-wa"
+                    onclick="copyTaskMessage(
+                        '{{ task.assigned_to.username }}',
+                        '{{ task.title }}',
+                        '{{ task.deadline }}',
+                        '{{ task.priority }}',
+                        '{{ task.status }}'
+                    )">
+                    <i class="bi bi-whatsapp"></i> Whatsapp
+                </button>
+
+                <!-- Actions -->
+                <div class="task-action-row">
+                    <a href="{% url 'task_detail' task.id %}" class="ta-view">View</a>
+                    <a href="{% url 'edit_task' task.id %}" class="ta-edit">Edit</a>
+                    <a href="{% url 'delete_task' task.id %}" class="ta-delete"
+                       onclick="return confirm('⚠️ Delete this task?')">Delete</a>
                 </div>
 
             </div>
-
-        </div>
-    {% endfor %}
-    </div>
-
-</div>
-
-</body>
-</html>
-
-
-
-<!-- 📋 TASKS -->
-<!-- <h4 class="mt-4">Tasks</h4>
-  <div class="row"> -->
-
-    <div id="taskSection">
-<h4 class="mt-4">Tasks</h4>
-<div class="row">
-{% for task in tasks %}
-<div class="col-12 col-md-6 col-lg-4 mb-3">
-
-    <!-- <div class="card shadow-sm card-hover p-3"> -->
-
-        <div class="card shadow-sm card-hover p-3
-
-{% if task.payment_status == 'pending' %}
-    border-danger border-2
-
-{% elif task.payment_status == 'partial' %}
-    border-warning border-2
-
-{% elif task.payment_status == 'paid' %}
-    border-success border-2
-
-{% endif %}
-">
-
-        <!-- TITLE -->
-        <h6 class="text-primary mb-1"
-            onclick="openTaskFull({{ task|safe }})"
-            style="cursor:pointer;">
-            {{ task.title }}
-        </h6>
-
-        <!-- DESCRIPTION -->
-        <p class="text-muted small mb-2">
-            {{ task.description|truncatechars:80 }}
-        </p>
-
-        <!-- USER + DEADLINE -->
-        <div class="small mb-2">
-            👤 {{ task.assigned_to.username }}<br>
-            📅 {{ task.deadline }}
+            {% empty %}
+                <div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa;">
+                    <i class="bi bi-kanban" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:10px;"></i>
+                    No tasks found.
+                </div>
+            {% endfor %}
+            </div>
         </div>
 
-        <!-- STATUS + PRIORITY -->
-        <div class="d-flex justify-content-between mb-2">
+        <!-- Pagination -->
+        <nav class="mt-4 mb-2">
+            <ul class="pagination justify-content-center flex-wrap">
+                {% if tasks.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tasks.previous_page_number }}">← Prev</a>
+                </li>
+                {% endif %}
+                {% for num in tasks.paginator.page_range %}
+                    <li class="page-item {% if tasks.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if tasks.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tasks.next_page_number }}">Next →</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
 
-            <span class="badge 
-                {% if task.status == 'pending' %}bg-warning text-dark
-                {% elif task.status == 'in_progress' %}bg-primary
-                {% else %}bg-success
-                {% endif %}">
-                {{ task.status|title }}
-            </span>
+    </div><!-- /content-area -->
+</div><!-- /page-wrapper -->
 
-            <span class="badge 
-                {% if task.priority == 'high' %}bg-danger
-                {% elif task.priority == 'medium' %}bg-info text-dark
-                {% else %}bg-secondary
-                {% endif %}">
-                {{ task.priority|title }}
-            </span>
-
-        </div>
-
-        <div class="mt-2">
-
-    {% if task.payment_status == 'paid' %}
-        <span class="badge bg-success">
-            💰 Paid
-        </span>
-
-    {% elif task.payment_status == 'partial' %}
-        <span class="badge bg-warning text-dark">
-            💰 Partial
-        </span>
-
-    {% else %}
-        <span class="badge bg-danger">
-            💰 Pending
-        </span>
-
-    {% endif %}
-
-</div>
-<div class="mt-2 small">
-
-    <div>
-        Total : ₹{{ task.payment_amount }}
-    </div>
-
-    <div>
-        Paid : ₹{{ task.paid_amount }}
-    </div>
-
-    <div class="fw-bold text-danger">
-        Balance : ₹{{ task.balance_amount }}
-    </div>
-
-</div>
-
-        <!-- ACTIONS -->
-        <div class="d-flex gap-1">
-
-            <button class="btn btn-success btn-sm w-100"
-                onclick="copyTaskMessage(
-                    '{{ task.assigned_to.username }}',
-                    '{{ task.title }}',
-                    '{{ task.deadline }}',
-                    '{{ task.priority }}',
-                    '{{ task.status }}'
-                )">
-                WhatsApp
-            </button>
-
-        </div>
-
-        
-
-        <div class="d-flex gap-1 mt-1">
-              <a href="{% url 'task_detail' task.id %}"
-       class="btn btn-info btn-sm w-100">
-       View
-    </a>
-            <!-- <a href="/edit-task/{{ task.id }}/"
-               class="btn btn-warning btn-sm w-50">Edit</a> -->
-
-               <a href="{% url 'edit_task' task.id %}"  class="btn btn-warning btn-sm w-50">
-    Edit
-</a>
-
-           
-             <a href="{% url 'delete_task' task.id %}"
-               class="btn btn-danger btn-sm w-50"
-               onclick="return confirm('⚠️ Delete this task?')">
-               Delete
-            </a>
-
-
-        </div>
-
-    </div>
-
-</div>
-{% endfor %}
-</div>
-</div>
-
-
-<nav class="mt-4">
-    <ul class="pagination justify-content-center">
-
-        {% if tasks.has_previous %}
-        <li class="page-item">
-            <a class="page-link"
-               href="?page={{ tasks.previous_page_number }}">
-               ← Previous
-            </a>
-        </li>
-        {% endif %}
-
-        {% for num in tasks.paginator.page_range %}
-            <li class="page-item {% if tasks.number == num %}active{% endif %}">
-                <a class="page-link"
-                   href="?page={{ num }}">
-                    {{ num }}
-                </a>
-            </li>
-        {% endfor %}
-
-        {% if tasks.has_next %}
-        <li class="page-item">
-            <a class="page-link"
-               href="?page={{ tasks.next_page_number }}">
-               Next →
-            </a>
-        </li>
-        {% endif %}
-
-    </ul>
-</nav>
-<!-- {% for task in tasks %}
-<div class="card p-3 mb-2 card-hover">
-
-    <h5 onclick="openTask({{ task.id }})" class="text-primary">
-        {{ task.title }}
-    </h5>
-
-    <p>{{ task.assigned_to.username }} | {{ task.deadline }}</p>
-
-    <span class="badge bg-primary">{{ task.status }}</span>
-
-    <div class="mt-2">
-    
-        <button class="btn btn-success btn-sm"
-onclick="copyTaskMessage(
-    '{{ task.assigned_to.username }}',
-    '{{ task.title }}',
-    '{{ task.deadline }}',
-    '{{ task.priority }}',
-    '{{ task.status }}'
-)">
-    WhatsApp
-</button>
-        <a href="/edit-task/{{ task.id }}/" class="btn btn-warning btn-sm">Edit</a>
-        <a href="/delete-task/{{ task.id }}/" class="btn btn-danger btn-sm" onclick="return confirm('⚠️ Are you sure you want to delete this? This action cannot be undone!')">Delete</a>
-    </div>
-
-</div>
-{% endfor %} -->
-
-
-<!-- 🔍 SEARCH MODAL -->
-<!-- <div class="modal fade" id="searchModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content p-3">
-
-        <h4>Search Results</h4>
-        <div id="searchResults"></div>
-
-    </div>
-  </div>
-</div> -->
-
-<div class="modal fade" id="searchModal">
+<!-- ══ SEARCH MODAL ══════════════════════════════════════ -->
+<div class="modal fade" id="searchModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-
-        <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title">Search Results</h5>
-            <button type="button" class="btn-close btn-close-white"
-                    data-bs-dismiss="modal"></button>
+        <div class="modal-header modal-header-grad">
+            <h5 class="modal-title"><i class="bi bi-search me-2"></i>Search Results</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
-        <div class="modal-body">
+        <div class="modal-body p-3">
             <div id="searchResults"></div>
         </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                Close
-            </button>
-        </div>
-
-    </div>
-  </div>
-</div>
-
-
-<!-- 👤 FREELANCER MODAL -->
-<!-- <div class="modal fade" id="freelancerModal">
-  <div class="modal-dialog">
-    <div class="modal-content p-4">
-
-        <h4 id="fName"></h4>
-        <p id="fEmail"></p>
-        <p id="fPhone"></p>
-
-        <hr>
-        <h6>Tasks</h6>
-        <div id="fTasks"></div>
-
-    </div>
-  </div>
-</div> -->
-<!-- <div class="modal fade" id="freelancerModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content p-4">
-
-        <div class="text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                 width="80" class="mb-2">
-
-            <h3 id="fName"></h3>
-            <p id="fEmail" class="text-muted"></p>
-            <p id="fPhone"></p>
-        </div>
-
-        <hr>
-
-        <h5>Assigned Tasks</h5>
-        <div id="fTasks" class="mt-2"></div>
-
-    </div>
-  </div>
-</div> -->
-
-<div class="modal fade" id="freelancerModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-        <!-- HEADER -->
-        <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title">Freelancer Details</h5>
-            <button type="button" class="btn-close btn-close-white"
-                    data-bs-dismiss="modal"></button>
-        </div>
-
-        <!-- BODY -->
-        <div class="modal-body text-center">
-
-            <h4 id="fName"></h4>
-            <p id="fEmail"></p>
-            <p id="fPhone"></p>
-
-            <hr>
-            <h6>Tasks</h6>
-            <div id="fTasks"></div>
-
-        </div>
-
-        <!-- FOOTER -->
         <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
-
     </div>
   </div>
 </div>
 
-
-<!-- 📋 TASK MODAL -->
-<!-- <div class="modal fade" id="taskModal">
-  <div class="modal-dialog">
-    <div class="modal-content p-4">
-
-        <h4 id="tTitle"></h4>
-        <p id="tDesc"></p>
-
-        <p><b>User:</b> <span id="tUser"></span></p>
-        <p><b>Deadline:</b> <span id="tDeadline"></span></p>
-
-        <span id="tStatus" class="badge bg-primary"></span>
-        <span id="tPriority" class="badge bg-dark"></span>
-
-    </div>
-  </div>
-</div> -->
-<!-- 
-<div class="modal fade" id="taskModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content p-4">
-
-        <h3 id="tTitle"></h3>
-
-        <p id="tDesc" class="text-muted"></p>
-
-        <div class="row">
-            <div class="col-md-6">
-                <p><b>User:</b> <span id="tUser"></span></p>
-                <p><b>Deadline:</b> <span id="tDeadline"></span></p>
-            </div>
-
-            <div class="col-md-6">
-                <p><b>Status:</b> <span id="tStatus"></span></p>
-                <p><b>Priority:</b> <span id="tPriority"></span></p>
-            </div>
-        </div>
-
-        <hr>
-
-        <button class="btn btn-success"
-                onclick="copyTaskMessageFromModal()">
-            WhatsApp
-        </button>
-
-    </div>
-  </div>
-</div> -->
-
-<div class="modal fade" id="taskModal">
+<!-- ══ FREELANCER MODAL ══════════════════════════════════ -->
+<div class="modal fade" id="freelancerModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-
-        <!-- HEADER -->
-        <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Task Details</h5>
-            <button type="button" class="btn-close btn-close-white"
-                    data-bs-dismiss="modal"></button>
+        <div class="modal-header modal-header-grad">
+            <h5 class="modal-title"><i class="bi bi-people-fill me-2"></i>Freelancer Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
-        <!-- BODY -->
-        <div class="modal-body">
-
-            <h4 id="tTitle"></h4>
-            <p id="tDesc"></p>
-
-            <p><b>User:</b> <span id="tUser"></span></p>
-            <p><b>Deadline:</b> <span id="tDeadline"></span></p>
-
-            <span id="tStatus" class="badge bg-primary"></span>
-            <span id="tPriority" class="badge bg-dark"></span>
-
+        <div class="modal-body text-center p-4">
+            <h4 id="fName" class="fw-bold"></h4>
+            <p id="fEmail" class="text-muted mb-1"></p>
+            <p id="fPhone" class="text-muted"></p>
+            <hr>
+            <h6 class="text-start fw-bold mb-3">Assigned Tasks</h6>
+            <div id="fTasks"></div>
         </div>
-
-        <!-- FOOTER -->
         <div class="modal-footer">
-
-            <button class="btn btn-success"
-                    onclick="copyTaskMessageFromModal()">
-                WhatsApp
-            </button>
-
-            <button class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                Close
-            </button>
-
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
-
     </div>
   </div>
 </div>
 
+<!-- ══ TASK MODAL ═════════════════════════════════════════ -->
+<div class="modal fade" id="taskModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header modal-header-grad">
+            <h5 class="modal-title"><i class="bi bi-kanban-fill me-2"></i>Task Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+            <h4 id="tTitle" class="fw-bold mb-2"></h4>
+            <p id="tDesc" class="text-muted"></p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><b>Assigned to:</b> <span id="tUser"></span></p>
+                    <p><b>Deadline:</b> <span id="tDeadline"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><b>Status:</b> <span id="tStatus"></span></p>
+                    <p><b>Priority:</b> <span id="tPriority"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-wa" style="width:auto;padding:8px 22px;" onclick="copyTaskMessageFromModal()">
+                <i class="bi bi-whatsapp"></i> Copy WhatsApp Message
+            </button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-
-function updatePlaceholder(){
-    let type = document.getElementById("typeSelect").value;
-    let input = document.getElementById("searchInput");
-
-    input.placeholder = type === "freelancer"
-        ? "Search Freelancer..."
-        : "Search Task...";
+/* ── SIDEBAR TOGGLE ──────────────────────────────────── */
+function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('sb-open');
+    document.getElementById('sbOverlay').classList.toggle('show');
 }
 
+/* ── HANDLE TYPE CHANGE ──────────────────────────────── */
+function handleTypeChange(){
+    const type              = document.getElementById("typeSelect").value;
+    const efGrid            = document.getElementById("efGrid");
+    const taskSection       = document.getElementById("taskSection");
+    const dynamicContent    = document.getElementById("dynamicContent");
+    const searchInput       = document.getElementById("searchInput");
+    const freelancerDropdown= document.getElementById("freelancerDropdown");
+    const employeeDropdown  = document.getElementById("employeeDropdown");
+    const taskDropdown      = document.getElementById("taskDropdown");
 
+    dynamicContent.innerHTML = "";
 
+    // Reset all dropdowns
+    freelancerDropdown.classList.add("d-none");
+    employeeDropdown.classList.add("d-none");
+    taskDropdown.classList.add("d-none");
+    searchInput.classList.remove("d-none");
+
+    if(type === "all"){
+        efGrid.style.display      = "";
+        taskSection.style.display = "";
+    } else if(type === "freelancer"){
+        efGrid.style.display      = "none";
+        taskSection.style.display = "none";
+        searchInput.classList.add("d-none");
+        freelancerDropdown.classList.remove("d-none");
+        loadData();
+    } else if(type === "employee"){
+        efGrid.style.display      = "none";
+        taskSection.style.display = "none";
+        searchInput.classList.add("d-none");
+        employeeDropdown.classList.remove("d-none");
+        loadData();
+    } else if(type === "task"){
+        efGrid.style.display      = "none";
+        taskSection.style.display = "none";
+        searchInput.classList.add("d-none");
+        taskDropdown.classList.remove("d-none");
+        loadData();
+    }
+}
+
+/* ── SEARCH ──────────────────────────────────────────── */
 function searchData(e){
     e.preventDefault();
-
-    let data = new FormData(e.target);
+    const data = new FormData(e.target);
 
     fetch('/tasks/search-tasks/?' + new URLSearchParams(data))
     .then(res => res.json())
     .then(data => {
-
-        let html = `<div class="row">`;
-
-
-// =========================
-// 👨‍💼 EMPLOYEE CARDS
-// =========================
-
-if(data.employees.length > 0){
-
-    html += `
-    <h4 class="mb-3 mt-4 text-success">
-        Employees
-    </h4>
-
-    <div class="row">
-    `;
-}
-data.employees.forEach(e=>{
-
-    let img = e.image
-        ? e.image
-        : (
-            e.gender === "female"
-            ? "https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-            : e.gender === "male"
-            ? "https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-            : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
-        );
-
-    html += `
-    <div class="col-md-3 mb-3">
-
-        <div class="card p-3 text-center shadow">
-
-            <img src="${img}"
-                 class="rounded-circle mx-auto mb-2"
-                 width="80"
-                 height="80"
-                 style="object-fit:cover;">
-
-            <h5 class="text-success">
-                ${e.username}
-            </h5>
-
-            <span class="badge ${
-                e.is_approved
-                ? 'bg-success'
-                : 'bg-warning text-dark'
-            } mb-2">
-
-                ${
-                    e.is_approved
-                    ? 'Approved'
-                    : 'Pending'
-                }
-
-            </span>
-
-            <p>Total: ${e.total || 0}</p>
-
-            <div>
-                <small class="text-warning">
-                    P ${e.pending || 0}
-                </small> |
-
-                <small class="text-primary">
-                    D ${e.in_progress || 0}
-                </small> |
-
-                <small class="text-success">
-                    C ${e.completed || 0}
-                </small>
-            </div>
-
-            <div class="mt-2 d-flex gap-1">
-
-                <a href="/tasks/employee-data/${e.id}/"
-                   class="btn btn-info btn-sm w-50">
-                   View
-                </a>
-
-                <a href="/tasks/edit-employee/${e.id}/"
-                   class="btn btn-warning btn-sm w-50">
-                   Edit
-                </a>
-
-                <a href="/tasks/delete-employee/${e.id}/"
-                   class="btn btn-danger btn-sm w-50"
-                   onclick="return confirm('Delete this employee?')">
-                   Delete
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-    `;
-});
-
-if(data.employees.length > 0){
-    html += `</div>`;
-}
-
-
-//         // =========================
-//         // 🔥 FREELANCER CARDS (SAME AS DASHBOARD)
-
-//         if(data.freelancers.length > 0){
-
-//     html += `
-//     <h4 class="mb-3 text-primary">
-//         Freelancers
-//     </h4>
-
-//     <div class="row">
-//     `;
-// }
-//         // =========================
-//         data.freelancers.forEach(f=>{
-
-//             html += `
-//             <div class="col-md-3 mb-3">
-
-//                 <div class="card p-3 text-center shadow">
-
-//                     <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-//                          class="rounded-circle mx-auto mb-2"
-//                          width="80" height="80">
-
-//                     <h5 class="text-primary">${f.username}</h5>
-
-//                     <span class="badge bg-success mb-2">Approved</span>
-
-//                     <p>Total: ${f.total || 0}</p>
-
-//                     <div>
-//                         <small class="text-warning">P ${f.pending || 0}</small> |
-//                         <small class="text-primary">D ${f.in_progress || 0}</small> |
-//                         <small class="text-success">C ${f.completed || 0}</small>
-//                     </div>
-
-//                     <div class="mt-2 d-flex gap-1">
-
-//                         <a href="/freelancer-tasks/${f.id}/"
-//                            class="btn btn-info btn-sm w-50">
-//                            View
-//                         </a>
-
-//                         <a href="/edit-freelancer/${f.id}/"
-//                            class="btn btn-warning btn-sm w-50">
-//                            Edit
-//                         </a>
-
-//                         <a href="/delete-freelancer/${f.id}/"
-//                            class="btn btn-danger btn-sm w-50"
-//                            onclick="return confirm('Delete this freelancer?')">
-//                            Delete
-//                         </a>
-
-//                     </div>
-
-//                 </div>
-
-//             </div>
-//             `;
-//         });
-
-//         if(data.freelancers.length > 0){
-//     html += `</div>`;
-// }
-
-
-// =========================
-// 🔥 FREELANCER CARDS
-// =========================
-
-if(data.freelancers.length > 0){
-
-    html += `
-    <h4 class="mb-3 text-primary">
-        Freelancers
-    </h4>
-
-    <div class="row">
-    `;
-}
-
-data.freelancers.forEach(f=>{
-
-    // 🔥 IMAGE FIX
-    let img = f.image
-        ? f.image
-        : (
-            f.gender === "female"
-            ? "https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-            : f.gender === "male"
-            ? "https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-            : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
-        );
-
-    html += `
-    <div class="col-md-3 mb-3">
-
-        <div class="card p-3 text-center shadow">
-
-            <!-- PROFILE IMAGE -->
-            <img src="${img}"
-                 class="rounded-circle mx-auto mb-2"
-                 width="80"
-                 height="80"
-                 style="object-fit:cover;">
-
-            <!-- NAME -->
-            <h5 class="text-primary">
-                ${f.username}
-            </h5>
-
-            <!-- APPROVAL -->
-            <span class="badge ${
-                f.is_approved
-                ? 'bg-success'
-                : 'bg-warning text-dark'
-            } mb-2">
-
-                ${
-                    f.is_approved
-                    ? 'Approved'
-                    : 'Pending'
-                }
-
-            </span>
-
-            <!-- STATS -->
-            <p>Total: ${f.total || 0}</p>
-
-            <div>
-                <small class="text-warning">
-                    P ${f.pending || 0}
-                </small> |
-
-                <small class="text-primary">
-                    D ${f.in_progress || 0}
-                </small> |
-
-                <small class="text-success">
-                    C ${f.completed || 0}
-                </small>
-            </div>
-
-            <!-- BUTTONS -->
-            <div class="mt-2 d-flex gap-1">
-
-                <a href="/freelancer-data/${f.id}/"
-                   class="btn btn-info btn-sm w-50">
-                   View
-                </a>
-
-                <a href="/edit-freelancer/${f.id}/"
-                   class="btn btn-warning btn-sm w-50">
-                   Edit
-                </a>
-
-                <a href="/delete-freelancer/${f.id}/"
-                   class="btn btn-danger btn-sm w-50"
-                   onclick="return confirm('Delete this freelancer?')">
-                   Delete
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-    `;
-});
-
-if(data.freelancers.length > 0){
-    html += `</div>`;
-}
-
-        // =========================
-        // 🔥 TASK CARDS (SAME AS DASHBOARD)
-        // =========================
-
+        let html = "";
+
+        // Employees
+        if(data.employees.length > 0){
+            html += `<h5 class="fw-bold mb-3" style="color:#1a1a2e"><i class="bi bi-person-badge-fill me-2" style="color:#7c3aed"></i>Employees</h5>
+                     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">`;
+            data.employees.forEach(emp => {
+                const img = getPersonImg(emp);
+                html += personCardHTML(img, emp, 'employee');
+            });
+            html += `</div>`;
+        }
+
+        // Freelancers
+        if(data.freelancers.length > 0){
+            html += `<h5 class="fw-bold mb-3" style="color:#1a1a2e"><i class="bi bi-people-fill me-2" style="color:#db2777"></i>Freelancers</h5>
+                     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">`;
+            data.freelancers.forEach(f => {
+                const img = getPersonImg(f);
+                html += personCardHTML(img, f, 'freelancer');
+            });
+            html += `</div>`;
+        }
+
+        // Tasks
         if(data.tasks.length > 0){
+            html += `<h5 class="fw-bold mb-3" style="color:#1a1a2e"><i class="bi bi-kanban-fill me-2" style="color:#7c3aed"></i>Tasks</h5>
+                     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;">`;
+            data.tasks.forEach(t => {
+                html += taskCardHTML(t);
+            });
+            html += `</div>`;
+        }
 
-    html += `
-    <h4 class="mb-3 mt-4 text-dark">
-        Tasks
-    </h4>
-
-    <div class="row">
-    `;
-}
-        data.tasks.forEach(t=>{
-
-            let statusColor = {
-                'pending':'warning',
-                'in_progress':'primary',
-                'completed':'success'
-            }[t.status] || 'secondary';
-
-            let priorityColor = {
-                'low':'secondary',
-                'medium':'info',
-                'high':'danger'
-            }[t.priority] || 'secondary';
-
-            html += `
-            <div class="col-md-4 mb-3">
-
-                <div class="card shadow">
-
-                    <div class="card-body">
-
-                        <h5 class="text-primary">${t.title}</h5>
-
-                        <p class="text-muted">
-                            ${t.description.substring(0,80)}...
-                        </p>
-
-                        <p>👤 ${t.assigned_to}</p>
-                        <p>📅 ${t.deadline}</p>
-
-                        <span class="badge bg-${statusColor}">
-                            ${t.status}
-                        </span>
-
-                        <span class="badge bg-${priorityColor}">
-                            ${t.priority}
-                        </span>
-
-                    </div>
-
-                    <div class="p-2 d-flex gap-2">
-
-                        <a href="/task/${t.id}/"
-                           class="btn btn-info btn-sm w-100">
-                           View
-                        </a>
-
-                        <a href="/edit-task/${t.id}/"
-                           class="btn btn-warning btn-sm w-100">
-                           Edit
-                        </a>
-            
-
-
-                        <a href="/delete-task/${t.id}/"
-                           class="btn btn-danger btn-sm w-100">
-                           Delete
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-            `;
-        });
-
-        html += `</div>`;
-
-        // EMPTY STATE
-        // if(data.tasks.length === 0 && data.freelancers.length === 0){
-
-        if(
-    data.tasks.length === 0 &&
-    data.freelancers.length === 0 &&
-    data.employees.length === 0
-){
-            html = `<p class="text-center text-muted">No results found</p>`;
+        if(!html){
+            html = `<div class="text-center py-5 text-muted">
+                        <i class="bi bi-search" style="font-size:2.5rem;opacity:.25;display:block;margin-bottom:10px;"></i>
+                        No results found.
+                    </div>`;
         }
 
         document.getElementById("searchResults").innerHTML = html;
-
         new bootstrap.Modal(document.getElementById('searchModal')).show();
     });
 }
 
-// function searchData(e){
-//     e.preventDefault();
-
-//     let data = new FormData(e.target);
-
-//     fetch('/search-tasks/?' + new URLSearchParams(data))
-//     .then(res => res.json())
-//     .then(data => {
-
-//         let html = "";
-
-//         data.freelancers.forEach(f=>{
-//             html += `
-//             <div class="card p-2 mb-2 card-hover"
-//                  onclick="openFreelancer(${f.id})">
-//                 👤 ${f.username} (${f.pending} pending)
-//             </div>`;
-//         });
-
-//         data.tasks.forEach(t=>{
-//             html += `
-//             <div class="card p-2 mb-2 card-hover"
-//                  onclick="openTask(${t.id})">
-//                 📋 ${t.title} (${t.status})
-//             </div>`;
-//         });
-
-//         document.getElementById("searchResults").innerHTML = html;
-//         new bootstrap.Modal(document.getElementById('searchModal')).show();
-//     });
-// }
-
-
-// function searchData(e){
-//     e.preventDefault();
-
-//     let form = e.target;
-//     let data = new FormData(form);
-
-//     let status = data.get("status");
-//     let priority = data.get("priority");
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     // 🔥 HANDLE DROPDOWNS
-//     if(type === "freelancer"){
-//         let selected = document.getElementById("freelancerDropdown").value;
-//         data.set("q", selected);
-//     }
-
-//     if(type === "task"){
-//         let selectedTask = document.getElementById("taskDropdown").value;
-//         data.set("q", selectedTask);
-//     }
-
-//     fetch('/search-tasks/?' + new URLSearchParams(data))
-//     .then(res => res.json())
-//     .then(data => {
-
-//         let html = `<div class="row">`;
-
-//         // 🔥 TASK CARDS (same as dashboard)
-//         data.tasks.forEach(t=>{
-
-//             let statusColor = {
-//                 'pending':'warning',
-//                 'in_progress':'primary',
-//                 'completed':'success'
-//             }[t.status] || 'secondary';
-
-//             let priorityColor = {
-//                 'low':'secondary',
-//                 'medium':'info',
-//                 'high':'danger'
-//             }[t.priority] || 'secondary';
-
-//         //   
-        
-//         data.freelancers.forEach(f=>{
-
-//     html += `
-//     <div class="col-md-3 mb-3">
-
-//         <div class="card p-3 text-center shadow card-hover">
-
-//             <!-- IMAGE -->
-//             <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-//                  class="rounded-circle mx-auto mb-2"
-//                  width="80" height="80"
-//                  style="object-fit: cover;">
-
-//             <!-- NAME -->
-//             <h5 class="text-primary">
-//                 ${f.username}
-//             </h5>
-
-//             <!-- STATUS -->
-//             <span class="badge bg-success">Approved</span>
-
-//             <!-- TOTAL -->
-//             <p>Total: ${f.total || 0}</p>
-
-//             <!-- STATS -->
-//             <div>
-//                 <small class="text-warning">P ${f.pending || 0}</small> |
-//                 <small class="text-primary">D ${f.in_progress || 0}</small> |
-//                 <small class="text-success">C ${f.completed || 0}</small>
-//             </div>
-
-//             <!-- BUTTONS -->
-//             <div class="mt-2 d-flex gap-2">
-
-//                 <a href="/freelancer-tasks/${f.id}/"
-//                    class="btn btn-info btn-sm w-100">
-//                    View
-//                 </a>
-
-//                 <a href="/edit-freelancer/${f.id}/"
-//                    class="btn btn-warning btn-sm w-100">
-//                    Edit
-//                 </a>
-
-//                 <a href="/delete-freelancer/${f.id}/"
-//                    class="btn btn-danger btn-sm w-100"
-//                    onclick="return confirm('Delete this freelancer?')">
-//                    Delete
-//                 </a>
-
-//             </div>
-
-//         </div>
-
-//     </div>
-//     `;
-// });
-
-
-//         // 🔥 FREELANCER CARDS (same as dashboard)
-//         data.freelancers.forEach(f=>{
-
-//             html += `
-//             <div class="col-md-3 mb-3">
-//                 <div class="card text-center shadow-sm card-hover">
-
-//                     <div class="card-body">
-
-//                         <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-//                              class="rounded-circle mb-2"
-//                              width="80" height="80"
-//                              style="object-fit:cover;">
-
-//                         <h5 class="text-primary">${f.username}</h5>
-
-//                         <p class="small">
-//                             Pending: ${f.pending}
-//                         </p>
-
-//                         <div class="mt-2">
-//                             <a href="/freelancer-tasks/${f.id}/"
-//                                class="btn btn-info btn-sm w-100">
-//                                 View
-//                             </a>
-//                         </div>
-
-//                     </div>
-//                 </div>
-//             </div>
-//             `;
-//         });
-
-//         html += `</div>`;
-
-//         // 🔥 EMPTY STATE
-//         if(data.tasks.length === 0 && data.freelancers.length === 0){
-//             html = `<p class="text-center text-muted">No results found</p>`;
-//         }
-
-//         document.getElementById("dynamicContent").innerHTML = html;
-
-//     });
-// }
-
-// function searchData(e){
-//     e.preventDefault();
-
-//     let data = new FormData(e.target);
-
-//     let status = data.get("status");
-//     let priority = data.get("priority");
-
-//     fetch('/search-tasks/?' + new URLSearchParams(data))
-//     .then(res => res.json())
-//     .then(data => {
-
-//         let html = "";
-
-//         // 🔥 STATUS MODE → GROUP BY FREELANCER
-//         if(status){
-
-//             html += `<h5 class="mb-3">👤 Freelancers with "${status}" tasks</h5>`;
-
-//             let grouped = {};
-
-//             data.tasks.forEach(t=>{
-//                 if(!grouped[t.assigned_to]){
-//                     grouped[t.assigned_to] = [];
-//                 }
-//                 grouped[t.assigned_to].push(t);
-//             });
-
-//             for(let user in grouped){
-
-//                 html += `
-//                 <div class="card mb-3 shadow">
-//                     <div class="card-header bg-dark text-white">
-//                         👤 ${user}
-//                     </div>
-//                     <div class="card-body">
-//                 `;
-
-//                 grouped[user].forEach(t=>{
-//                     let color = {
-//                         'pending':'warning',
-//                         'in_progress':'primary',
-//                         'completed':'success'
-//                     }[t.status];
-
-//                     html += `
-//                         <div class="border p-2 mb-2 card-hover"
-//                              onclick='openTaskFull(${JSON.stringify(t)})'>
-
-//                             <strong>${t.title}</strong><br>
-
-//                             <span class="badge bg-${color}">
-//                                 ${t.status}
-//                             </span>
-
-//                             <span class="badge bg-dark">
-//                                 ${t.priority}
-//                             </span>
-
-//                         </div>
-//                     `;
-//                 });
-
-//                 html += `</div></div>`;
-//             }
-//         }
-
-//         // 🔥 PRIORITY MODE → SHOW TASK + FREELANCER
-//         else if(priority){
-
-//             html += `<h5 class="mb-3">📋 "${priority}" priority tasks</h5>`;
-
-//             data.tasks.forEach(t=>{
-
-//                 let color = {
-//                     'pending':'warning',
-//                     'in_progress':'primary',
-//                     'completed':'success'
-//                 }[t.status];
-
-//                 html += `
-//                 <div class="card mb-3 shadow card-hover"
-//                      onclick='openTaskFull(${JSON.stringify(t)})'>
-
-//                     <div class="card-body">
-
-//                         <h5>${t.title}</h5>
-
-//                         <p class="text-muted">${t.description.substring(0,80)}...</p>
-
-//                         <p>
-//                             👤 <strong>${t.assigned_to}</strong>
-//                         </p>
-
-//                         <span class="badge bg-${color}">
-//                             ${t.status}
-//                         </span>
-
-//                         <span class="badge bg-danger">
-//                             ${t.priority}
-//                         </span>
-
-//                     </div>
-//                 </div>
-//                 `;
-//             });
-//         }
-
-//         // 🔥 DEFAULT MODE (NORMAL SEARCH)
-//         else{
-
-//             html += `<h5>Search Results</h5>`;
-
-//             data.tasks.forEach(t=>{
-//                 html += `
-//                 <div class="card p-2 mb-2 card-hover"
-//                      onclick='openTaskFull(${JSON.stringify(t)})'>
-//                     📋 ${t.title} (${t.status})
-//                 </div>`;
-//             });
-
-//             data.freelancers.forEach(f=>{
-//                 html += `
-//                 <div class="card p-2 mb-2 card-hover"
-//                      onclick="openFreelancer(${f.id})">
-//                     👤 ${f.username}
-//                 </div>`;
-//             });
-//         }
-
-//         document.getElementById("searchResults").innerHTML = html;
-
-//         new bootstrap.Modal(document.getElementById('searchModal')).show();
-//     });
-// }
-
-// function handleTypeChange(){
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     if(type === "all"){
-//         // 🔄 FULL PAGE REFRESH
-//         window.location.href = "/manager/";
-//     }else{
-//         // 🔥 LOAD DYNAMIC DATA
-//         loadData();
-//     }
-// }
-
-// function handleTypeChange(){
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     let freelancerSection = document.getElementById("freelancerSection");
-//     let taskSection = document.getElementById("taskSection");
-//     let dynamic = document.getElementById("dynamicContent");
-
-//     // RESET
-//     dynamic.innerHTML = "";
-
-//     if(type === "all"){
-//         freelancerSection.style.display = "flex";
-//         taskSection.style.display = "block";
-//     }
-
-//     else if(type === "freelancer"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-//         loadData();
-//     }
-
-//     else if(type === "task"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-//         loadData();
-//     }
-// }
-
-// function handleTypeChange(){
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     let freelancerSection = document.getElementById("freelancerSection");
-//     let taskSection = document.getElementById("taskSection");
-//     let dynamic = document.getElementById("dynamicContent");
-
-//     // 🔥 NEW ELEMENTS
-//     let searchInput = document.getElementById("searchInput");
-//     let freelancerDropdown = document.getElementById("freelancerDropdown");
-
-//     // RESET RESULTS
-//     dynamic.innerHTML = "";
-
-//     // 🔥 DEFAULT (ALL)
-//     if(type === "all"){
-//         freelancerSection.style.display = "flex";
-//         taskSection.style.display = "block";
-
-//         searchInput.classList.remove("d-none");
-//         freelancerDropdown.classList.add("d-none");
-//     }
-
-//     // 🔥 FREELANCER MODE
-//     else if(type === "freelancer"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-
-//         // 🔥 SWITCH INPUT → DROPDOWN
-//         searchInput.classList.add("d-none");
-//         freelancerDropdown.classList.remove("d-none");
-
-//         loadData();
-//     }
-
-//     // 🔥 TASK MODE
-//     else if(type === "task"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-
-//         searchInput.classList.remove("d-none");
-//         freelancerDropdown.classList.add("d-none");
-
-//         loadData();
-//     }
-// }
-
-// function handleTypeChange(){
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     let freelancerSection = document.getElementById("freelancerSection");
-//     let taskSection = document.getElementById("taskSection");
-//     let dynamic = document.getElementById("dynamicContent");
-
-//     let searchInput = document.getElementById("searchInput");
-//     let freelancerDropdown = document.getElementById("freelancerDropdown");
-//     let taskDropdown = document.getElementById("taskDropdown");
-
-//     // RESET
-//     dynamic.innerHTML = "";
-
-//     // 🔥 ALL
-//     if(type === "all"){
-//         freelancerSection.style.display = "flex";
-//         taskSection.style.display = "block";
-
-//         searchInput.classList.remove("d-none");
-//         freelancerDropdown.classList.add("d-none");
-//         taskDropdown.classList.add("d-none");
-//     }
-
-//     // 🔥 FREELANCER
-//     else if(type === "freelancer"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-
-//         searchInput.classList.add("d-none");
-//         freelancerDropdown.classList.remove("d-none");
-//         taskDropdown.classList.add("d-none");
-
-//         loadData();
-//     }
-
-//     // 🔥 TASK
-//     else if(type === "task"){
-//         freelancerSection.style.display = "none";
-//         taskSection.style.display = "none";
-
-//         searchInput.classList.add("d-none");
-//         freelancerDropdown.classList.add("d-none");
-//         taskDropdown.classList.remove("d-none");
-
-//         loadData();
-//     }
-// }
-
-
-
-function handleTypeChange(){
-
-    let type =
-        document.getElementById("typeSelect").value;
-
-    let freelancerSection =
-        document.getElementById("freelancerSection");
-
-    let employeeSection =
-        document.getElementById("employeeSection");
-
-    let taskSection =
-        document.getElementById("taskSection");
-
-    let dynamic =
-        document.getElementById("dynamicContent");
-
-    let searchInput =
-        document.getElementById("searchInput");
-
-    let freelancerDropdown =
-        document.getElementById("freelancerDropdown");
-
-    let employeeDropdown =
-        document.getElementById("employeeDropdown");
-
-    let taskDropdown =
-        document.getElementById("taskDropdown");
-
-    // 🔥 RESET
-
-    dynamic.innerHTML = "";
-
-    freelancerDropdown.classList.add("d-none");
-
-    employeeDropdown.classList.add("d-none");
-
-    taskDropdown.classList.add("d-none");
-
-    searchInput.classList.remove("d-none");
-
-    // 🔥 ALL
-
-    if(type === "all"){
-
-        freelancerSection.style.display = "flex";
-
-        employeeSection.style.display = "flex";
-
-        taskSection.style.display = "block";
-
-    }
-
-    // 🔥 FREELANCER
-
-    else if(type === "freelancer"){
-
-        freelancerSection.style.display = "none";
-
-        employeeSection.style.display = "none";
-
-        taskSection.style.display = "none";
-
-        searchInput.classList.add("d-none");
-
-        freelancerDropdown.classList.remove("d-none");
-
-        loadData();
-
-    }
-
-    // 🔥 EMPLOYEE
-
-    else if(type === "employee"){
-
-        freelancerSection.style.display = "none";
-
-        employeeSection.style.display = "none";
-
-        taskSection.style.display = "none";
-
-        searchInput.classList.add("d-none");
-
-        employeeDropdown.classList.remove("d-none");
-
-        loadData();
-
-    }
-
-    // 🔥 TASK
-
-    else if(type === "task"){
-
-        freelancerSection.style.display = "none";
-
-        employeeSection.style.display = "none";
-
-        taskSection.style.display = "none";
-
-        searchInput.classList.add("d-none");
-
-        taskDropdown.classList.remove("d-none");
-
-        loadData();
-
-    }
-}
-function copyTaskMessage(user, title, deadline, priority, status){
-
-    // format status nicely
-    status = status.replace('_', ' ').toUpperCase();
-
-    // format priority
-    priority = priority.charAt(0).toUpperCase() + priority.slice(1);
-
-    let message = `Hello ${user} 👋,
-
-📝 Task Update Notification
-
-📌 Task: ${title}
-📅 Deadline: ${deadline}
-⚡ Priority: ${priority}
-📊 Status: ${status}
-
-👉 Please log in and update your progress.
-
-- Task Management System`;
-
-    navigator.clipboard.writeText(message);
-
-    alert("WhatsApp message copied!");
-}
-
-// function openFreelancer(id){
-//     fetch(`/freelancer-data/${id}/`)
-//     .then(res => res.json())
-//     .then(data=>{
-//         document.getElementById("fName").innerText = data.username;
-//         document.getElementById("fEmail").innerText = data.email;
-//         document.getElementById("fPhone").innerText = data.phone;
-
-//         let tasksHTML = "";
-//         data.tasks.forEach(t=>{
-//             tasksHTML += `<p>${t.title} - ${t.status}</p>`;
-//         });
-
-//         document.getElementById("fTasks").innerHTML = tasksHTML;
-
-//         new bootstrap.Modal(document.getElementById('freelancerModal')).show();
-//     });
-// }
-
-// function openFreelancer(id){
-
-//     fetch(`/freelancer-data/${id}/`)
-//     .then(res => res.json())
-//     .then(data => {
-
-//         document.getElementById("fName").innerText = data.username;
-//         document.getElementById("fEmail").innerText = data.email;
-//         document.getElementById("fPhone").innerText = data.phone || '-';
-
-//         let tasksHTML = "";
-
-//         data.tasks.forEach(t => {
-
-//             let color = {
-//                 'pending': 'warning',
-//                 'in_progress': 'primary',
-//                 'completed': 'success'
-//             }[t.status];
-
-//             tasksHTML += `
-//                 <div class="card p-2 mb-2">
-//                     <strong>${t.title}</strong><br>
-//                     <span class="badge bg-${color}">${t.status}</span>
-//                 </div>
-//             `;
-//         });
-
-//         document.getElementById("fTasks").innerHTML = tasksHTML;
-
-//         new bootstrap.Modal(document.getElementById('freelancerModal')).show();
-//     });
-// }
-
-function openFreelancer(userId){
-
-    // fetch(`/freelancer-data/${userId}/`)
-    fetch(`/tasks/freelancer-data/${userId}/`)
-    .then(res => res.json())
-    .then(data => {
-
-        document.getElementById("fName").innerText = data.username;
-        document.getElementById("fEmail").innerText = data.email || "";
-        document.getElementById("fPhone").innerText = data.phone || "";
-
-        let taskHtml = "";
-
-        data.tasks.forEach(t => {
-
-            let color = {
-                'pending':'warning',
-                'in_progress':'primary',
-                'completed':'success'
-            }[t.status];
-
-            taskHtml += `
-                <div class="card mb-2">
-                    <div class="card-body text-center">
-
-                        <strong>${t.title}</strong>
-
-                        <div class="progress mt-2">
-                            <div class="progress-bar bg-${color}" style="width:100%">
-                                ${t.status}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            `;
-        });
-
-        document.getElementById("fTasks").innerHTML = taskHtml;
-
-        new bootstrap.Modal(document.getElementById('freelancerModal')).show();
-    });
-}
-
-// function openFreelancer(userId){
-
-//     fetch(`/freelancer-data/${userId}/`)
-//     .then(res => res.json())
-//     .then(data => {
-
-//         // 🔥 IMAGE LOGIC
-//         let img = "";
-
-//         if(data.image){
-//             img = data.image;
-//         } else if(data.gender === "female"){
-//             img = "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
-//         } else if(data.gender === "male"){
-//             img = "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
-//         } else {
-//             img = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
-//         }
-
-//         // 🔥 BUILD TASK HTML
-//         let taskHtml = "";
-
-//         data.tasks.forEach(t => {
-
-//             let color = {
-//                 'pending':'warning',
-//                 'in_progress':'primary',
-//                 'completed':'success'
-//             }[t.status];
-
-//             taskHtml += `
-//                 <div class="card mb-2">
-//                     <div class="card-body text-center">
-
-//                         <strong>${t.title}</strong>
-
-//                         <div class="progress mt-2">
-//                             <div class="progress-bar bg-${color}" style="width:100%">
-//                                 ${t.status}
-//                             </div>
-//                         </div>
-
-//                     </div>
-//                 </div>
-//             `;
-//         });
-
-//         // 🔥 FINAL MODAL HTML
-//         let html = `
-//             <div class="text-center">
-
-//                 <!-- IMAGE -->
-//                 <img src="${img}"
-//                      style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:10px;">
-
-//                 <h4>${data.username}</h4>
-
-//                 <p>${data.email || ""}</p>
-//                 <p>${data.phone || ""}</p>
-
-//                 <hr>
-
-//                 <h5>Tasks</h5>
-
-//                 ${taskHtml}
-
-//             </div>
-//         `;
-
-//         // document.getElementById("freelancerModalBody").innerHTML = html;
-
-//         document.getElementById("fTasks").innerHTML = html;
-
-//         new bootstrap.Modal(document.getElementById('freelancerModal')).show();
-//     });
-// }
-
-function copyTaskMessageFromModal(){
-
-    let t = currentTask;
-
-    let msg = `Hello ${t.assigned_to} 👋,
-
-📝 Task Update Notification
-
-📌 Task: ${t.title}
-📅 Deadline: ${t.deadline}
-⚡ Priority: ${t.priority}
-📊 Status: ${t.status}
-
-👉 Please log in and update your progress.
-
-- Task Management System`;
-
-    navigator.clipboard.writeText(msg);
-    alert("Message copied!");
-}
-
-// function loadData(){
-//     let type = document.getElementById("typeSelect").value;
-
-//     fetch(`/search-tasks/?type=${type}`)
-//     .then(res => res.json())
-//     .then(data => {
-
-//         let html = "";
-
-//         if(type === "all"){
-//             document.getElementById("dynamicContent").innerHTML = "";
-//             window.location.href = "/manager/";
-// }
-
-//         // 👤 FREELANCERS VIEW
-//         if(type === "freelancer"){
-//             data.freelancers.forEach(f => {
-//                 html += `
-//                 <div class="col-md-3 mb-3">
-//                     <div class="card p-3 text-center shadow card-hover"
-//                          onclick="openFreelancer(${f.id})">
-
-//                         <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-//                              width="70" class="mx-auto mb-2">
-
-//                         <h5 class="text-primary">${f.username}</h5>
-
-//                         <p class="mb-1">${f.phone || ''}</p>
-
-//                         <span class="badge bg-warning">
-//                             ${f.pending} Pending Tasks
-//                         </span>
-
-//                     </div>
-//                 </div>
-//                 `;
-//             });
-//         }
-
-//         // 📋 TASK VIEW
-//         if(type === "task"){
-//             data.tasks.forEach(t => {
-
-//                 let color = {
-//                     'pending': 'warning',
-//                     'in_progress': 'primary',
-//                     'completed': 'success'
-//                 }[t.status];
-
-//                 html += `
-//                 <div class="col-md-6 mb-3">
-//                     <div class="card p-3 shadow card-hover"
-//                          onclick="openTaskFull(${JSON.stringify(t)})">
-
-//                         <h5 class="text-primary">${t.title}</h5>
-
-//                         <p>${t.description.substring(0,80)}...</p>
-
-//                         <div class="d-flex justify-content-between">
-//                             <small>${t.assigned_to}</small>
-//                             <span class="badge bg-${color}">
-//                                 ${t.status}
-//                             </span>
-//                         </div>
-
-//                         <small class="text-muted">${t.deadline}</small>
-
-//                     </div>
-//                 </div>
-//                 `;
-//             });
-//         }
-
-//         document.getElementById("dynamicContent").innerHTML = html;
-//     });
-// }
-
-// function loadData(){
-
-//     let type = document.getElementById("typeSelect").value;
-
-//     let status = document.querySelector('[name="status"]').value;
-//     let priority = document.querySelector('[name="priority"]').value;
-//     let query = document.getElementById("searchInput").value;
-
-//     let params = new URLSearchParams({
-//         type: type,
-//         status: status,
-//         priority: priority,
-//         q: query
-//     });
-
-//     fetch(`/search-tasks/?${params}`)
-//     .then(res => res.json())
-//     .then(data => {
-
-//         let html = "";
-
-        // 👤 FREELANCERS
-        // if(type === "freelancer"){
-        //     data.freelancers.forEach(f => {
-        //         html += `
-        //         <div class="col-md-3 mb-3">
-        //             <div class="card p-3 text-center shadow card-hover"
-        //                  onclick="openFreelancer(${f.id})">
-
-        //                 <h5 class="text-primary">${f.username}</h5>
-
-        //                 <span class="badge bg-warning">
-        //                     ${f.pending} Pending
-        //                 </span>
-
-        //             </div>
-        //         </div>`;
-        //     });
-        // }
-
-//         if(type === "freelancer"){
-//     data.freelancers.forEach(f => {
-//         html += `
-//         <div class="col-6 col-md-3 mb-3">
-//             <div class="card p-3 text-center shadow card-hover"
-//                  onclick="openFreelancer(${f.id})">
-
-//                 <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-//                      class="profile-img mb-2">
-
-//                 <h6 class="text-primary">${f.username}</h6>
-
-//                 <span class="badge bg-warning">
-//                     ${f.pending} Pending
-//                 </span>
-
-//             </div>
-//         </div>`;
-//     });
-// }
-
-        // 📋 TASKS
-
-//         if(type === "task"){
-//     data.tasks.forEach(t => {
-
-//         let color = {
-//             'pending': 'warning',
-//             'in_progress': 'primary',
-//             'completed': 'success'
-//         }[t.status];
-
-//         html += `
-//         <div class="col-12 col-md-6 col-lg-4 mb-3">
-//             <div class="card shadow-sm p-3 card-hover"
-//                  onclick='openTaskFull(${JSON.stringify(t)})'>
-
-//                 <h6 class="text-primary">${t.title}</h6>
-
-//                 <p class="small text-muted">
-//                     ${t.description.substring(0,60)}...
-//                 </p>
-
-//                 <div class="d-flex justify-content-between">
-//                     <span class="badge bg-${color}">
-//                         ${t.status}
-//                     </span>
-
-//                     <span class="badge bg-dark">
-//                         ${t.priority}
-//                     </span>
-//                 </div>
-
-//             </div>
-//         </div>`;
-//     });
-// }
-        // if(type === "task"){
-        //     data.tasks.forEach(t => {
-
-        //         let color = {
-        //             'pending': 'warning',
-        //             'in_progress': 'primary',
-        //             'completed': 'success'
-        //         }[t.status];
-
-        //         html += `
-        //         <div class="col-md-6 mb-3">
-        //             <div class="card p-3 shadow card-hover"
-        //                  onclick="openTaskFull(${JSON.stringify(t)})">
-
-        //                 <h5>${t.title}</h5>
-
-        //                 <span class="badge bg-${color}">
-        //                     ${t.status}
-        //                 </span>
-
-        //                 <span class="badge bg-dark">
-        //                     ${t.priority}
-        //                 </span>
-
-        //             </div>
-        //         </div>`;
-        //     });
-        // }
-
-//         document.getElementById("dynamicContent").innerHTML = html;
-//     });
-// }
-
-
-
+/* ── LOAD DATA (dropdown-based) ──────────────────────── */
 function loadData(){
-
-    let type = document.getElementById("typeSelect").value;
-
-    let status = document.querySelector('[name="status"]').value;
-    let priority = document.querySelector('[name="priority"]').value;
-    let query = document.getElementById("searchInput").value;
-
-    let params = new URLSearchParams({
-        type: type,
-        status: status,
-        priority: priority,
-        q: query
-    });
+    const type     = document.getElementById("typeSelect").value;
+    const status   = document.querySelector('[name="status"]').value;
+    const priority = document.querySelector('[name="priority"]').value;
+    const query    = document.getElementById("searchInput").value;
+    const params   = new URLSearchParams({ type, status, priority, q: query });
 
     fetch(`/tasks/search-tasks/?${params}`)
     .then(res => res.json())
     .then(data => {
-
         let html = "";
 
-        // 👤 FREELANCER CARDS (SAME DESIGN)
         if(type === "freelancer"){
-
             data.freelancers.forEach(f => {
-
-                let img = f.image ? f.image :
-                    (f.gender === "female"
-                        ? "https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-                        : f.gender === "male"
-                        ? "https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-                        : "https://cdn-icons-png.flaticon.com/512/847/847969.png");
-
-//                         html += `
-// <div class="col-6 col-md-3 mb-3">
-
-//     <div class="card p-2 text-center shadow-sm card-hover">
-
-//         <img src="${img}" class="profile-img mb-2">
-
-//         <h6 class="text-primary mb-1"
-//             onclick="openFreelancer(${f.id})"
-//             style="cursor:pointer;">
-//             ${f.username}
-//         </h6>
-
-//         <span class="badge ${f.is_approved ? 'bg-success' : 'bg-warning text-dark'} mb-1">
-//             ${f.is_approved ? 'Approved' : 'Pending'}
-//         </span>
-
-//         <small>Total: ${f.total || 0}</small>
-
-//         <div class="small">
-//             <span class="text-warning">P ${f.pending || 0}</span> |
-//             <span class="text-primary">D ${f.in_progress || 0}</span> |
-//             <span class="text-success">C ${f.completed || 0}</span>
-//         </div>
-
-//         <div class="mt-2 d-flex gap-1">
-
-//             <button onclick="openFreelancer(${f.id})"
-//                 class="btn btn-info btn-sm w-50">
-//                 View
-//             </button>
-
-//             <a href="/edit-freelancer/${f.id}/"
-//                 class="btn btn-warning btn-sm w-50">
-//                 Edit
-//             </a>
-
-//             <a href="/delete-freelancer/${f.id}/"
-//                 class="btn btn-danger btn-sm w-50"
-//                 onclick="return confirm('⚠️ Are you sure you want to delete this?')">
-//                 Delete
-//             </a>
-
-//         </div>
-
-//     </div>
-
-// </div>
-// `;
-
-html += `
-<div class="col-6 col-md-3 mb-3">
-
-    <div class="card p-2 text-center shadow-sm">
-
-    
-
-        <img src="${img}" class="profile-img mb-2">
-
-        <h6 class="text-primary mb-1"
-            onclick="openFreelancer(${f.id})"
-            style="cursor:pointer;">
-            ${f.username}
-        </h6>
-
-        <span class="badge ${f.is_approved ? 'bg-success' : 'bg-warning text-dark'} mb-1">
-            ${f.is_approved ? 'Approved' : 'Pending'}
-        </span>
-
-        <small>Total: ${f.total || 0}</small>
-
-        <div class="small">
-            <span class="text-warning">P ${f.pending || 0}</span> |
-            <span class="text-primary">D ${f.in_progress || 0}</span> |
-            <span class="text-success">C ${f.completed || 0}</span>
-        </div>
-
-<div class="mt-2 d-flex gap-1">
-
-    <a href="/freelancer-data/${f.id}/"
-       class="btn btn-info btn-sm w-50">
-       View
-    </a>
-
-    <a href="/edit-freelancer/${f.id}/"
-       class="btn btn-warning btn-sm w-50">
-       Edit
-    </a>
-
-    <button onclick="deleteFreelancer(${f.id})"
-       class="btn btn-danger btn-sm w-50">
-       Delete
-    </button>
-
-</div>
-       
- 
-
-    </div>
-
-</div>
-`;
-
-                // html += `
-                // <div class="col-6 col-md-3 mb-3">
-
-                //     <div class="card p-2 text-center shadow-sm card-hover">
-
-                //         <img src="${img}" class="profile-img mb-2">
-
-                //         <h6 class="text-primary"
-                //             onclick="openFreelancer(${f.id})"
-                //             style="cursor:pointer;">
-                //             ${f.username}
-                //         </h6>
-
-                //         <span class="badge ${f.is_approved ? 'bg-success' : 'bg-warning text-dark'} mb-1">
-                //             ${f.is_approved ? 'Approved' : 'Pending'}
-                //         </span>
-
-                //         <small>Total: ${f.total || 0}</small>
-
-                //         <div class="small">
-                //             <span class="text-warning">P ${f.pending || 0}</span> |
-                //             <span class="text-primary">D ${f.in_progress || 0}</span> |
-                //             <span class="text-success">C ${f.completed || 0}</span>
-                //         </div>
-
-                //         <div class="mt-2 d-flex gap-1">
-                //             <button onclick="openFreelancer(${f.id})"
-                //                 class="btn btn-info btn-sm w-50">View</button>
-
-                //             <a href="/edit-freelancer/${f.id}/"
-                //                 class="btn btn-warning btn-sm w-50">Edit</a>
-                //         </div>
-
-                //     </div>
-
-                // </div>
-                // `;
+                const img = getPersonImg(f);
+                html += `<div class="col-6 col-md-3">${personCardHTML(img, f, 'freelancer')}</div>`;
+            });
+        }
+        if(type === "employee"){
+            data.employees.forEach(e => {
+                const img = getPersonImg(e);
+                html += `<div class="col-6 col-md-3">${personCardHTML(img, e, 'employee')}</div>`;
+            });
+        }
+        if(type === "task"){
+            data.tasks.forEach(t => {
+                html += `<div class="col-12 col-md-6 col-lg-4">${taskCardHTML(t)}</div>`;
             });
         }
 
-
-        // 👨‍💼 EMPLOYEE CARDS
-
-if(type === "employee"){
-
-    data.employees.forEach(e => {
-
-        let img = e.image ? e.image :
-            (e.gender === "female"
-                ? "https://cdn-icons-png.flaticon.com/512/2922/2922561.png"
-                : e.gender === "male"
-                ? "https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
-                : "https://cdn-icons-png.flaticon.com/512/847/847969.png");
-
-        html += `
-
-        <div class="col-6 col-md-3 mb-3">
-
-            <div class="card p-2 text-center shadow-sm">
-
-                <img src="${img}"
-                     class="profile-img mb-2">
-
-                <h6 class="text-success mb-1">
-                    ${e.username}
-                </h6>
-
-                <span class="badge ${
-                    e.is_approved
-                    ? 'bg-success'
-                    : 'bg-warning text-dark'
-                } mb-1">
-
-                    ${
-                        e.is_approved
-                        ? 'Approved'
-                        : 'Pending'
-                    }
-
-                </span>
-
-                <small>
-                    Total: ${e.total || 0}
-                </small>
-
-                <div class="small">
-
-                    <span class="text-warning">
-                        P ${e.pending || 0}
-                    </span> |
-
-                    <span class="text-primary">
-                        D ${e.in_progress || 0}
-                    </span> |
-
-                    <span class="text-success">
-                        C ${e.completed || 0}
-                    </span>
-
-                </div>
-
-                <div class="mt-2 d-flex gap-1">
-
-                    <a href="/tasks/employee-data/${e.id}/"
-                       class="btn btn-info btn-sm w-50">
-                       View
-                    </a>
-
-                    <a href="/tasks/edit-employee/${e.id}/"
-                       class="btn btn-warning btn-sm w-50">
-                       Edit
-                    </a>
-
-                    <a href="/tasks/delete-employee/${e.id}/"
-                       class="btn btn-danger btn-sm w-50"
-                       onclick="return confirm('Delete this employee?')">
-                       Delete
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-        `;
+        document.getElementById("dynamicContent").innerHTML = `<div class="row g-3">${html}</div>`;
     });
 }
 
-        // 📋 TASK CARDS (SAME DESIGN)
-        if(type === "task"){
+/* ── HELPERS ─────────────────────────────────────────── */
+function getPersonImg(p){
+    if(p.image) return p.image;
+    if(p.gender === "female") return "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
+    if(p.gender === "male")   return "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
+    return "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+}
 
-            data.tasks.forEach(t => {
+function personCardHTML(img, p, type){
+    const approvedBadge = p.is_approved
+        ? `<span class="badge-approved">Approved</span>`
+        : `<span class="badge-pending-approval">Pending</span>`;
 
-                let color = {
-                    'pending':'warning',
-                    'in_progress':'primary',
-                    'completed':'success'
-                }[t.status];
+    const viewUrl   = type === 'freelancer' ? `/freelancer-data/${p.id}/` : `/tasks/employee-data/${p.id}/`;
+    const editUrl   = type === 'freelancer' ? `/edit-freelancer/${p.id}/` : `/tasks/edit-employee/${p.id}/`;
+    const deleteUrl = type === 'freelancer' ? `/delete-freelancer/${p.id}/` : `/tasks/delete-employee/${p.id}/`;
 
-                let priorityColor = {
-                    'high':'danger',
-                    'medium':'info',
-                    'low':'secondary'
-                }[t.priority];
-
-                // html += `
-                // <div class="col-12 col-md-6 col-lg-4 mb-3">
-
-                //     <div class="card shadow-sm card-hover p-3"
-                //          onclick='openTaskFull(${JSON.stringify(t)})'>
-
-                //         <h6 class="text-primary mb-1">${t.title}</h6>
-
-                //         <p class="text-muted small mb-2">
-                //             ${t.description.substring(0,80)}...
-                //         </p>
-
-                //         <div class="small mb-2">
-                //             👤 ${t.assigned_to}<br>
-                //             📅 ${t.deadline}
-                //         </div>
-
-                //         <div class="d-flex justify-content-between mb-2">
-                //             <span class="badge bg-${color}">
-                //                 ${t.status}
-                //             </span>
-
-                //             <span class="badge bg-${priorityColor}">
-                //                 ${t.priority}
-                //             </span>
-                //         </div>
-
-                //         <div class="d-flex gap-1">
-                //             <a href="/task/${t.id}/"
-                //                class="btn btn-info btn-sm w-100">View</a>
-                //         </div>
-
-                //     </div>
-
-                // </div>
-                // `;
-
-                html += `
-<div class="col-12 col-md-6 col-lg-4 mb-3">
-
-    <div class="card shadow-sm p-3 h-100 card-hover">
-
-        <!-- TITLE -->
-        <h5 class="text-primary mb-1">${t.title}</h5>
-
-        <!-- DESCRIPTION -->
-        <p class="text-muted small mb-2">
-            ${t.description.substring(0,80)}...
-        </p>
-
-        <!-- USER + DATE -->
-        <p class="mb-1 small">
-            👤 ${t.assigned_to}
-        </p>
-
-        <p class="mb-2 small">
-            📅 ${t.deadline}
-        </p>
-
-        <!-- STATUS + PRIORITY -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-
-            <span class="badge ${
-                t.status === 'pending' ? 'bg-warning text-dark' :
-                t.status === 'in_progress' ? 'bg-primary' :
-                'bg-success'
-            }">
-                ${t.status}
-            </span>
-
-            <span class="badge ${
-                t.priority === 'high' ? 'bg-danger' :
-                t.priority === 'medium' ? 'bg-info text-dark' :
-                'bg-secondary'
-            }">
-                ${t.priority}
-            </span>
-
+    return `
+    <div class="person-card">
+        <img src="${img}" class="person-img" alt="${p.username}">
+        <div class="person-name">${p.username}</div>
+        ${approvedBadge}
+        <div class="person-total">Total: ${p.total || 0}</div>
+        <div class="person-pdc">
+            <span class="pdc-p">P:${p.pending||0}</span>
+            <span style="color:#ccc;margin:0 2px">|</span>
+            <span class="pdc-d">D:${p.in_progress||0}</span>
+            <span style="color:#ccc;margin:0 2px">|</span>
+            <span class="pdc-c">C:${p.completed||0}</span>
         </div>
+        <div class="person-btns">
+            <a href="${viewUrl}" class="pb-view">View</a>
+            <a href="${editUrl}" class="pb-edit">Edit</a>
+            <a href="${deleteUrl}" class="pb-delete" onclick="return confirm('Delete?')">Del</a>
+        </div>
+    </div>`;
+}
 
-        <!-- WHATSAPP -->
-        <button class="btn btn-success w-100 mb-2"
-                onclick="copyMessage(${t.id})">
-            WhatsApp
+function taskCardHTML(t){
+    const statusMap = { pending:'tb-pending', in_progress:'tb-in_progress', completed:'tb-completed' };
+    const prioMap   = { high:'tb-high', medium:'tb-medium', low:'tb-low' };
+    const sClass    = statusMap[t.status]   || 'tb-pending';
+    const pClass    = prioMap[t.priority]   || 'tb-low';
+
+    return `
+    <div class="task-card">
+        <div class="task-category"><i class="bi bi-tag"></i> ${t.title}</div>
+        <div class="task-description">${(t.description||'').substring(0,90)}…</div>
+        <div class="task-meta-row"><i class="bi bi-person-fill"></i> ${t.assigned_to}</div>
+        <div class="task-meta-row"><i class="bi bi-calendar3"></i> ${t.deadline}</div>
+        <div class="task-badges-row">
+            <span class="tbadge ${sClass}">${t.status}</span>
+            <span class="tbadge ${pClass}">${t.priority}</span>
+        </div>
+        <button class="btn-wa" onclick="copyMessage(${t.id})">
+            <i class="bi bi-whatsapp"></i> Whatsapp
         </button>
-
-        <!-- ACTION BUTTONS -->
-        <div class="d-flex gap-2">
-
-            <a href="/task/${t.id}/" class="btn btn-info w-100">
-                View
-            </a>
-
-            <a href="/edit-task/${t.id}/" class="btn btn-warning w-100">
-                Edit
-            </a>
-
-                 
-
-
-      
-
-<a href="/tasks/delete-task/{{ task.id }}/"
-   class="btn btn-danger btn-sm w-50"
-   onclick="return confirm('⚠️ Delete this task?')">
-   Delete
-</a>
-
+        <div class="task-action-row">
+            <a href="/task/${t.id}/" class="ta-view">View</a>
+            <a href="/edit-task/${t.id}/" class="ta-edit">Edit</a>
+            <a href="/tasks/delete-task/${t.id}/" class="ta-delete" onclick="return confirm('Delete?')">Delete</a>
         </div>
+    </div>`;
+}
 
-    </div>
+/* ── MODALS ──────────────────────────────────────────── */
+let currentTask = null;
 
-</div>
-`;
-            });
-        }
-
-        document.getElementById("dynamicContent").innerHTML = html;
-    });
+function openTaskFull(task){
+    currentTask = task;
+    document.getElementById("tTitle").innerText    = task.title;
+    document.getElementById("tDesc").innerText     = task.description;
+    document.getElementById("tUser").innerText     = task.assigned_to;
+    document.getElementById("tDeadline").innerText = task.deadline;
+    document.getElementById("tStatus").innerText   = task.status;
+    document.getElementById("tPriority").innerText = task.priority;
+    new bootstrap.Modal(document.getElementById('taskModal')).show();
 }
 
 function openTask(id){
     fetch('/tasks/search-tasks/?q='+id)
     .then(res => res.json())
-    .then(data=>{
-        let t = data.tasks[0];
-
-        document.getElementById("tTitle").innerText = t.title;
-        document.getElementById("tDesc").innerText = t.description;
-        document.getElementById("tUser").innerText = t.assigned_to;
-        document.getElementById("tDeadline").innerText = t.deadline;
-        document.getElementById("tStatus").innerText = t.status;
-        document.getElementById("tPriority").innerText = t.priority;
-
-        new bootstrap.Modal(document.getElementById('taskModal')).show();
+    .then(data => {
+        if(data.tasks.length){ openTaskFull(data.tasks[0]); }
     });
 }
 
-let currentTask = null;
+function openFreelancer(userId){
+    fetch(`/tasks/freelancer-data/${userId}/`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("fName").innerText  = data.username || "";
+        document.getElementById("fEmail").innerText = data.email    || "";
+        document.getElementById("fPhone").innerText = data.phone    || "";
 
-function openTaskFull(task){
+        let taskHtml = "";
+        (data.tasks || []).forEach(t => {
+            const sClass = {pending:'tb-pending', in_progress:'tb-in_progress', completed:'tb-completed'}[t.status] || '';
+            taskHtml += `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;
+                        margin-bottom:8px;border-radius:10px;background:#f9f9fb;border:1px solid #eee;">
+                <strong style="font-size:13px">${t.title}</strong>
+                <span class="tbadge ${sClass}" style="font-size:11px">${t.status}</span>
+            </div>`;
+        });
 
-    currentTask = task;
-
-    document.getElementById("tTitle").innerText = task.title;
-    document.getElementById("tDesc").innerText = task.description;
-    document.getElementById("tUser").innerText = task.assigned_to;
-    document.getElementById("tDeadline").innerText = task.deadline;
-    document.getElementById("tStatus").innerText = task.status;
-    document.getElementById("tPriority").innerText = task.priority;
-
-    new bootstrap.Modal(document.getElementById('taskModal')).show();
+        document.getElementById("fTasks").innerHTML = taskHtml || '<p class="text-muted text-center">No tasks assigned.</p>';
+        new bootstrap.Modal(document.getElementById('freelancerModal')).show();
+    });
 }
 
-function copyTask(id){
+/* ── WHATSAPP COPY ───────────────────────────────────── */
+function copyTaskMessage(user, title, deadline, priority, status){
+    status   = status.replace(/_/g, ' ').toUpperCase();
+    priority = priority.charAt(0).toUpperCase() + priority.slice(1);
+    const msg = `Hello ${user} 👋,\n\n📝 Task Update Notification\n\n📌 Task: ${title}\n📅 Deadline: ${deadline}\n⚡ Priority: ${priority}\n📊 Status: ${status}\n\n👉 Please log in and update your progress.\n\n- Task Management System`;
+    navigator.clipboard.writeText(msg);
+    alert("WhatsApp message copied!");
+}
+
+function copyTaskMessageFromModal(){
+    if(!currentTask) return;
+    copyTaskMessage(
+        currentTask.assigned_to,
+        currentTask.title,
+        currentTask.deadline,
+        currentTask.priority,
+        currentTask.status
+    );
+}
+
+function copyMessage(id){
     navigator.clipboard.writeText("Task ID: " + id);
     alert("Copied for WhatsApp!");
 }
 
-</script>
+/* ── DROPDOWN LISTENERS ──────────────────────────────── */
+document.addEventListener("DOMContentLoaded", function(){
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("freelancerDropdown").addEventListener("change", function(){
+        if(this.value) window.location.href = `/tasks/freelancer-data/${this.value}/`;
+    });
 
+    document.getElementById("employeeDropdown").addEventListener("change", function(){
+        if(this.value) window.location.href = `/tasks/freelancer-data/${this.value}/`;
+    });
+
+    document.getElementById("taskDropdown").addEventListener("change", function(){
+        if(this.value) window.location.href = `/tasks/task/${this.value}/`;
+    });
+
+    /* Profile image / gender preview support */
     const genderField = document.getElementById("id_gender");
-    const imageField = document.getElementById("id_profile_image");
-    const preview = document.getElementById("preview");
-
+    const imageField  = document.getElementById("id_profile_image");
+    const preview     = document.getElementById("preview");
     let uploadedImage = false;
 
-    // 🔥 When image uploaded → override everything
-    if (imageField) {
-        imageField.addEventListener("change", function(event) {
-            if (event.target.files.length > 0) {
-                preview.src = URL.createObjectURL(event.target.files[0]);
-                uploadedImage = true; // 🚀 important
+    if(imageField){
+        imageField.addEventListener("change", function(event){
+            if(event.target.files.length > 0){
+                if(preview){ preview.src = URL.createObjectURL(event.target.files[0]); }
+                uploadedImage = true;
             }
         });
     }
 
-    // 🔥 Gender change → only if NO uploaded image
-    if (genderField) {
-        genderField.addEventListener("change", function() {
-
-            if (uploadedImage) return; // ❌ DON'T override uploaded image
-
-            let gender = genderField.value;
-
-            if (gender === "female") {
-                preview.src = "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
-            } else if (gender === "male") {
-                preview.src = "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
-            } else {
-                preview.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
-            }
-
+    if(genderField && preview){
+        genderField.addEventListener("change", function(){
+            if(uploadedImage) return;
+            const gender = genderField.value;
+            if(gender === "female") preview.src = "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
+            else if(gender === "male") preview.src = "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
+            else preview.src = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
         });
     }
 
 });
-</script>
-<script>
-document.getElementById("freelancerDropdown").addEventListener("change", function(){
-
-    let id = this.value;
-
-    if(id){
-        // window.location.href = `/freelancer-data/${id}/`;
-        window.location.href = `/tasks/freelancer-data/${id}/`;
-    }
-
-});
-
-// document.getElementById("taskDropdown").addEventListener("change", function(){
-
-//     let taskId = this.value;
-
-//     if(taskId){
-//         window.location.href = `/task-detail/${taskId}/`;
-//     }
-
-// });
-
-document.getElementById("taskDropdown").addEventListener("change", function(){
-
-    let id = this.value;
-
-    if(id){
-        window.location.href = `/tasks/task/${id}/`;
-    }
-
-});
-</script>
-<script>
-
-// =========================================
-// FREELANCER DROPDOWN
-// =========================================
-
-document.getElementById("freelancerDropdown")
-.addEventListener("change", function(){
-
-    let id = this.value;
-
-    if(id){
-        // window.location.href = `/freelancer-data/${id}/`;
-        window.location.href = `/tasks/freelancer-data/${id}/`;
-    }
-
-});
-
-
-// =========================================
-// EMPLOYEE DROPDOWN
-// =========================================
-
-document.getElementById("employeeDropdown")
-.addEventListener("change", function(){
-
-    let id = this.value;
-
-    if(id){
-        // window.location.href = `/employee-data/${id}/`;
-        window.location.href = `/tasks/freelancer-data/${id}/`;
-    }
-
-});
-
-
-// =========================================
-// TASK DROPDOWN
-// =========================================
-
-document.getElementById("taskDropdown")
-.addEventListener("change", function(){
-
-    let id = this.value;
-
-    if(id){
-        window.location.href = `/tasks/task/${id}/`;
-    }
-
-});
-
 </script>
 
 </body>
