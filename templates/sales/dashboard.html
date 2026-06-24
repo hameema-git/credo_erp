@@ -1,363 +1,750 @@
+
+Dashboard · HTML
 {% load static %}
-
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
-
-<!-- ✅ IMPORTANT FOR MOBILE -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="manifest" href="{% static 'manifest.json' %}">
-<meta name="theme-color" content="#362c7a">
-
-<style>
-
-    body {
-        background: #f5f6fa;
-        font-family: Calibri, sans-serif;
-    }
-
-    /* MAIN BOX */
-    .container-box {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-top: 30px;
-    }
-
-    /* HEADER */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-    }
-
-    .logo {
-        height: 80px;
-    }
-
-    .company-info {
-        font-size: 13px;
-        color: #444;
-        line-height: 1.6;
-    }
-
-    .title {
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    /* BUTTON */
-    .btn-gradient {
-        background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
-        border: none;
-        color: white;
-    }
-
-    /* CARDS */
-    .dashboard-card {
-        border-radius: 10px;
-        color: white;
-        padding: 20px;
-        font-weight: bold;
-    }
-
-    .dashboard-card h2 {
-        font-size: 28px;
-        margin-top: 10px;
-    }
-
-    .card-1 { background: linear-gradient(90deg,#362c7a,#5f4bb6); }
-    .card-2 { background: linear-gradient(90deg,#741960,#a92a7a); }
-    .card-3 { background: linear-gradient(90deg,#d0153e,#ff4d6d); }
-
-    /* TABLE */
-    .table thead {
-        background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
-        color: white;
-    }
-
-    .card-header-custom {
-        background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
-        color: white;
-        padding: 10px;
-        font-weight: bold;
-    }
-
-    /* 🔥 MOBILE RESPONSIVE */
-    @media (max-width: 768px) {
-
-        .header {
+    <title>Dashboard – Credo.intl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#7c3aed">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+ 
+    <style>
+        /* ══ RESET ══════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background: #f5f6fa;
+            color: #222;
+            display: flex;
+            min-height: 100vh;
+        }
+ 
+        /* ══ SIDEBAR ════════════════════════════════════════ */
+        .sidebar {
+            width: 210px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #ebebeb;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 200;
+            overflow-y: auto;
+        }
+ 
+        /* Logo */
+        .sidebar-logo {
+            padding: 16px 14px 14px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-img { height: 52px; width: auto; object-fit: contain; }
+ 
+        /* Nav */
+        .sidebar-nav { padding: 10px 8px; flex: 1; }
+ 
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: #bbb;
+            padding: 10px 10px 4px;
+        }
+ 
+        .nav-link-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: #555;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            transition: background .15s, color .15s;
+        }
+        .nav-link-item i { font-size: 15px; width: 17px; text-align: center; }
+        .nav-link-item:hover { background: #f3f0ff; color: #7c3aed; }
+        .nav-link-item.active {
+            background: #ede9fe;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+ 
+        .nav-section-plain {
+            padding: 10px 10px 4px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #888;
+        }
+ 
+        /* Help card */
+        .sidebar-help {
+            margin: 10px 10px 14px;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 14px;
+            padding: 14px 12px;
+            color: #fff;
+        }
+        .sidebar-help .sh-title { font-weight: 700; font-size: 13px; }
+        .sidebar-help .sh-sub   { font-size: 11px; opacity: .85; margin-top: 2px; }
+        .sidebar-help .sh-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+            background: rgba(255,255,255,.22);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .15s;
+            width: 100%;
+        }
+        .sidebar-help .sh-btn:hover { background: rgba(255,255,255,.35); color: #fff; }
+ 
+        /* ══ PAGE WRAPPER ════════════════════════════════════ */
+        .page-wrapper {
+            margin-left: 210px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+ 
+        /* ══ TOPBAR ══════════════════════════════════════════ */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid #ebebeb;
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+ 
+        .topbar-heading { font-size: 19px; font-weight: 800; color: #1a1a2e; }
+        .topbar-sub { font-size: 12px; color: #888; }
+ 
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+ 
+        .topbar-bell {
+            position: relative;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid #e5e5e5;
+            display: flex; align-items: center; justify-content: center;
+            color: #666; font-size: 17px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color .15s;
+        }
+        .topbar-bell:hover { border-color: #7c3aed; color: #7c3aed; }
+        .bell-dot {
+            position: absolute; top: 5px; right: 6px;
+            width: 8px; height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 1.5px solid #fff;
+        }
+ 
+        .topbar-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ebebeb;
+            cursor: pointer;
+        }
+        .topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .topbar-avatar-placeholder {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 14px;
+            cursor: pointer;
+        }
+ 
+        /* ══ CONTENT AREA ════════════════════════════════════ */
+        .content-area {
+            padding: 24px 24px 36px;
+            flex: 1;
+        }
+ 
+        /* ══ SEARCH + TASK BTN ════════════════════════════════ */
+        .search-task-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+ 
+        .search-wrap {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+            display: flex;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .search-wrap .s-icon {
+            padding: 0 10px 0 14px;
+            display: flex; align-items: center;
+            color: #aaa; font-size: 15px;
+            background: #fff;
+        }
+        .search-wrap input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 13px;
+            padding: 10px 4px;
+            background: transparent;
+            color: #333;
+        }
+        .search-wrap input::placeholder { color: #bbb; }
+        .search-type-select {
+            border: none;
+            border-left: 1px solid #e8e8e8;
+            outline: none;
+            font-size: 13px;
+            padding: 0 28px 0 12px;
+            background: #fafafa;
+            color: #555;
+            cursor: pointer;
+            min-width: 80px;
+            appearance: auto;
+        }
+ 
+        .btn-task-mgmt {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 22px;
+            background: linear-gradient(90deg, #ff9800, #f44336);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(255,87,34,.35);
+            transition: opacity .15s, transform .15s;
+        }
+        .btn-task-mgmt:hover { opacity: .9; transform: translateY(-1px); color: #fff; }
+ 
+        /* ══ STAT CARDS ══════════════════════════════════════ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+ 
+        .stat-card {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 14px;
+            padding: 14px 12px;
+            display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 10px;
+            gap: 6px;
+            transition: box-shadow .2s;
+            position: relative;
+            overflow: hidden;
         }
-
-        .logo {
-            height: 60px;
+        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.09); }
+ 
+        .stat-icon-wrap {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            margin-bottom: 4px;
         }
-
-        .title {
-            font-size: 20px;
-            text-align: left;
+        .si-purple { background: #ede9fe; color: #7c3aed; }
+        .si-dark   { background: #1e1b4b; color: #fff; }
+        .si-red    { background: #fff1f2; color: #e11d48; }
+        .si-orange { background: #fff7ed; color: #ea580c; }
+        .si-teal   { background: #f0fdf4; color: #059669; }
+        .si-blue   { background: #eff6ff; color: #2563eb; }
+        .si-green  { background: #f0fdf4; color: #16a34a; }
+ 
+        .stat-label { font-size: 11.5px; color: #888; font-weight: 500; }
+        .stat-value { font-size: 22px; font-weight: 800; color: #1a1a2e; line-height: 1.1; }
+        .stat-delta {
+            font-size: 11px;
+            font-weight: 600;
+            color: #10b981;
+            display: flex; align-items: center; gap: 3px;
         }
-
-        .container-box {
-            padding: 15px;
+        .stat-delta.neutral { color: #aaa; }
+ 
+        /* ══ TABLES GRID ═════════════════════════════════════ */
+        .tables-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
         }
-
-        /* SEARCH + BUTTON STACK */
-        .action-section {
-            flex-direction: column !important;
-            align-items: stretch !important;
+ 
+        .tables-grid-full {
+            margin-bottom: 18px;
         }
-
-        form {
-            flex-direction: column !important;
+ 
+        /* Table card */
+        .tbl-card {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+ 
+        .tbl-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+ 
+        .tbl-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+ 
+        .tbl-view-all {
+            font-size: 12.5px;
+            color: #7c3aed;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .tbl-view-all:hover { text-decoration: underline; color: #5b21b6; }
+ 
+        .tbl-card table {
             width: 100%;
+            border-collapse: collapse;
         }
-
-        form input,
-        form select,
-        form button {
-            width: 100%;
+        .tbl-card table thead tr th {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #888;
+            padding: 9px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
         }
-
-        .action-buttons {
-            flex-direction: column;
-            width: 100%;
+        .tbl-card table tbody tr td {
+            font-size: 13px;
+            color: #333;
+            padding: 11px 18px;
+            border-bottom: 1px solid #f8f8f8;
+            vertical-align: middle;
         }
-
-        .btn-gradient {
-            width: 100%;
+        .tbl-card table tbody tr:last-child td { border-bottom: none; }
+        .tbl-card table tbody tr:hover td { background: #faf9ff; }
+ 
+        .td-name-link { color: #1a1a2e; text-decoration: none; font-weight: 500; }
+        .td-name-link:hover { color: #7c3aed; }
+ 
+        .td-qno-link {
+            color: #7c3aed;
+            font-weight: 700;
+            text-decoration: none;
         }
-
-        /* CARDS */
-        .dashboard-card {
-            margin-bottom: 15px;
+        .td-qno-link:hover { text-decoration: underline; }
+ 
+        /* Action icon buttons */
+        .btn-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+        .btn-icon:hover { opacity: .8; }
+        .btn-view-icon { background: #ede9fe; color: #7c3aed; }
+        .btn-del-icon  { background: #fee2e2; color: #dc2626; }
+        .btn-pdf-icon  { background: #fff1f2; color: #e11d48; font-size: 11px; font-weight: 700; }
+        .btn-edit-icon { background: #fef3c7; color: #d97706; font-size: 13px; }
+ 
+        /* No data */
+        .no-data-row td {
             text-align: center;
+            color: #aaa;
+            padding: 28px 18px !important;
+            font-size: 13px;
         }
-
-        /* TABLE SCROLL */
-        .table-responsive {
-            overflow-x: auto;
+ 
+        /* Status badges */
+        .badge-status {
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
         }
-
-    }
-
-</style>
-
-
+        .bs-pending  { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .bs-approved { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .bs-paid     { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .bs-draft    { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+ 
+        /* ══ RESPONSIVE ══════════════════════════════════════ */
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 960px) {
+            .tables-grid-2col { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform .25s; }
+            .sidebar.sb-open { transform: translateX(0); }
+            .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 199; }
+            .sb-overlay.show { display: block; }
+            .page-wrapper { margin-left: 0; }
+            .mobile-toggle { display: flex !important; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .topbar { padding: 0 16px; }
+            .content-area { padding: 16px; }
+        }
+ 
+        .mobile-toggle {
+            display: none;
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            align-items: center; justify-content: center;
+            cursor: pointer; font-size: 18px; color: #555;
+        }
+ 
+        /* Search dropdown */
+        #typeListBox {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.12);
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            display: none;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+        #typeListBox .list-group-item {
+            font-size: 13px;
+            padding: 10px 14px;
+            border: none;
+            border-bottom: 1px solid #f3f3f3;
+            cursor: pointer;
+        }
+        #typeListBox .list-group-item:hover { background: #f3f0ff; color: #7c3aed; }
+    </style>
 </head>
-
+ 
 <body>
-
-<div class="container">
-<div class="container-box">
-
-
-<!-- HEADER -->
-<div class="header">
-
-    <div class="d-flex align-items-center gap-3">
-        <img src="{% static 'logo6.png' %}" class="logo">
-
-        <div class="company-info">
-            <b>CREDO INTERNATIONAL DIGITAL DESIGNS</b><br>
-            Mussaffa 45 - Abu Dhabi, UAE<br>
-            TRN: 105189276600001<br>
-            📞 +971566981200<br>
-            ✉ info@credodesigns.ae
-        </div>
+ 
+<!-- Sidebar overlay (mobile) -->
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+ 
+<!-- ══ SIDEBAR ════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+ 
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <img src="{% static 'logo6.png' %}" class="logo-img" alt="Credo.intl">
     </div>
-
-    <div class="text-end">
-        <div class="title">DASHBOARD</div>
-        <small class="text-muted">Overview & quick actions</small>
-    </div>
-
-</div>
-<div class="text-end mb-3">
-    <button id="installBtn" class="btn btn-gradient" style="display:none;">
-        📲 Install App
-    </button>
-</div>
-
-<!-- ACTION + SEARCH -->
-<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2 action-section">
-
-    <!-- SEARCH -->
-    <!-- <form method="GET" action="{% url 'search_results' %}" class="d-flex flex-wrap gap-2 w-100">
-
-        <input type="text" 
-               id="searchInput"
-               name="q" 
-               class="form-control"
-               placeholder="Search...">
-
-        <select name="type" class="form-select" style="max-width: 180px;">
-            <option value="all">All</option>
-            <option value="customer">Customers</option>
-            <option value="quotation">Quotations</option>
-            <option value="invoice">Invoices</option>
-            <option value="invoice">Service</option>
-        </select>
-
-        <button type="submit" class="btn btn-gradient">
-            🔍 Search
-        </button>
-
-    </form> -->
-    <div class="mb-4 position-relative">
-
-<form method="GET" action="{% url 'search_results' %}" class="d-flex gap-2 flex-wrap align-items-start">
-
-    <!-- SEARCH INPUT -->
-    <input type="text" id="searchInput" name="q"
-           class="form-control"
-           placeholder="Search..."
-           style="flex:1;">
-
-    <!-- TYPE SELECT + DROPDOWN WRAPPER -->
-    <div style="position: relative; width: 200px;">
-
-        <select id="searchType" name="type" class="form-select">
-            <option value="all">All</option>
-            <option value="customer">Customer</option>
-            <option value="quotation">Quotation</option>
-            <option value="invoice">Invoice</option>
-            <option value="service">Service</option>
-             <option value="supplier">Supplier</option>
-             <option value="lpo">LPO</option>
-            <option value="receipt">Receipt</option>
-        </select>
-
-        <!-- 🔥 DROPDOWN BELOW TYPE -->
-        <div id="typeListBox"
-             class="list-group mt-1"
-             style="
-                max-height:200px;
-                overflow-y:auto;
-                display:none;
-                position:absolute;
-                width:100%;
-                z-index:1000;
-             ">
-        </div>
-
-    </div>
-
-    <!-- SEARCH BUTTON -->
-    <button class="btn btn-gradient">Search</button>
-
-</form>
-
-</div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="d-flex flex-wrap gap-2 action-buttons w-100">
-
-        <a href="{% url 'add_customer' %}" class="btn btn-gradient">
-            + Add Customer
+ 
+    <!-- Nav -->
+    <!-- <nav class="sidebar-nav">
+ 
+        <a href="{% url 'dashboard' %}" class="nav-link-item active">
+            <i class="bi bi-grid-fill"></i> Dashboard
         </a>
-          <a href="{% url 'add_supplier' %}" class="btn btn-gradient">
-            + Add Supplier
+ 
+        <a href="#" class="nav-link-item">
+            <i class="bi bi-person-fill"></i> Customers
         </a>
-
-        <a href="{% url 'add_service' %}" class="btn btn-gradient">
-            + Add Service
+ 
+        <a href="#" class="nav-link-item">
+            <i class="bi bi-building"></i> Suppliers
         </a>
-
-        <a href="{% url 'create_quotation' %}" class="btn btn-gradient">
-            + Create Quotation
+ 
+        <a href="#" class="nav-link-item">
+            <i class="bi bi-briefcase-fill"></i> Services
         </a>
-        
-        <a href="{% url 'create_invoice' %}" class="btn btn-gradient">
-            + Create Invoice
+ 
+        <a href="{% url '#' %}" class="nav-link-item">
+            <i class="bi bi-file-earmark-text-fill"></i> Quotations
         </a>
-        <a href="{% url 'create_lpo' %}" class="btn btn-gradient">
-    + Create LPO
-</a>
-        
+ 
+        <a href="{% url 'invoice_list' %}" class="nav-link-item">
+            <i class="bi bi-receipt"></i> Invoice
+        </a>
+ 
+        <a href="{% url '#' %}" class="nav-link-item">
+            <i class="bi bi-box-seam-fill"></i> LPO
+        </a>
+ 
+        <a href="{% url 'manager_dashboard' %}" class="nav-link-item">
+            <i class="bi bi-kanban-fill"></i> Task Management
+        </a>
+ 
+        <div class="nav-section-plain">Reports</div>
+ 
+        <a href="{% url '#' %}" class="nav-link-item">
+            <i class="bi bi-cash-stack"></i> Receipts
+        </a>
+ 
+        <a href="#" class="nav-link-item">
+            <i class="bi bi-bar-chart-fill"></i> Analytics
+        </a>
+ 
+    </nav> -->
 
+    <nav class="sidebar-nav">
+
+    <a href="{% url 'dashboard' %}" class="nav-link-item active">
+        <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+
+    <a href="{% url 'add_customer' %}" class="nav-link-item">
+        <i class="bi bi-person-fill"></i> Customers
+    </a>
+
+    <a href="{% url 'add_supplier' %}" class="nav-link-item">
+        <i class="bi bi-building"></i> Suppliers
+    </a>
+
+    <a href="{% url 'add_service' %}" class="nav-link-item">
+        <i class="bi bi-briefcase-fill"></i> Services
+    </a>
+
+    <a href="{% url 'create_quotation' %}" class="nav-link-item">
+        <i class="bi bi-file-earmark-text-fill"></i> Quotations
+    </a>
+
+    <a href="{% url 'invoice_list' %}" class="nav-link-item">
+        <i class="bi bi-receipt"></i> Invoice
+    </a>
+
+    <a href="{% url 'create_lpo' %}" class="nav-link-item">
+        <i class="bi bi-box-seam-fill"></i> LPO
+    </a>
+
+    <a href="{% url 'manager_dashboard' %}" class="nav-link-item">
+        <i class="bi bi-kanban-fill"></i> Task Management
+    </a>
+
+    <div class="nav-section-plain">Reports</div>
+
+    <a href="#" class="nav-link-item">
+        <i class="bi bi-cash-stack"></i> Receipts
+    </a>
+
+    <a href="#" class="nav-link-item">
+        <i class="bi bi-bar-chart-fill"></i> Analytics
+    </a>
+
+</nav>
+ 
+    <!-- Help -->
+    <div class="sidebar-help">
+        <div class="sh-title">Need Help</div>
+        <div class="sh-sub">Contact Support For Assistance</div>
+        <a href="#" class="sh-btn">
+            <i class="bi bi-headset"></i> Contact Support
+        </a>
     </div>
-
-</div>
-
-<!-- STATS -->
-<div class="row mb-4">
-
-    <div class="col-md-4">
-        <div class="dashboard-card card-1">
-            Total Customers
-            <h2>{{ customers_count }}</h2>
+ 
+</aside>
+ 
+<!-- ══ PAGE WRAPPER ══════════════════════════════════════ -->
+<div class="page-wrapper">
+ 
+    <!-- ══ TOPBAR ══════════════════════════════════════════ -->
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="mobile-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div>
+                <div class="topbar-heading">Welcome To Your Creative Hub</div>
+                <div class="topbar-sub">Manage Clients, Projects, Invoices, And Deadlines With Ease<b>.</b></div>
+            </div>
         </div>
-    </div>
-
-     <div class="col-md-4">
-        <div class="dashboard-card card-2">
-            Total Supplier
-            <h2>{{ supplier_count }}</h2>
+ 
+        <div class="topbar-right">
+            <a href="{% url 'profile' %}" class="topbar-bell" title="Profile">
+                <i class="bi bi-bell-fill"></i>
+                <span class="bell-dot"></span>
+            </a>
+            <a href="{% url 'profile' %}">
+                <div class="topbar-avatar-placeholder">
+                    {{ request.user.username|first|upper }}
+                </div>
+            </a>
         </div>
-    </div>
-       <div class="col-md-4">
-        <div class="dashboard-card card-3">
-            Total Service
-            <h2>{{ services_count }}</h2>
+    </header>
+ 
+    <!-- ══ CONTENT ══════════════════════════════════════════ -->
+    <div class="content-area">
+ 
+        <!-- Search + Task Management -->
+        <div class="search-task-row">
+            <div class="search-wrap" style="position:relative;">
+                <span class="s-icon"><i class="bi bi-search"></i></span>
+                <input
+                    type="text"
+                    id="searchInput"
+                    name="q"
+                    placeholder="Search Customers, Quotations, Invoice...">
+                <select id="searchType" class="search-type-select">
+                    <option value="all">All</option>
+                    <option value="customer">Customer</option>
+                    <option value="supplier">Supplier</option>
+                    <option value="service">Service</option>
+                    <option value="quotation">Quotation</option>
+                    <option value="invoice">Invoice</option>
+                    <option value="lpo">LPO</option>
+                    <option value="receipt">Receipt</option>
+                </select>
+                <div id="typeListBox" class="list-group"></div>
+            </div>
+ 
+            <a href="{% url 'manager_dashboard' %}" class="btn-task-mgmt" id="taskBtn">
+                <i class="bi bi-kanban-fill"></i>
+                <span id="taskBtnText">Task Management</span>
+            </a>
+ 
+            <button id="installBtn" style="display:none;"
+                class="btn-task-mgmt" style="background:linear-gradient(90deg,#7c3aed,#db2777);">
+                <i class="bi bi-phone"></i> Install App
+            </button>
         </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="dashboard-card card-1">
-            Total Quotations
-            <h2>{{ quotations_count }}</h2>
+ 
+        <!-- ── STAT CARDS ────────────────────────────────── -->
+        <div class="stats-grid">
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-purple">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-label">Total Customer</div>
+                <div class="stat-value">{{ customers_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +5 This Month
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-dark">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div class="stat-label">Total Suppliers</div>
+                <div class="stat-value">{{ supplier_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +1 This Month
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-teal">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="stat-label">Total Services</div>
+                <div class="stat-value">{{ services_count }}</div>
+                <div class="stat-delta neutral">
+                    <i class="bi bi-dash"></i> No Change
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-red">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <div class="stat-label">Total Quotations</div>
+                <div class="stat-value">{{ quotations_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +7 This Month
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-orange">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <div class="stat-label">Total Invoice</div>
+                <div class="stat-value">{{ invoices_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +4 This Month
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-blue">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <div class="stat-label">Total LPO</div>
+                <div class="stat-value">{{ lpos_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +3 This Month
+                </div>
+            </div>
+ 
+            <div class="stat-card">
+                <div class="stat-icon-wrap si-green">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="stat-label">Total Receipts</div>
+                <div class="stat-value">{{ receipts_count }}</div>
+                <div class="stat-delta">
+                    <i class="bi bi-graph-up-arrow"></i> +3 This Month
+                </div>
+            </div>
+ 
         </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="dashboard-card card-2">
-            Total Invoices
-            <h2>{{ invoices_count }}</h2>
-        </div>
-    </div>
-        <div class="col-md-4">
-        <div class="dashboard-card card-3">
-            Total LPO
-            <h2>{{ lpos_count }}</h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-    <div class="dashboard-card card-1">
-        Total Receipts
-        <h2>{{ receipts_count }}</h2>
-    </div>
-</div>
-
-
-</div>
-
-<!-- DATA -->
-<div class="row">
-
-
-
-     <div class="col-md-6">
-    <div class="card shadow">
-
-        <div class="card-header-custom">
-            Recent Customers
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
+ 
+        <!-- ── RECENT CUSTOMERS + SUPPLIERS ─────────────── -->
+        <div class="tables-grid-2col">
+ 
+            <!-- Recent Customers -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent Customer</span>
+                    <a href="{% url 'customer_list' %}" class="tbl-view-all">View All</a>
+                </div>
+                <table>
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -365,43 +752,39 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for c in recent_customers %}
                         <tr>
                             <td>
-                                <a href="{% url 'customer_detail' c.id %}">
+                                <a href="{% url 'customer_detail' c.id %}" class="td-name-link">
                                     {{ c.name }}
                                 </a>
                             </td>
                             <td>{{ c.phone }}</td>
                             <td>
-                                <a href="{% url 'edit_customer' c.id %}" class="btn btn-warning btn-sm">✏️</a>
-                                <a href="{% url 'delete_customer' c.id %}" class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this customer?');">🗑️</a>
+                                <a href="{% url 'customer_detail' c.id %}" class="btn-icon btn-view-icon">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a href="{% url 'delete_customer' c.id %}" class="btn-icon btn-del-icon"
+                                   onclick="return confirm('Delete this customer?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3">No data</td></tr>
+                        <tr class="no-data-row"><td colspan="3">No customers found</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        </div>
-
-    </div>
-</div>
-
-<div class="col-md-6">
-    <div class="card shadow">
-
-        <div class="card-header-custom">
-            Recent Suppliers
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
+ 
+            <!-- Recent Suppliers -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent Suppliers</span>
+                    <a href="{% url 'supplier_list' %}" class="tbl-view-all">View All</a>
+                </div>
+                <table>
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -409,216 +792,178 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for s in recent_suppliers %}
                         <tr>
-                            <!-- <td>{{ s.name }}</td> -->
-
-                              <td>
-                                <a href="{% url 'supplier_detail' s.id %}">
+                            <td>
+                                <a href="{% url 'supplier_detail' s.id %}" class="td-name-link">
                                     {{ s.name }}
                                 </a>
                             </td>
                             <td>{{ s.phone }}</td>
                             <td>
-                                <a href="{% url 'edit_supplier' s.id %}" class="btn btn-warning btn-sm">✏️</a>
-                                <a href="{% url 'delete_supplier' s.id %}" class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this supplier?');">🗑️</a>
+                                <a href="{% url 'supplier_detail' s.id %}" class="btn-icon btn-view-icon">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a href="{% url 'delete_supplier' s.id %}" class="btn-icon btn-del-icon"
+                                   onclick="return confirm('Delete this supplier?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3">No data</td></tr>
+                        <tr class="no-data-row"><td colspan="3">No suppliers found</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+ 
         </div>
-
-    </div>
-</div>
-
-<div class="col-md-6">
-    <div class="card shadow">
-
-        <div class="card-header-custom">
-            Recent Services
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
+ 
+        <!-- ── RECENT SERVICES + RECENT QUOTATIONS ──────── -->
+        <div class="tables-grid-2col">
+ 
+            <!-- Recent Services -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent Services</span>
+                    <a href="{% url 'service_list' %}" class="tbl-view-all">View All</a>
+                </div>
+                <table>
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Price</th>
+                            <th>Phone</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for s in recent_services %}
                         <tr>
-                            <!-- <td>{{ s.name }}</td> -->
-
-                            
-                              <td>
-                                <a href="{% url 'service_detail' s.id %}">
+                            <td>
+                                <a href="{% url 'service_detail' s.id %}" class="td-name-link">
                                     {{ s.name }}
                                 </a>
                             </td>
                             <td>{{ s.price }}</td>
                             <td>
-                                <a href="{% url 'edit_service' s.id %}" class="btn btn-warning btn-sm">✏️</a>
-                                <a href="{% url 'delete_service' s.id %}" class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this service?');">🗑️</a>
+                                <a href="{% url 'service_detail' s.id %}" class="btn-icon btn-view-icon">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a href="{% url 'delete_service' s.id %}" class="btn-icon btn-del-icon"
+                                   onclick="return confirm('Delete this service?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3">No data</td></tr>
+                        <tr class="no-data-row"><td colspan="3">No Data Avaliable</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        </div>
-
-    </div>
-</div>
-
-
-    <!-- QUOTATIONS -->
-    <div class="col-md-6">
-        <div class="card shadow">
-
-            <div class="card-header-custom">
-                Recent Quotations
-            </div>
-
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Customer</th>
-                                <th>Total</th>
-                                 <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for q in recent_quotations %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'quotation_detail' q.id %}">
-                                        {{ q.number }}
-                                    </a>
-                                </td>
-                                <td>{{ q.customer.name }}</td>
-                                <td>AED {{ q.total }}</td>
-
-    <td>
-                                <!-- <a href="{% url 'quotation_pdf' q.id %}" class="btn btn-danger btn-sm">PDF</a> -->
-
-                                <a href="{% url 'quotation_pdf' q.id %}"
-   target="_blank"
-   class="btn btn-danger btn-sm">
-   PDF
-</a>
-
-        <a href="{% url 'edit_quotation' q.id %}" 
-           class="btn btn-warning btn-sm">
-           ✏️ Edit
-        </a>
-           <a href="{% url 'delete_quotation' q.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this quotation?');">
-       🗑️
-    </a>
-    </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3">No data</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+ 
+            <!-- Recent Quotations -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent Services</span>
+                    <a href="{% url 'quotation_list' %}" class="tbl-view-all">View All</a>
                 </div>
-
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for q in recent_quotations %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'quotation_detail' q.id %}" class="td-qno-link">
+                                    {{ q.number }}
+                                </a>
+                            </td>
+                            <td>{{ q.customer.name }}</td>
+                            <td>AED {{ q.total }}</td>
+                            <td>
+                                {% if q.status == 'approved' %}
+                                    <span class="badge-status bs-approved">Approved</span>
+                                {% elif q.status == 'paid' %}
+                                    <span class="badge-status bs-paid">Paid</span>
+                                {% elif q.status == 'pending' or not q.status %}
+                                    <span class="badge-status bs-pending">Pending</span>
+                                {% else %}
+                                    <span class="badge-status bs-draft">{{ q.status|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ q.created_at|date:"d M Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr class="no-data-row"><td colspan="5">No quotations found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+ 
         </div>
-    </div>
-
-    <!-- INVOICES -->
-    <div class="col-md-6">
-        <div class="card shadow">
-
-            <div class="card-header-custom">
-                Recent Invoices
-            </div>
-
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Customer</th>
-                                <th>Total</th>
-                                 <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for i in recent_invoices %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'invoice_detail' i.id %}">
-                                        {{ i.number }}
-                                    </a>
-                                </td>
-                                <td>{{ i.customer.name }}</td>
-                                <td>AED {{ i.total }}</td>
-                                   <td>
-                                <a href="{% url 'invoice_pdf' i.id %}"  target="_blank" class="btn btn-danger btn-sm">PDF</a>
-
-        <a href="{% url 'edit_invoice' i.id %}" 
-           class="btn btn-warning btn-sm">
-           ✏️ Edit
-        </a>
-            <a href="{% url 'delete_invoice' i.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this invoice?');">
-       🗑️
-    </a>
-
-
-    </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3">No data</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+ 
+        <!-- ── RECENT INVOICES + LPO ─────────────────────── -->
+        <div class="tables-grid-2col">
+ 
+            <!-- Recent Invoices -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent Invoices</span>
+                    <a href="{% url 'invoice_list' %}" class="tbl-view-all">View All</a>
                 </div>
-
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in recent_invoices %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'invoice_detail' i.id %}" class="td-qno-link">
+                                    {{ i.number }}
+                                </a>
+                            </td>
+                            <td>{{ i.customer.name }}</td>
+                            <td>AED {{ i.total }}</td>
+                            <td>
+                                <a href="{% url 'invoice_pdf' i.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                                <a href="{% url 'edit_invoice' i.id %}" class="btn-icon btn-edit-icon">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a href="{% url 'delete_invoice' i.id %}" class="btn-icon btn-del-icon"
+                                   onclick="return confirm('Delete this invoice?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr class="no-data-row"><td colspan="4">No invoices found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </div>
-
-
-
-<div class="col-md-6">
-    <div class="card shadow">
-
-        <div class="card-header-custom">
-            Recent LPO
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
+ 
+            <!-- Recent LPO -->
+            <div class="tbl-card">
+                <div class="tbl-card-header">
+                    <span class="tbl-card-title">Recent LPO</span>
+                    <a href="{% url 'lpo_list' %}" class="tbl-view-all">View All</a>
+                </div>
+                <table>
                     <thead>
                         <tr>
                             <th>No</th>
@@ -627,331 +972,161 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for l in recent_lpos %}
                         <tr>
                             <td>
-                                <a href="{% url 'lpo_detail' l.id %}">
+                                <a href="{% url 'lpo_detail' l.id %}" class="td-qno-link">
                                     {{ l.number }}
                                 </a>
                             </td>
                             <td>{{ l.supplier.name }}</td>
                             <td>AED {{ l.total }}</td>
                             <td>
-                                <a href="{% url 'lpo_pdf' l.id %}"  target="_blank" class="btn btn-danger btn-sm">PDF</a>
-                                
-        <a href="{% url 'edit_lpo' l.id %}" 
-           class="btn btn-warning btn-sm">
-           ✏️ Edit
-        </a>
-           <!-- <a href="{% url 'delete_lpo' l.id %}" 
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this lpo?');">
-       🗑️ -->
-
-       <!-- <form method="POST" action="{% url 'delete_lpo' l.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger btn-sm"
-        onclick="return confirm('Are you sure you want to delete this LPO?');">
-        🗑️
-    </button>
-</form> -->
-<!-- 
-<form method="POST" action="{% url 'delete_lpo' l.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger btn-sm"
-        onclick="return confirm('Are you sure you want to delete this LPO?');">
-        🗑️
-    </button>
-</form> -->
-
-<a href="{% url 'delete_lpo' l.id %}" 
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Are you sure you want to delete this LPO?');">
-   🗑️
-</a>
+                                <a href="{% url 'lpo_pdf' l.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                                <a href="{% url 'edit_lpo' l.id %}" class="btn-icon btn-edit-icon">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a href="{% url 'delete_lpo' l.id %}" class="btn-icon btn-del-icon"
+                                   onclick="return confirm('Delete this LPO?')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="4">No data</td></tr>
+                        <tr class="no-data-row"><td colspan="4">No LPO found</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+ 
         </div>
-
-    </div>
-</div>
-
-
-<div class="col-md-6">
-    <div class="card shadow">
-
-        <div class="card-header-custom">
-            Recent Receipts
-        </div>
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-                <table class="table">
-
-                    <thead>
-                        <tr>
-                            <th>Receipt No</th>
-                            <th>Invoice</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for r in recent_receipts %}
-                        <tr>
-
-                            <td>
-                                {{ r.receipt_number }}
-                            </td>
-
-                            <td>
-                                {{ r.invoice.number }}
-                            </td>
-
-                            <td>
-                                AED {{ r.amount_paid }}
-                            </td>
-
-                            <!-- <td>
-
-                                <a href="{% url 'receipt_preview' r.id %}"
-                                   class="btn btn-primary btn-sm">
-                                   View
-                                </a>
-
-                                <a href="{% url 'receipt_pdf' r.id %}"
-                                   class="btn btn-danger btn-sm">
-                                   PDF
-                                </a>
-
-                            </td> -->
-
-
-                            <td>
-
-    <!-- {% if r.invoice %} -->
-
-        <!-- <a href="{% url 'receipt_preview' r.id %}"
-           class="btn btn-primary btn-sm">
-           View
-        </a>
-
-    {% endif %}
-
-    <a href="{% url 'receipt_pdf' r.id %}"
-       class="btn btn-danger btn-sm">
-       PDF
-    </a> -->
-
-        <a href="{% url 'receipt_pdf' r.id %}"
-   target="_blank"
-   class="btn btn-danger btn-sm">
-   PDF
-</a>
-
-    <a href="{% url 'delete_receipt' r.id %}"
-       class="btn btn-dark btn-sm"
-       onclick="return confirm('Delete this receipt?')">
-       🗑️
-    </a>
-
-</td>
-
-                        </tr>
-
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">No receipts found</td>
-                        </tr>
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
+ 
+        <!-- ── RECENT RECEIPTS ───────────────────────────── -->
+        <div class="tbl-card">
+            <div class="tbl-card-header">
+                <span class="tbl-card-title">Recent Receipts</span>
+                <a href="{% url 'receipt_list' %}" class="tbl-view-all">View All</a>
             </div>
-
+            <table>
+                <thead>
+                    <tr>
+                        <th>Receipt No</th>
+                        <th>Invoice</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in recent_receipts %}
+                    <tr>
+                        <td>{{ r.receipt_number }}</td>
+                        <td>{{ r.invoice.number }}</td>
+                        <td>AED {{ r.amount_paid }}</td>
+                        <td>
+                            <a href="{% url 'receipt_pdf' r.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                            <a href="{% url 'delete_receipt' r.id %}" class="btn-icon btn-del-icon"
+                               onclick="return confirm('Delete this receipt?')">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="no-data-row"><td colspan="4">No receipts found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-    </div>
-</div>
-
-</div>
-
-
-</div>
-</div>
-
-<!-- <script>
-const input = document.getElementById("searchInput");
-
-if (input) {
-    input.addEventListener("keyup", function() {
-        let query = this.value;
-
-        if (query.length < 2) return;
-
-        fetch(`/search/?q=${query}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        });
-    });
-}
-</script> -->
-
+ 
+    </div><!-- /content-area -->
+</div><!-- /page-wrapper -->
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ 
 <script>
-const input = document.getElementById("searchInput");
+/* ── SIDEBAR TOGGLE ──────────────────────────────────── */
+function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('sb-open');
+    document.getElementById('sbOverlay').classList.toggle('show');
+}
+ 
+/* ── SEARCH AUTOCOMPLETE ─────────────────────────────── */
+const input      = document.getElementById("searchInput");
 const typeSelect = document.getElementById("searchType");
-const listBox = document.getElementById("typeListBox");
-
-function loadData(query="", type="all") {
-    // fetch(`/quotation/search/?q=${query}&type=${type}`)
-
+const listBox    = document.getElementById("typeListBox");
+ 
+function loadData(query="", type="all"){
     fetch(`/search/?q=${query}&type=${type}`)
     .then(res => res.json())
     .then(data => {
-
         listBox.innerHTML = "";
         let items = [];
-
-        if (type === "customer") items = data.customers.map(i => ({
-            text: i.name,
-            url: `/quotation/customer/${i.id}/`
-        }));
-
-        else if (type === "quotation") items = data.quotations.map(i => ({
-            text: i.number,
-            url: `/quotation/${i.id}/`
-        }));
-
-        else if (type === "invoice") items = data.invoices.map(i => ({
-            text: i.number,
-            url: `/quotation/invoice/${i.id}/`
-        }));
-
-        else if (type === "service") items = data.services.map(i => ({
-            text: i.name,
-            url: `/quotation/service/${i.id}/`
-        }));
-
-        else if (type === "supplier") items = data.suppliers.map(i => ({
-    text: i.name,
-    url: `/quotation/supplier/${i.id}/`
-}));
-
-        else if (type === "lpo") items = data.lpos.map(i => ({
-    text: i.number,
-    url: `/quotation/lpo/${i.id}/`
-}));
-
-
-else if (type === "receipt") items = data.receipts.map(i => ({
-    text: i.receipt_number,
-    url: `/quotation/receipt-preview/${i.id}/`
-}));
-
-
-        if (items.length === 0) {
-            listBox.style.display = "none";
-            return;
-        }
-
+ 
+        if(type === "customer")  items = data.customers.map(i  => ({ text: i.name,           url: `/quotation/customer/${i.id}/`       }));
+        else if(type === "quotation") items = data.quotations.map(i => ({ text: i.number,     url: `/quotation/${i.id}/`                }));
+        else if(type === "invoice")   items = data.invoices.map(i   => ({ text: i.number,     url: `/quotation/invoice/${i.id}/`        }));
+        else if(type === "service")   items = data.services.map(i   => ({ text: i.name,       url: `/quotation/service/${i.id}/`        }));
+        else if(type === "supplier")  items = data.suppliers.map(i  => ({ text: i.name,       url: `/quotation/supplier/${i.id}/`       }));
+        else if(type === "lpo")       items = data.lpos.map(i       => ({ text: i.number,     url: `/quotation/lpo/${i.id}/`            }));
+        else if(type === "receipt")   items = data.receipts.map(i   => ({ text: i.receipt_number, url: `/quotation/receipt-preview/${i.id}/` }));
+ 
+        if(items.length === 0){ listBox.style.display = "none"; return; }
+ 
         listBox.style.display = "block";
-
         items.forEach(item => {
-
             let el = document.createElement("a");
-            el.className = "list-group-item list-group-item-action";
+            el.className = "list-group-item";
             el.innerText = item.text;
-
-            // 🔥 CLICK → OPEN PAGE
-            // el.addEventListener("click", function(e) {
-            //     e.preventDefault();
-
-            //     input.value = item.text;   // autofill input
-            //     listBox.style.display = "none";
-
-            //     window.location.href = item.url; // redirect
-            // });
-            el.addEventListener("click", function() {
-    input.value = item.text;   // only fill input
-    listBox.style.display = "none";
-});
-
+            el.href = "#";
+            el.addEventListener("click", function(e){
+                e.preventDefault();
+                input.value = item.text;
+                listBox.style.display = "none";
+            });
             listBox.appendChild(el);
         });
     });
 }
-
-// 🔥 TYPE CHANGE → LOAD FULL LIST
-typeSelect.addEventListener("change", () => {
-    loadData("", typeSelect.value);
-});
-
-// 🔥 TYPING → FILTER
-input.addEventListener("keyup", () => {
-    loadData(input.value, typeSelect.value);
-});
-
-// 🔥 CLICK OUTSIDE → CLOSE DROPDOWN
-document.addEventListener("click", function(e) {
-    if (!e.target.closest("#typeListBox") && 
-        !e.target.closest("#searchInput") &&
-        !e.target.closest("#searchType")) {
+ 
+typeSelect.addEventListener("change", () => loadData("", typeSelect.value));
+input.addEventListener("keyup", () => loadData(input.value, typeSelect.value));
+document.addEventListener("click", function(e){
+    if(!e.target.closest("#typeListBox") && !e.target.closest("#searchInput") && !e.target.closest("#searchType")){
         listBox.style.display = "none";
     }
 });
-</script>
-
-<script>
+ 
+/* ── TASK BTN LOADING ─────────────────────────────────── */
+document.getElementById("taskBtn").addEventListener("click", function(){
+    let btn = document.getElementById("taskBtnText");
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Loading...`;
+    this.style.pointerEvents = "none";
+});
+ 
+/* ── PWA INSTALL ─────────────────────────────────────── */
 let deferredPrompt;
-
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-
-    const installBtn = document.getElementById('installBtn');
-    if (installBtn) {
-        installBtn.style.display = 'inline-block';
-    }
+    const btn = document.getElementById('installBtn');
+    if(btn) btn.style.display = 'inline-flex';
 });
-
 document.getElementById('installBtn')?.addEventListener('click', async () => {
-    if (deferredPrompt) {
+    if(deferredPrompt){
         deferredPrompt.prompt();
-
         const { outcome } = await deferredPrompt.userChoice;
-        console.log('User response:', outcome);
-
         deferredPrompt = null;
-
         document.getElementById('installBtn').style.display = 'none';
     }
 });
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
+ 
+/* ── SERVICE WORKER ──────────────────────────────────── */
+if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/static/sw.js')
-    .then(function(registration) {
-        console.log("PWA Ready");
-    })
-    .catch(function(error) {
-        console.log("SW failed:", error);
-    });
+    .then(() => console.log("PWA Ready"))
+    .catch(e  => console.log("SW failed:", e));
 }
 </script>
-
+ 
 </body>
 </html>
