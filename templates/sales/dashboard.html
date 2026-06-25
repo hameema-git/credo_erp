@@ -578,9 +578,14 @@
 
     <div class="nav-section-plain">Reports</div>
 
-    <a href="#" class="nav-link-item">
+    <!-- <a href="#" class="nav-link-item">
         <i class="bi bi-cash-stack"></i> Receipts
-    </a>
+    </a> -->
+    <a href="{% url 'search_results' %}?type=receipt"
+   class="nav-link-item">
+    <i class="bi bi-cash-stack"></i>
+    Receipts
+</a>
 
     <a href="#" class="nav-link-item">
         <i class="bi bi-bar-chart-fill"></i> Analytics
@@ -821,7 +826,11 @@
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent Customer</span>
                     
-                     <a href="{% url 'add_customer' %}" class="tbl-view-all">View All</a>
+                     <!-- <a href="{% url 'add_customer' %}" class="tbl-view-all">View All</a> -->
+                      <a href="{% url 'search_results' %}?type=customer"
+   class="tbl-view-all">
+    View All
+</a>
                 </div>
                 <table>
                     <thead>
@@ -862,7 +871,11 @@
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent Suppliers</span>
                     
-                     <a href="{% url 'add_supplier' %}" class="tbl-view-all">View All</a>
+                     <!-- <a href="{% url 'add_supplier' %}" class="tbl-view-all">View All</a> -->
+                      <a href="{% url 'search_results' %}?type=supplier"
+   class="tbl-view-all">
+    View All
+</a>
                 </div>
                 <table>
                     <thead>
@@ -908,7 +921,11 @@
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent Services</span>
                    
-                     <a href="{% url 'add_service' %}" class="tbl-view-all">View All</a>
+                     <!-- <a href="{% url 'add_service' %}" class="tbl-view-all">View All</a> -->
+                      <a href="{% url 'search_results' %}?type=service"
+   class="tbl-view-all">
+    View All
+</a>
                 </div>
                 <table>
                     <thead>
@@ -997,9 +1014,14 @@
         <div class="tbl-card">
     <div class="tbl-card-header">
         <span class="tbl-card-title">Recent Quotations</span>
-        <a href="{% url 'create_quotation' %}" class="tbl-view-all">
+        <!-- <a href="{% url 'create_quotation' %}" class="tbl-view-all">
             View All
-        </a>
+        </a> -->
+
+        <a href="{% url 'search_results' %}?type=quotation"
+   class="tbl-view-all">
+    View All
+</a>
     </div>
 
     <table>
@@ -1077,7 +1099,11 @@
             <div class="tbl-card">
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent Invoices</span>
-                    <a href="{% url 'create_invoice' %}" class="tbl-view-all">View All</a>
+                    <!-- <a href="{% url 'create_invoice' %}" class="tbl-view-all">View All</a> -->
+                     <a href="{% url 'search_results' %}?type=invoice"
+   class="tbl-view-all">
+    View All
+</a>
                 </div>
                 <table>
                     <thead>
@@ -1121,7 +1147,11 @@
                 <div class="tbl-card-header">
                     <span class="tbl-card-title">Recent LPO</span>
                    
-                     <a href="{% url 'create_lpo' %}" class="tbl-view-all">View All</a>
+                     <!-- <a href="{% url 'create_lpo' %}" class="tbl-view-all">View All</a> -->
+                      <a href="{% url 'search_results' %}?type=lpo"
+   class="tbl-view-all">
+    View All
+</a>
                 </div>
                 <table>
                     <thead>
@@ -1167,7 +1197,11 @@
             <div class="tbl-card-header">
                 <span class="tbl-card-title">Recent Receipts</span>
                 
-                 <a href="#" class="tbl-view-all">View All</a>
+                 <!-- <a href="#" class="tbl-view-all">View All</a> -->
+                  <a href="{% url 'search_results' %}?type=receipt"
+   class="tbl-view-all">
+    View All
+</a>
             </div>
             <table>
                 <thead>
@@ -1217,20 +1251,65 @@ const typeSelect = document.getElementById("searchType");
 const listBox    = document.getElementById("typeListBox");
  
 function loadData(query="", type="all"){
-    fetch(`/search/?q=${query}&type=${type}`)
+    // fetch(`/search/?q=${query}&type=${type}`)
+
+    const searchURL="{% url 'search_ajax' %}";
+fetch(`${searchURL}?q=${query}&type=${type}`)
     .then(res => res.json())
     .then(data => {
         listBox.innerHTML = "";
         let items = [];
  
-        if(type === "customer")  items = data.customers.map(i  => ({ text: i.name,           url: `/quotation/customer/${i.id}/`       }));
-        else if(type === "quotation") items = data.quotations.map(i => ({ text: i.number,     url: `/quotation/${i.id}/`                }));
-        else if(type === "invoice")   items = data.invoices.map(i   => ({ text: i.number,     url: `/quotation/invoice/${i.id}/`        }));
-        else if(type === "service")   items = data.services.map(i   => ({ text: i.name,       url: `/quotation/service/${i.id}/`        }));
-        else if(type === "supplier")  items = data.suppliers.map(i  => ({ text: i.name,       url: `/quotation/supplier/${i.id}/`       }));
-        else if(type === "lpo")       items = data.lpos.map(i       => ({ text: i.number,     url: `/quotation/lpo/${i.id}/`            }));
-        else if(type === "receipt")   items = data.receipts.map(i   => ({ text: i.receipt_number, url: `/quotation/receipt-preview/${i.id}/` }));
+        // if(type === "customer")  items = data.customers.map(i  => ({ text: i.name,           url: `/erp/customer/${i.id}/`      }));
+        // else if(type === "quotation") items = data.quotations.map(i => ({ text: i.number,     url: `/quotation/${i.id}/`                }));
+        // else if(type === "invoice")   items = data.invoices.map(i   => ({ text: i.number,     url: `/quotation/invoice/${i.id}/`        }));
+        // else if(type === "service")   items = data.services.map(i   => ({ text: i.name,       url: `/quotation/service/${i.id}/`        }));
+        // else if(type === "supplier")  items = data.suppliers.map(i  => ({ text: i.name,       url: `/quotation/supplier/${i.id}/`       }));
+        // else if(type === "lpo")       items = data.lpos.map(i       => ({ text: i.number,     url: `/quotation/lpo/${i.id}/`            }));
+        // else if(type === "receipt")   items = data.receipts.map(i   => ({ text: i.receipt_number, url: `/quotation/receipt-preview/${i.id}/` }));
  
+
+        if(type === "customer")
+    items = data.customers.map(i => ({
+        text: i.name,
+        url: `/erp/customer/${i.id}/`
+    }));
+
+else if(type === "quotation")
+    items = data.quotations.map(i => ({
+        text: i.number,
+        url: `/erp/quotation/${i.id}/`
+    }));
+
+else if(type === "invoice")
+    items = data.invoices.map(i => ({
+        text: i.number,
+        url: `/erp/invoice/${i.id}/`
+    }));
+
+else if(type === "service")
+    items = data.services.map(i => ({
+        text: i.name,
+        url: `/erp/service/${i.id}/`
+    }));
+
+else if(type === "supplier")
+    items = data.suppliers.map(i => ({
+        text: i.name,
+        url: `/erp/supplier/${i.id}/`
+    }));
+
+else if(type === "lpo")
+    items = data.lpos.map(i => ({
+        text: i.number,
+        url: `/erp/lpo/${i.id}/`
+    }));
+
+else if(type === "receipt")
+    items = data.receipts.map(i => ({
+        text: i.receipt_number,
+        url: `/erp/receipt-preview/${i.id}/`
+    }));
         if(items.length === 0){ listBox.style.display = "none"; return; }
  
         listBox.style.display = "block";
