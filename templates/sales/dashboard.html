@@ -24,6 +24,12 @@
             min-height: 100vh;
         }
  
+        .action-buttons{
+    display:flex;
+    gap:4px;
+    justify-content:center;
+    flex-wrap:nowrap;
+}
         /* ══ SIDEBAR ════════════════════════════════════════ */
         .sidebar {
             width: 210px;
@@ -37,15 +43,39 @@
             z-index: 200;
             overflow-y: auto;
         }
+
+        .btn-primary{
+
+background:linear-gradient(90deg,#ff9800,#ff4d4d);
+
+border:none;
+
+color:white;
+
+font-weight:600;
+
+}
  
         /* Logo */
-        .sidebar-logo {
+        /* .sidebar-logo {
             padding: 16px 14px 14px;
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: center;
             gap: 8px;
-        }
+        } */
+
+        .sidebar-logo{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:20px;
+
+}
         .logo-img { height: 52px; width: auto; object-fit: contain; }
  
         /* Nav */
@@ -361,25 +391,40 @@
         }
         .tbl-view-all:hover { text-decoration: underline; color: #5b21b6; }
  
-        .tbl-card table {
+        /* .tbl-card table {
             width: 100%;
             border-collapse: collapse;
-        }
+        } */
+
+        .tbl-card table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
         .tbl-card table thead tr th {
             font-size: 12.5px;
             font-weight: 600;
             color: #888;
-            padding: 9px 18px;
+            /* padding: 9px 18px; */
+             padding:9px 8px;
             border-bottom: 1px solid #f0f0f0;
             background: #fafafa;
         }
-        .tbl-card table tbody tr td {
+        /* .tbl-card table tbody tr td {
             font-size: 13px;
             color: #333;
             padding: 11px 18px;
             border-bottom: 1px solid #f8f8f8;
             vertical-align: middle;
-        }
+        } */
+
+        .tbl-card table tbody tr td{
+    font-size:13px;
+    padding:10px 8px;
+    vertical-align:middle;
+    border-bottom: 1px solid #f8f8f8;
+    word-break:break-word;
+}
         .tbl-card table tbody tr:last-child td { border-bottom: none; }
         .tbl-card table tbody tr:hover td { background: #faf9ff; }
  
@@ -523,6 +568,43 @@
     font-size:14px;
         }
         #typeListBox .list-group-item:hover { background: #f3f0ff; color: #7c3aed; }
+
+        @media (max-width:768px){
+
+.btn-icon{
+    width:26px;
+    height:26px;
+    font-size:12px;
+}
+
+}
+.tbl-card td:last-child,
+.tbl-card th:last-child{
+    width:120px;
+    white-space:nowrap;
+}
+.tbl-card td:first-child{
+    min-width:90px;
+}
+/* .tbl-card td:nth-child(2){
+    overflow-wrap:anywhere;
+} */
+ .tbl-card td:nth-child(2){
+    word-break:normal;
+    overflow-wrap:break-word;
+}
+@media(max-width:768px){
+
+.tbl-card table{
+    font-size:12px;
+}
+
+.tbl-card th,
+.tbl-card td{
+    padding:8px 6px;
+}
+
+}
     </style>
 </head>
  
@@ -850,6 +932,9 @@
                             </td>
                             <td>{{ c.phone }}</td>
                             <td>
+                                <td>
+    <div class="action-buttons">
+
                                 <a href="{% url 'customer_detail' c.id %}" class="btn-icon btn-view-icon">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
@@ -857,6 +942,7 @@
                                    onclick="return confirm('Delete this customer?')">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -895,6 +981,7 @@
                             </td>
                             <td>{{ s.phone }}</td>
                             <td>
+                                <div class="action-buttons">
                                 <a href="{% url 'supplier_detail' s.id %}" class="btn-icon btn-view-icon">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
@@ -902,6 +989,7 @@
                                    onclick="return confirm('Delete this supplier?')">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -945,6 +1033,7 @@
                             </td>
                             <td>{{ s.price }}</td>
                             <td>
+                                <div class="action-buttons">
                                 <a href="{% url 'service_detail' s.id %}" class="btn-icon btn-view-icon">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
@@ -952,6 +1041,7 @@
                                    onclick="return confirm('Delete this service?')">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -1050,7 +1140,7 @@
 
                 <td>AED {{ q.total }}</td>
 
-                <td class="d-flex gap-1 flex-wrap">
+                <div class="action-buttons">
 
                     <a href="{% url 'quotation_pdf' q.id %}"
                        target="_blank"
@@ -1071,6 +1161,7 @@
                        title="Delete">
                         <i class="bi bi-trash-fill"></i>
                     </a>
+                </div>
 
                 </td>
 
@@ -1125,7 +1216,14 @@
                             <td>{{ i.customer.name }}</td>
                             <td>AED {{ i.total }}</td>
                             <td>
-                                <a href="{% url 'invoice_pdf' i.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                                <div class="action-buttons">
+                                <!-- <a href="{% url 'invoice_pdf' i.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a> -->
+                                 <a href="{% url 'invoice_pdf' i.id %}"
+   target="_blank"
+   class="btn-icon btn-pdf-icon"
+   title="PDF">
+    <i class="bi bi-file-earmark-pdf-fill"></i>
+</a>
                                 <a href="{% url 'edit_invoice' i.id %}" class="btn-icon btn-edit-icon">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
@@ -1133,6 +1231,7 @@
                                    onclick="return confirm('Delete this invoice?')">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -1173,7 +1272,14 @@
                             <td>{{ l.supplier.name }}</td>
                             <td>AED {{ l.total }}</td>
                             <td>
-                                <a href="{% url 'lpo_pdf' l.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                                <div class="action-buttons">
+                                <!-- <a href="{% url 'lpo_pdf' l.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a> -->
+                                 <a href="{% url 'lpo_pdf' l.id %}"
+   target="_blank"
+   class="btn-icon btn-pdf-icon"
+   title="Download PDF">
+    <i class="bi bi-file-earmark-pdf-fill"></i>
+</a>
                                 <a href="{% url 'edit_lpo' l.id %}" class="btn-icon btn-edit-icon">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
@@ -1181,6 +1287,7 @@
                                    onclick="return confirm('Delete this LPO?')">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -1219,11 +1326,19 @@
                         <td>{{ r.invoice.number }}</td>
                         <td>AED {{ r.amount_paid }}</td>
                         <td>
-                            <a href="{% url 'receipt_pdf' r.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a>
+                            <div class="action-buttons">
+                            <!-- <a href="{% url 'receipt_pdf' r.id %}" target="_blank" class="btn-icon btn-pdf-icon">PDF</a> -->
+                             <a href="{% url 'receipt_pdf' r.id %}"
+   target="_blank"
+   class="btn-icon btn-pdf-icon"
+   title="Download PDF">
+    <i class="bi bi-file-earmark-pdf-fill"></i>
+</a>
                             <a href="{% url 'delete_receipt' r.id %}" class="btn-icon btn-del-icon"
                                onclick="return confirm('Delete this receipt?')">
                                 <i class="bi bi-trash-fill"></i>
                             </a>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
