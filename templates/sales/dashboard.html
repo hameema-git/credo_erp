@@ -932,7 +932,7 @@ padding:20px;
                             </td>
                             <td>{{ c.phone }}</td>
                             <td>
-                                <td>
+                            
     <div class="action-buttons">
 
                                 <a href="{% url 'customer_detail' c.id %}" class="btn-icon btn-view-icon">
@@ -1136,7 +1136,7 @@ padding:20px;
                     </a>
                 </td>
 
-                <td>{{ q.customer.name }}</td>
+                <!-- <td>{{ q.customer.name }}</td>
 
                 <td>AED {{ q.total }}</td>
 
@@ -1163,7 +1163,33 @@ padding:20px;
                     </a>
                 </div>
 
-                </td>
+                </td> -->
+
+                <td>{{ q.customer.name }}</td>
+
+<td>AED {{ q.total }}</td>
+
+<td>
+    <div class="action-buttons">
+
+        <a href="{% url 'quotation_pdf' q.id %}"
+           class="btn-icon btn-pdf-icon"
+           target="_blank">
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+        </a>
+
+        <a href="{% url 'edit_quotation' q.id %}"
+           class="btn-icon btn-edit-icon">
+            <i class="bi bi-pencil-fill"></i>
+        </a>
+
+        <a href="{% url 'delete_quotation' q.id %}"
+           class="btn-icon btn-del-icon">
+            <i class="bi bi-trash-fill"></i>
+        </a>
+
+    </div>
+</td>
 
             </tr>
 
