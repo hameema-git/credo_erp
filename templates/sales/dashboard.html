@@ -509,7 +509,7 @@
         <i class="bi bi-file-earmark-text-fill"></i> Quotations
     </a>
 
-    <a href="{% url 'invoice_list' %}" class="nav-link-item">
+    <a href="{% url 'create_invoice' %}" class="nav-link-item">
         <i class="bi bi-receipt"></i> Invoice
     </a>
 
@@ -890,7 +890,7 @@
             </div>
  
             <!-- Recent Quotations -->
-            <div class="tbl-card">
+            <!-- <div class="tbl-card">
                 <div class="tbl-card-header">
                     
                      <span class="tbl-card-title">Recent Quotations</span>
@@ -937,7 +937,82 @@
                 </table>
             </div>
  
-        </div>
+        </div> -->
+
+        <div class="tbl-card">
+    <div class="tbl-card-header">
+        <span class="tbl-card-title">Recent Quotations</span>
+        <a href="{% url 'create_quotation' %}" class="tbl-view-all">
+            View All
+        </a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for q in recent_quotations %}
+            <tr>
+
+                <td>
+                    <a href="{% url 'quotation_detail' q.id %}"
+                       class="td-qno-link">
+                        {{ q.number }}
+                    </a>
+                </td>
+
+                <td>{{ q.customer.name }}</td>
+
+                <td>AED {{ q.total }}</td>
+
+                <td class="d-flex gap-1 flex-wrap">
+
+                    <a href="{% url 'quotation_pdf' q.id %}"
+                       target="_blank"
+                       class="btn-icon btn-pdf-icon"
+                       title="PDF">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                    </a>
+
+                    <a href="{% url 'edit_quotation' q.id %}"
+                       class="btn-icon btn-edit-icon"
+                       title="Edit">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+
+                    <a href="{% url 'delete_quotation' q.id %}"
+                       class="btn-icon btn-del-icon"
+                       onclick="return confirm('Delete this quotation?')"
+                       title="Delete">
+                        <i class="bi bi-trash-fill"></i>
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="4" class="text-center">
+                    No quotations found
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
  
         <!-- ── RECENT INVOICES + LPO ─────────────────────── -->
         <div class="tables-grid-2col">
