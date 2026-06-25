@@ -304,12 +304,25 @@
         .stat-delta.neutral { color: #aaa; }
  
         /* ══ TABLES GRID ═════════════════════════════════════ */
-        .tables-grid-2col {
+        /* .tables-grid-2col {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 18px;
             margin-bottom: 18px;
-        }
+        } */
+
+    .tables-grid-2col{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:20px;
+    width:100%;
+}
+
+
+
+.tbl-card .table-responsive{
+    overflow-x:auto;
+}
  
         .tables-grid-full {
             margin-bottom: 18px;
@@ -321,6 +334,9 @@
             border: 1px solid #ebebeb;
             border-radius: 14px;
             overflow: hidden;
+            width:100%;
+            min-width:0;
+    
         }
  
         .tbl-card-header {
@@ -419,10 +435,38 @@
         @media (max-width: 1200px) {
             .stats-grid { grid-template-columns: repeat(4, 1fr); }
         }
-        @media (max-width: 960px) {
+        /* @media (max-width: 960px) {
             .tables-grid-2col { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: repeat(3, 1fr); }
-        }
+        } */
+
+        @media (max-width: 991px) {
+
+    .tables-grid-2col{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+    }
+
+    .search-task-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-task-row form{
+        width:100%;
+    }
+
+    .btn-task-mgmt{
+        width:100%;
+        justify-content:center;
+    }
+
+}
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); transition: transform .25s; }
             .sidebar.sb-open { transform: translateX(0); }
@@ -452,20 +496,31 @@
             left: 0;
             right: 0;
             z-index: 999;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.12);
+            /* border-radius: 10px; */
+            /* box-shadow: 0 8px 24px rgba(0,0,0,.12); */
             border: 1px solid #e8e8e8;
             background: #fff;
             display: none;
             max-height: 240px;
             overflow-y: auto;
+
+               border-radius:12px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+    overflow:hidden;
+
         }
         #typeListBox .list-group-item {
-            font-size: 13px;
-            padding: 10px 14px;
+            /* font-size: 13px; */
+            /* padding: 10px 14px; */
             border: none;
             border-bottom: 1px solid #f3f3f3;
             cursor: pointer;
+
+             padding:12px 15px;
+
+    font-size:14px;
         }
         #typeListBox .list-group-item:hover { background: #f3f0ff; color: #7c3aed; }
     </style>
@@ -1178,22 +1233,57 @@ function loadData(query="", type="all"){
         if(items.length === 0){ listBox.style.display = "none"; return; }
  
         listBox.style.display = "block";
+        // items.forEach(item => {
+        //     let el = document.createElement("a");
+        //     el.className = "list-group-item";
+        //     el.innerText = item.text;
+        //     el.href = "#";
+        //     el.addEventListener("click", function(e){
+        //         e.preventDefault();
+        //         input.value = item.text;
+        //         listBox.style.display = "none";
+        //     });
+        //     listBox.appendChild(el);
+        // });
+
         items.forEach(item => {
-            let el = document.createElement("a");
-            el.className = "list-group-item";
-            el.innerText = item.text;
-            el.href = "#";
-            el.addEventListener("click", function(e){
-                e.preventDefault();
-                input.value = item.text;
-                listBox.style.display = "none";
-            });
-            listBox.appendChild(el);
-        });
+
+    let el = document.createElement("a");
+
+    el.className = "list-group-item";
+
+    el.innerText = item.text;
+
+    el.href = "#";
+
+    el.addEventListener("click", function(e){
+
+        e.preventDefault();
+
+        input.value = item.text;
+
+        listBox.style.display = "none";
+
+        // Automatically submit the search form
+        input.closest("form").submit();
+
+    });
+
+    listBox.appendChild(el);
+
+});
     });
 }
  
-typeSelect.addEventListener("change", () => loadData("", typeSelect.value));
+// typeSelect.addEventListener("change", () => loadData("", typeSelect.value));
+
+typeSelect.addEventListener("change", function(){
+
+    input.value="";
+
+    loadData("",this.value);
+
+});
 input.addEventListener("keyup", () => loadData(input.value, typeSelect.value));
 document.addEventListener("click", function(e){
     if(!e.target.closest("#typeListBox") && !e.target.closest("#searchInput") && !e.target.closest("#searchType")){
