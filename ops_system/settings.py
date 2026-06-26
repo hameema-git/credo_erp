@@ -199,3 +199,20 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+
+GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
+    BASE_DIR,
+    "credentials",
+    "google-drive.json"
+)
+
+# GOOGLE_DRIVE = {
+#     "QUOTATIONS": "1YuWrKLDIVU8nVnsdiizhQMCegtIU2ZlP",
+#     "INVOICES": "16EOpleqKSsVF830oRnGay_BnNcJjWOqx",
+#     "LPO": "1uObqbrFAjVJpS624WxW6-9h4XR70YRDb",
+#     "RECEIPTS": "15gTCEQMcsxeopJUWt3S8PjrW7-Jg9zur",
+# }
+
+GOOGLE_DRIVE_ROOT_FOLDER = "1wLJ3DQbYGsNumn9BzmZKY6mgQULllOwy"
