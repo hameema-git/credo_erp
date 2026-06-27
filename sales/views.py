@@ -439,7 +439,7 @@ def quotation_pdf(request, pk):
     # -------------------------------------------------------
     try:
         drive_result = GoogleDriveService().upload_document(
-            customer_name=quotation.customer.company_name,
+            customer_name=quotation.customer.name,
             document_type=DOCUMENT_TYPES["quotation"],
             file_name=f"{quotation.number}.pdf",
             pdf_bytes=pdf,
@@ -708,7 +708,7 @@ def invoice_pdf(request, pk):
 
     try:
         drive_result = GoogleDriveService().upload_document(
-            customer_name=invoice.customer.company_name,
+            customer_name=invoice.customer.name,
             document_type=DOCUMENT_TYPES["invoice"],
             file_name=f"{invoice.number}.pdf",
             pdf_bytes=pdf,
@@ -943,7 +943,7 @@ def payment_receipt_pdf(request, pk):
     # -------------------------------------------------------
     try:
         drive_result = GoogleDriveService().upload_document(
-            customer_name=receipt.invoice.customer.company_name,
+            customer_name=receipt.invoice.customer.name,
             document_type=DOCUMENT_TYPES["receipt"],
             file_name=f"{receipt.receipt_number}.pdf",
             pdf_bytes=pdf,
