@@ -7,6 +7,15 @@ from urllib.parse import urlencode
 from django.db.models import Q
 from weasyprint import HTML
 from num2words import num2words
+from sales.google_drive import GoogleDriveService
+from django.utils import timezone
+
+
+import logging
+
+from sales.google_drive import GoogleDriveService, DOCUMENT_TYPES
+
+logger = logging.getLogger(__name__)
 
 from .models import *
 from .utils import generate_quotation_number, generate_invoice_number, generate_receipt_number,generate_lpo_number
@@ -306,21 +315,161 @@ import os
 from django.conf import settings
 from weasyprint import HTML
 
+# def quotation_pdf(request, pk):
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     html = render_to_string(
+#         "sales/quotation_pdf.html",
+#         {
+#             "quotation": quotation,
+#             "static_path": settings.STATIC_ROOT  # ✅ IMPORTANT
+#         },
+#         request=request
+#     )
+
+#     pdf = HTML(string=html).write_pdf()
+
+#     return HttpResponse(pdf, content_type='application/pdf')
+
+# def quotation_pdf(request, pk):
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     html = render_to_string(
+#         "sales/quotation_pdf.html",
+#         {
+#             "quotation": quotation,
+#             "static_path": settings.STATIC_ROOT
+#         },
+#         request=request
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = (
+#         f'inline; filename="quotation_{quotation.number}.pdf"'
+#     )
+
+#     return response
+
+# def quotation_pdf(request, pk):
+#     """
+#     Generate Quotation PDF, upload it to Google Drive,
+#     and return the PDF to the browser.
+#     """
+
+#     quotation = get_object_or_404(Quotation, id=pk)
+
+#     html = render_to_string(
+#         "sales/quotation_pdf.html",
+#         {
+#             "quotation": quotation,
+#             "static_path": settings.STATIC_ROOT,
+#         },
+#         request=request,
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=request.build_absolute_uri("/"),
+#     ).write_pdf()
+
+#     # -------------------------------------------------------
+#     # Backup PDF to Google Drive
+#     # -------------------------------------------------------
+#     try:
+#         drive_result = GoogleDriveService().upload_document(
+#             customer_name=quotation.customer.company_name,
+#             document_type=DOCUMENT_TYPES["quotation"],
+#             file_name=f"{quotation.number}.pdf",
+#             pdf_bytes=pdf,
+#         )
+
+#         logger.info(
+#             "Quotation '%s' uploaded to Google Drive successfully. URL: %s",
+#             quotation.number,
+#             drive_result["url"],
+#         )
+
+#     except Exception:
+#         # Do NOT stop the user from downloading the PDF
+#         logger.exception(
+#             "Failed to upload Quotation '%s' to Google Drive.",
+#             quotation.number,
+#         )
+
+#     response = HttpResponse(
+#         pdf,
+#         content_type="application/pdf",
+#     )
+
+#     response["Content-Disposition"] = (
+#         f'inline; filename="{quotation.number}.pdf"'
+#     )
+
+#     return response
+
 def quotation_pdf(request, pk):
+    """
+    Generate Quotation PDF, upload it to Google Drive,
+    and return the PDF to the browser.
+    """
+
     quotation = get_object_or_404(Quotation, id=pk)
 
     html = render_to_string(
         "sales/quotation_pdf.html",
         {
             "quotation": quotation,
-            "static_path": settings.STATIC_ROOT  # ✅ IMPORTANT
+            "static_path": settings.STATIC_ROOT,
         },
-        request=request
+        request=request,
     )
 
-    pdf = HTML(string=html).write_pdf()
+    pdf = HTML(
+        string=html,
+        base_url=request.build_absolute_uri("/"),
+    ).write_pdf()
 
-    return HttpResponse(pdf, content_type='application/pdf')
+    # -------------------------------------------------------
+    # Backup PDF to Google Drive
+    # -------------------------------------------------------
+    try:
+        drive_result = GoogleDriveService().upload_document(
+            customer_name=quotation.customer.company_name,
+            document_type=DOCUMENT_TYPES["quotation"],
+            file_name=f"{quotation.number}.pdf",
+            pdf_bytes=pdf,
+        )
+
+        # Save Google Drive URL
+        quotation.google_drive_url = drive_result["url"]
+        quotation.save(update_fields=["google_drive_url"])
+
+        logger.info(
+            "Quotation '%s' uploaded successfully to Google Drive.",
+            quotation.number,
+        )
+
+    except Exception:
+        logger.exception(
+            "Failed to upload Quotation '%s' to Google Drive.",
+            quotation.number,
+        )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="{quotation.number}.pdf"'
+    )
+
+    return response
 
 # ---------------- INVOICE (NEW FLOW) ----------------
 def create_invoice(request):
@@ -412,24 +561,184 @@ def invoice_list(request):
 
 #     return response
 
+# def invoice_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+
+#     html = render_to_string(
+#         "sales/invoice_pdf.html",
+#         {
+#             "invoice": invoice,
+#             "static_path": settings.STATIC_ROOT   # ✅ IMPORTANT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT   # ✅ CRITICAL FIX
+#     ).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = f'inline; filename="invoice_{invoice.number}.pdf"'
+
+#     return response
+
+# def invoice_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+
+#     html = render_to_string(
+#         "sales/invoice_pdf.html",
+#         {
+#             "invoice": invoice,
+#             "static_path": settings.STATIC_ROOT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     # Google Drive upload will be added here
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = (
+#         f'inline; filename="invoice_{invoice.number}.pdf"'
+#     )
+
+#     return response
+
+# def invoice_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+
+#     html = render_to_string(
+#         "sales/invoice_pdf.html",
+#         {
+#             "invoice": invoice,
+#             "static_path": settings.STATIC_ROOT,
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     # -------------------------------------------------------
+#     # Automatically upload PDF to Google Drive
+#     # -------------------------------------------------------
+#     try:
+#         drive_result = GoogleDriveService().upload_document(
+#             customer_name=invoice.customer.company_name,
+#             document_type=DOCUMENT_TYPES["invoice"],
+#             file_name=f"{invoice.number}.pdf",
+#             pdf_bytes=pdf,
+#         )
+
+#         logger.info(
+#             "Invoice uploaded successfully to Google Drive: %s",
+#             drive_result["url"],
+#         )
+
+#         # Optional:
+#         # invoice.google_drive_url = drive_result["url"]
+#         # invoice.save(update_fields=["google_drive_url"])
+
+#     except Exception:
+#         logger.exception(
+#             "Failed to upload invoice '%s' to Google Drive.",
+#             invoice.number,
+#         )
+
+#     response = HttpResponse(
+#         pdf,
+#         content_type="application/pdf",
+#     )
+
+#     response["Content-Disposition"] = (
+#         f'inline; filename="invoice_{invoice.number}.pdf"'
+#     )
+
+#     return response
+
+
 def invoice_pdf(request, pk):
+    """
+    Generate Invoice PDF, upload it to Google Drive,
+    and return the PDF to the browser.
+    """
+
     invoice = get_object_or_404(Invoice, id=pk)
 
     html = render_to_string(
         "sales/invoice_pdf.html",
         {
             "invoice": invoice,
-            "static_path": settings.STATIC_ROOT   # ✅ IMPORTANT
+            "static_path": settings.STATIC_ROOT,
         }
     )
 
     pdf = HTML(
         string=html,
-        base_url=settings.STATIC_ROOT   # ✅ CRITICAL FIX
+        base_url=settings.STATIC_ROOT,
     ).write_pdf()
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="invoice_{invoice.number}.pdf"'
+    # -------------------------------------------------------
+    # Backup PDF to Google Drive
+    # -------------------------------------------------------
+    # try:
+    #     drive_result = GoogleDriveService().upload_document(
+    #         customer_name=invoice.customer.company_name,
+    #         document_type=DOCUMENT_TYPES["invoice"],
+    #         file_name=f"{invoice.number}.pdf",
+    #         pdf_bytes=pdf,
+    #     )
+
+    #     logger.info(
+    #         "Invoice '%s' uploaded to Google Drive successfully. URL: %s",
+    #         invoice.number,
+    #         drive_result["url"],
+    #     )
+
+    # except Exception:
+    #     # Do NOT stop the user from downloading the PDF
+    #     logger.exception(
+    #         "Failed to upload Invoice '%s' to Google Drive.",
+    #         invoice.number,
+    #     )
+
+    try:
+        drive_result = GoogleDriveService().upload_document(
+            customer_name=invoice.customer.company_name,
+            document_type=DOCUMENT_TYPES["invoice"],
+            file_name=f"{invoice.number}.pdf",
+            pdf_bytes=pdf,
+        )
+
+        invoice.google_drive_url = drive_result["url"]
+        invoice.save(update_fields=["google_drive_url"])
+
+        logger.info(
+            "Invoice '%s' uploaded successfully to Google Drive.",
+            invoice.number,
+        )
+
+    except Exception:
+        logger.exception(
+            "Failed to upload Invoice '%s' to Google Drive.",
+            invoice.number,
+        )
+
+    # -------------------------------------------------------
+    # Return PDF to browser
+    # -------------------------------------------------------
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="{invoice.number}.pdf"'
+    )
 
     return response
 
@@ -554,9 +863,54 @@ from django.conf import settings
 from .models import PaymentReceipt
 
 
-def payment_receipt_pdf(request, pk):
+# def payment_receipt_pdf(request, pk):
 
-    # ✅ GET RECEIPT DIRECTLY
+#     # ✅ GET RECEIPT DIRECTLY
+#     receipt = get_object_or_404(
+#         PaymentReceipt,
+#         id=pk
+#     )
+
+#     amount_words = (
+#         num2words(
+#             receipt.amount_paid,
+#             lang='en'
+#         ).title()
+#         + " AED Only"
+#     )
+
+#     html = render_to_string(
+#         "sales/payment_receipt_pdf.html",
+#         {
+#             "receipt": receipt,
+#             "amount_words": amount_words,
+#             "static_path": settings.STATIC_ROOT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     response = HttpResponse(
+#         pdf,
+#         content_type='application/pdf'
+#     )
+
+#     response['Content-Disposition'] = (
+#         f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+#     )
+
+#     return response
+
+
+def payment_receipt_pdf(request, pk):
+    """
+    Generate Payment Receipt PDF, upload it to Google Drive,
+    and return the PDF to the browser.
+    """
+
     receipt = get_object_or_404(
         PaymentReceipt,
         id=pk
@@ -565,7 +919,7 @@ def payment_receipt_pdf(request, pk):
     amount_words = (
         num2words(
             receipt.amount_paid,
-            lang='en'
+            lang="en"
         ).title()
         + " AED Only"
     )
@@ -575,26 +929,51 @@ def payment_receipt_pdf(request, pk):
         {
             "receipt": receipt,
             "amount_words": amount_words,
-            "static_path": settings.STATIC_ROOT
+            "static_path": settings.STATIC_ROOT,
         }
     )
 
     pdf = HTML(
         string=html,
-        base_url=settings.STATIC_ROOT
+        base_url=request.build_absolute_uri("/"),
     ).write_pdf()
+
+    # -------------------------------------------------------
+    # Backup PDF to Google Drive
+    # -------------------------------------------------------
+    try:
+        drive_result = GoogleDriveService().upload_document(
+            customer_name=receipt.invoice.customer.company_name,
+            document_type=DOCUMENT_TYPES["receipt"],
+            file_name=f"{receipt.receipt_number}.pdf",
+            pdf_bytes=pdf,
+        )
+
+        # Save Google Drive URL
+        receipt.google_drive_url = drive_result["url"]
+        receipt.save(update_fields=["google_drive_url"])
+
+        logger.info(
+            "Receipt '%s' uploaded successfully to Google Drive.",
+            receipt.receipt_number,
+        )
+
+    except Exception:
+        logger.exception(
+            "Failed to upload Receipt '%s' to Google Drive.",
+            receipt.receipt_number,
+        )
 
     response = HttpResponse(
         pdf,
-        content_type='application/pdf'
+        content_type="application/pdf",
     )
 
-    response['Content-Disposition'] = (
-        f'inline; filename="receipt_{receipt.receipt_number}.pdf"'
+    response["Content-Disposition"] = (
+        f'inline; filename="{receipt.receipt_number}.pdf"'
     )
 
     return response
-
 
 # ---------------- SEARCH ----------------
 # def search_ajax(request):
@@ -1206,23 +1585,105 @@ def create_lpo(request):
         "suppliers": suppliers
     })
 
+# def lpo_pdf(request, pk):
+#     lpo = get_object_or_404(LPO, id=pk)
+
+#     html = render_to_string(
+#         "sales/lpo_pdf.html",
+#         {
+#             "lpo": lpo,
+#             "static_path": settings.STATIC_ROOT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     return HttpResponse(pdf, content_type='application/pdf')
+
+# def lpo_pdf(request, pk):
+#     lpo = get_object_or_404(LPO, id=pk)
+
+#     html = render_to_string(
+#         "sales/lpo_pdf.html",
+#         {
+#             "lpo": lpo,
+#             "static_path": settings.STATIC_ROOT
+#         }
+#     )
+
+#     pdf = HTML(
+#         string=html,
+#         base_url=settings.STATIC_ROOT
+#     ).write_pdf()
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = (
+#         f'inline; filename="lpo_{lpo.number}.pdf"'
+#     )
+
+#     return response
+
+
 def lpo_pdf(request, pk):
+    """
+    Generate LPO PDF, upload it to Google Drive,
+    and return the PDF to the browser.
+    """
+
     lpo = get_object_or_404(LPO, id=pk)
 
     html = render_to_string(
         "sales/lpo_pdf.html",
         {
             "lpo": lpo,
-            "static_path": settings.STATIC_ROOT
+            "static_path": settings.STATIC_ROOT,
         }
     )
 
     pdf = HTML(
         string=html,
-        base_url=settings.STATIC_ROOT
+        base_url=request.build_absolute_uri("/"),
     ).write_pdf()
 
-    return HttpResponse(pdf, content_type='application/pdf')
+    # -------------------------------------------------------
+    # Backup PDF to Google Drive
+    # -------------------------------------------------------
+    try:
+        drive_result = GoogleDriveService().upload_document(
+            customer_name=lpo.supplier.name,
+            document_type=DOCUMENT_TYPES["lpo"],
+            file_name=f"{lpo.number}.pdf",
+            pdf_bytes=pdf,
+        )
+
+        # Save Google Drive URL
+        lpo.google_drive_url = drive_result["url"]
+        lpo.save(update_fields=["google_drive_url"])
+
+        logger.info(
+            "LPO '%s' uploaded successfully to Google Drive.",
+            lpo.number,
+        )
+
+    except Exception:
+        logger.exception(
+            "Failed to upload LPO '%s' to Google Drive.",
+            lpo.number,
+        )
+
+    response = HttpResponse(
+        pdf,
+        content_type="application/pdf",
+    )
+
+    response["Content-Disposition"] = (
+        f'inline; filename="{lpo.number}.pdf"'
+    )
+
+    return response
 
 def lpo_detail(request, pk):
     lpo = get_object_or_404(LPO, id=pk)

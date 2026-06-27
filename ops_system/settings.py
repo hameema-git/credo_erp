@@ -202,10 +202,16 @@ STORAGES = {
 
 
 
-GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
+# GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
+#     BASE_DIR,
+#     "credentials",
+#     "google-drive.json"
+# )
+
+GOOGLE_TOKEN_FILE = os.path.join(
     BASE_DIR,
     "credentials",
-    "google-drive.json"
+    "token.json",
 )
 
 # GOOGLE_DRIVE = {

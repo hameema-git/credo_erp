@@ -47,6 +47,11 @@ class Quotation(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     notes = models.TextField(blank=True, null=True)
 
+    google_drive_url = models.URLField(
+    blank=True,
+    null=True
+    )
+
     def __str__(self):
         return self.number
 
@@ -110,6 +115,12 @@ class Invoice(models.Model):
 
     notes = models.TextField(blank=True, null=True)
 
+    google_drive_url = models.URLField(
+        blank=True,
+        null=True
+    )
+
+
     @property
     def balance(self):
         return self.total - self.paid_amount
@@ -123,6 +134,7 @@ class Invoice(models.Model):
             self.payment_status = 'partial'
 
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.number
@@ -161,6 +173,11 @@ class PaymentReceipt(models.Model):
     short_description = models.TextField(blank=True, null=True)
 
     received_by = models.CharField(max_length=100, blank=True, null=True)
+
+    google_drive_url = models.URLField(
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.receipt_number
@@ -257,6 +274,11 @@ class LPO(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     vat = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    google_drive_url = models.URLField(
+    blank=True,
+    null=True
+    )
 
     def __str__(self):
         return self.number

@@ -1,0 +1,34 @@
+from google_auth_oauthlib.flow import InstalledAppFlow
+import os
+
+SCOPES = ["https://www.googleapis.com/auth/drive"]
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+credentials_file = os.path.join(
+    BASE_DIR,
+    "credentials",
+    "credentials.json"
+)
+
+flow = InstalledAppFlow.from_client_secrets_file(
+    credentials_file,
+    SCOPES,
+)
+
+creds = flow.run_local_server(port=0)
+
+token_path = os.path.join(
+    BASE_DIR,
+    "credentials",
+    "token.json"
+)
+
+with open(token_path, "w") as token:
+    token.write(creds.to_json())
+
+print("===================================")
+print("OAuth completed successfully!")
+print("Token saved to:")
+print(token_path)
+print("===================================")
