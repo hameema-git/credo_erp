@@ -222,3 +222,11 @@ GOOGLE_TOKEN_FILE = os.path.join(
 # }
 
 GOOGLE_DRIVE_ROOT_FOLDER = "1wLJ3DQbYGsNumn9BzmZKY6mgQULllOwy"
+
+
+GOOGLE_CREDENTIALS_FILE = os.path.join(
+    BASE_DIR,
+    "credentials",
+    "credentials.json",
+)
+

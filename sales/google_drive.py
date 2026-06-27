@@ -23,6 +23,7 @@ from googleapiclient.errors import HttpError
 
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from sales.google_credentials import ensure_google_credentials
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +66,7 @@ class GoogleDriveService:
     """
 
     def __init__(self) -> None:
+        ensure_google_credentials()
         try:
             credentials = Credentials.from_authorized_user_file(
                 settings.GOOGLE_TOKEN_FILE,
