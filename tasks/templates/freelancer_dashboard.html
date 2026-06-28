@@ -163,6 +163,9 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
         <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
     Profile
 </a>
+<a href="{% url 'my_requests' %}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-inbox"></i> My Requests
+</a>
 
         <a href="{% url 'logout' %}"
            class="btn btn-danger btn-sm">
@@ -320,6 +323,14 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
 
 </form>
 
+
+<!-- Work Request Quick Action -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="mb-0 text-muted">My Tasks</h6>
+    <a href="{% url 'create_work_request' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle"></i> + New Request
+    </a>
+</div>
     <!-- SUMMARY -->
     <!-- <div class="row text-center mb-3">
         <div class="col-4 col-md-4 mb-2">

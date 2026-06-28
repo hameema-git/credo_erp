@@ -3481,3 +3481,347 @@ def approve_user(request, user_id):
     profile.save()
 
     return redirect('manager_dashboard')
+
+
+# ==============================================================
+# WORK REQUEST VIEWS — Phase 1
+# Append this block to the bottom of tasks/views.py
+# ==============================================================
+
+from django.contrib import messages
+from django.http import HttpResponseForbidden
+
+from .models import WorkRequest
+
+
+# ------------------------------------------------------------------
+# Helper
+# ------------------------------------------------------------------
+
+def _get_profile_or_403(request):
+    """Return the UserProfile for request.user or raise 403."""
+    try:
+        return request.user.userprofile
+    except UserProfile.DoesNotExist:
+        return None
+
+
+def _is_manager(request):
+    """True if the logged-in user is a superuser or has manager role."""
+    if request.user.is_superuser:
+        return True
+    profile = _get_profile_or_403(request)
+    return profile is not None and profile.role == 'manager'
+
+
+def _is_staff_member(request):
+    """True for employees, freelancers, and managers."""
+    if request.user.is_superuser:
+        return True
+    profile = _get_profile_or_403(request)
+    return profile is not None and profile.role in ('manager', 'employee', 'freelancer')
+
+
+# ------------------------------------------------------------------
+# Employee / Freelancer: My Requests
+# ------------------------------------------------------------------
+
+@login_required
+def my_requests(request):
+    """
+    List all WorkRequests submitted by the currently logged-in user.
+    Employees and freelancers land here.
+    """
+    requests_qs = WorkRequest.objects.filter(
+        requested_by=request.user
+    ).order_by('-created_at')
+
+    # Simple status filter
+    status_filter = request.GET.get('status', '').strip()
+    if status_filter:
+        requests_qs = requests_qs.filter(status=status_filter)
+
+    status_choices = WorkRequest.STATUS_CHOICES
+
+    return render(request, 'tasks/my_requests.html', {
+        'work_requests':  requests_qs,
+        'status_filter':  status_filter,
+        'status_choices': status_choices,
+    })
+
+
+# ------------------------------------------------------------------
+# Employee / Freelancer: Create Request
+# ------------------------------------------------------------------
+
+@login_required
+def create_work_request(request):
+    """
+    Allow any logged-in employee or freelancer to submit a new WorkRequest.
+    """
+    if not _is_staff_member(request):
+        return redirect('login')
+
+    if request.method == 'POST':
+        customer_name = request.POST.get('customer_name', '').strip()
+        title         = request.POST.get('title', '').strip()
+        description   = request.POST.get('description', '').strip()
+        priority      = request.POST.get('priority', 'medium')
+        required_date = request.POST.get('required_date') or None
+
+        errors = []
+        if not customer_name:
+            errors.append('Customer name is required.')
+        if not title:
+            errors.append('Title is required.')
+        if not description:
+            errors.append('Description is required.')
+
+        if errors:
+            return render(request, 'tasks/work_request_form.html', {
+                'errors':        errors,
+                'form_data':     request.POST,
+                'priority_choices': WorkRequest.PRIORITY_CHOICES,
+                'action':        'Create',
+            })
+
+        WorkRequest.objects.create(
+            requested_by=request.user,
+            customer_name=customer_name,
+            title=title,
+            description=description,
+            priority=priority,
+            required_date=required_date,
+            status='pending',
+        )
+
+        messages.success(request, 'Work request submitted successfully.')
+        return redirect('my_requests')
+
+    return render(request, 'tasks/work_request_form.html', {
+        'priority_choices': WorkRequest.PRIORITY_CHOICES,
+        'action': 'Create',
+    })
+
+
+# ------------------------------------------------------------------
+# Employee / Freelancer: Edit own pending request
+# ------------------------------------------------------------------
+
+@login_required
+def edit_work_request(request, request_id):
+    """
+    Allow the submitter to edit their own WorkRequest while it is still pending.
+    """
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+
+    # Only the submitter may edit, and only while pending
+    if work_request.requested_by != request.user:
+        messages.error(request, 'You can only edit your own requests.')
+        return redirect('my_requests')
+
+    if not work_request.is_pending:
+        messages.warning(request, 'Only pending requests can be edited.')
+        return redirect('my_requests')
+
+    if request.method == 'POST':
+        customer_name = request.POST.get('customer_name', '').strip()
+        title         = request.POST.get('title', '').strip()
+        description   = request.POST.get('description', '').strip()
+        priority      = request.POST.get('priority', 'medium')
+        required_date = request.POST.get('required_date') or None
+
+        errors = []
+        if not customer_name:
+            errors.append('Customer name is required.')
+        if not title:
+            errors.append('Title is required.')
+        if not description:
+            errors.append('Description is required.')
+
+        if errors:
+            return render(request, 'tasks/work_request_form.html', {
+                'errors':           errors,
+                'form_data':        request.POST,
+                'priority_choices': WorkRequest.PRIORITY_CHOICES,
+                'work_request':     work_request,
+                'action':           'Edit',
+            })
+
+        work_request.customer_name = customer_name
+        work_request.title         = title
+        work_request.description   = description
+        work_request.priority      = priority
+        work_request.required_date = required_date
+        work_request.save()
+
+        messages.success(request, 'Work request updated.')
+        return redirect('my_requests')
+
+    return render(request, 'tasks/work_request_form.html', {
+        'priority_choices': WorkRequest.PRIORITY_CHOICES,
+        'work_request':     work_request,
+        'action':           'Edit',
+    })
+
+
+# ------------------------------------------------------------------
+# Manager: All Requests List
+# ------------------------------------------------------------------
+
+@login_required
+def work_request_list(request):
+    """
+    Manager view: list all WorkRequests with optional status filter.
+    """
+    if not _is_manager(request):
+        return redirect('login')
+
+    requests_qs = WorkRequest.objects.select_related(
+        'requested_by', 'requested_by__userprofile'
+    ).order_by('-created_at')
+
+    status_filter   = request.GET.get('status', '').strip()
+    priority_filter = request.GET.get('priority', '').strip()
+    query           = request.GET.get('q', '').strip()
+
+    if status_filter:
+        requests_qs = requests_qs.filter(status=status_filter)
+
+    if priority_filter:
+        requests_qs = requests_qs.filter(priority=priority_filter)
+
+    if query:
+        requests_qs = requests_qs.filter(
+            Q(title__icontains=query) |
+            Q(customer_name__icontains=query) |
+            Q(requested_by__username__icontains=query) |
+            Q(request_no__icontains=query)
+        )
+
+    # Counts for the summary bar
+    total_count    = WorkRequest.objects.count()
+    pending_count  = WorkRequest.objects.filter(status='pending').count()
+    approved_count = WorkRequest.objects.filter(status='approved').count()
+    rejected_count = WorkRequest.objects.filter(status='rejected').count()
+
+    return render(request, 'tasks/work_request_list.html', {
+        'work_requests':    requests_qs,
+        'status_filter':    status_filter,
+        'priority_filter':  priority_filter,
+        'query':            query,
+        'status_choices':   WorkRequest.STATUS_CHOICES,
+        'priority_choices': WorkRequest.PRIORITY_CHOICES,
+        'total_count':      total_count,
+        'pending_count':    pending_count,
+        'approved_count':   approved_count,
+        'rejected_count':   rejected_count,
+    })
+
+
+# ------------------------------------------------------------------
+# Manager + Submitter: Request Detail
+# ------------------------------------------------------------------
+
+@login_required
+def work_request_detail(request, request_id):
+    """
+    Detail page for a single WorkRequest.
+
+    - Managers see Approve / Reject / Mark Under Review buttons.
+    - Submitters see their own request in read-only mode.
+    """
+    work_request = get_object_or_404(
+        WorkRequest.objects.select_related(
+            'requested_by', 'requested_by__userprofile'
+        ),
+        id=request_id,
+    )
+
+    is_mgr = _is_manager(request)
+    is_owner = work_request.requested_by == request.user
+
+    if not is_mgr and not is_owner:
+        return redirect('login')
+
+    return render(request, 'tasks/work_request_detail.html', {
+        'work_request': work_request,
+        'is_manager':   is_mgr,
+    })
+
+
+# ------------------------------------------------------------------
+# Manager: Approve
+# ------------------------------------------------------------------
+
+@login_required
+def approve_work_request(request, request_id):
+    """Set status → approved and save optional admin notes."""
+    if not _is_manager(request):
+        return redirect('login')
+
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+
+    if not work_request.can_be_reviewed:
+        messages.warning(request, f'Request {work_request.request_no} cannot be approved in its current state.')
+        return redirect('work_request_detail', request_id=request_id)
+
+    if request.method == 'POST':
+        work_request.admin_notes = request.POST.get('admin_notes', '').strip() or work_request.admin_notes
+        work_request.status      = 'approved'
+        work_request.save()
+        messages.success(request, f'Request {work_request.request_no} approved.')
+        return redirect('work_request_detail', request_id=request_id)
+
+    return redirect('work_request_detail', request_id=request_id)
+
+
+# ------------------------------------------------------------------
+# Manager: Reject
+# ------------------------------------------------------------------
+
+@login_required
+def reject_work_request(request, request_id):
+    """Set status → rejected and save mandatory admin notes."""
+    if not _is_manager(request):
+        return redirect('login')
+
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+
+    if not work_request.can_be_reviewed:
+        messages.warning(request, f'Request {work_request.request_no} cannot be rejected in its current state.')
+        return redirect('work_request_detail', request_id=request_id)
+
+    if request.method == 'POST':
+        admin_notes = request.POST.get('admin_notes', '').strip()
+        if not admin_notes:
+            messages.error(request, 'Please provide a reason for rejection.')
+            return redirect('work_request_detail', request_id=request_id)
+
+        work_request.admin_notes = admin_notes
+        work_request.status      = 'rejected'
+        work_request.save()
+        messages.success(request, f'Request {work_request.request_no} rejected.')
+        return redirect('work_request_list')
+
+    return redirect('work_request_detail', request_id=request_id)
+
+
+# ------------------------------------------------------------------
+# Manager: Mark Under Review
+# ------------------------------------------------------------------
+
+@login_required
+def mark_under_review(request, request_id):
+    """Set status → under_review (manager has seen it but not decided yet)."""
+    if not _is_manager(request):
+        return redirect('login')
+
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+
+    if work_request.status == 'pending':
+        work_request.status = 'under_review'
+        work_request.save()
+        messages.info(request, f'Request {work_request.request_no} marked as Under Review.')
+
+    return redirect('work_request_detail', request_id=request_id)

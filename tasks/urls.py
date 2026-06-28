@@ -45,5 +45,24 @@ path(
     views.delete_employee,
     name='delete_employee'
 ),
+
+
+# ==============================================================
+# WORK REQUEST URLs — Phase 1
+# Append these path() entries to the urlpatterns list in tasks/urls.py
+# ==============================================================
+
+    # ── Employee / Freelancer ──────────────────────────────────
+    path('requests/',                  views.my_requests,           name='my_requests'),
+    path('requests/new/',              views.create_work_request,   name='create_work_request'),
+    path('requests/<int:request_id>/edit/', views.edit_work_request, name='edit_work_request'),
+
+    # ── Manager ───────────────────────────────────────────────
+    path('work-requests/',                         views.work_request_list,   name='work_request_list'),
+    path('work-requests/<int:request_id>/',        views.work_request_detail, name='work_request_detail'),
+    path('work-requests/<int:request_id>/approve/', views.approve_work_request, name='approve_work_request'),
+    path('work-requests/<int:request_id>/reject/',  views.reject_work_request,  name='reject_work_request'),
+    path('work-requests/<int:request_id>/review/',  views.mark_under_review,    name='mark_under_review'),
+
  path('employee-data/<int:user_id>/', views.employee_detail, name='employee_data'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

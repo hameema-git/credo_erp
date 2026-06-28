@@ -1,0 +1,129 @@
+{% extends "sales/dashboard.html" %}
+{% block content %}
+
+<div class="container-fluid py-4">
+
+  {# ── Back Link ───────────────────────────────────────────── #}
+  <a href="{% url 'my_requests' %}" class="text-decoration-none text-muted small">
+    ← My Requests
+  </a>
+
+  <div class="row mt-3 justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+          <h5 class="fw-bold mb-1">
+            {% if action == 'Edit' %}Edit Work Request{% else %}New Work Request{% endif %}
+          </h5>
+          <p class="text-muted small mb-4">
+            {% if action == 'Edit' %}
+              Update your request details. Only pending requests can be edited.
+            {% else %}
+              Describe the work you need. The manager will review and respond.
+            {% endif %}
+          </p>
+
+          {# ── Validation Errors ─────────────────────────── #}
+          {% if errors %}
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                {% for error in errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          {# ── Form ──────────────────────────────────────── #}
+          <form method="post">
+            {% csrf_token %}
+
+            {# Customer Name #}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Customer Name <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                name="customer_name"
+                class="form-control"
+                placeholder="e.g. ABC Nursery"
+                value="{{ form_data.customer_name|default:work_request.customer_name|default:'' }}"
+                required
+              >
+            </div>
+
+            {# Title #}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Title <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                name="title"
+                class="form-control"
+                placeholder="e.g. Website Redesign with Arabic Support"
+                value="{{ form_data.title|default:work_request.title|default:'' }}"
+                required
+              >
+            </div>
+
+            {# Description #}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Description <span class="text-danger">*</span>
+              </label>
+              <textarea
+                name="description"
+                class="form-control"
+                rows="5"
+                placeholder="Describe the work, requirements, and any relevant details…"
+                required
+              >{{ form_data.description|default:work_request.description|default:'' }}</textarea>
+            </div>
+
+            {# Priority + Required Date #}
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold">Priority</label>
+                <select name="priority" class="form-select">
+                  {% for value, label in priority_choices %}
+                    <option
+                      value="{{ value }}"
+                      {% if form_data.priority == value %}selected
+                      {% elif not form_data and work_request.priority == value %}selected
+                      {% elif not form_data and not work_request and value == 'medium' %}selected
+                      {% endif %}
+                    >{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold">Required By</label>
+                <input
+                  type="date"
+                  name="required_date"
+                  class="form-control"
+                  value="{{ form_data.required_date|default:work_request.required_date|date:'Y-m-d'|default:'' }}"
+                >
+              </div>
+            </div>
+
+            {# Submit #}
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                {% if action == 'Edit' %}Save Changes{% else %}Submit Request{% endif %}
+              </button>
+              <a href="{% url 'my_requests' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

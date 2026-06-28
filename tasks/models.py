@@ -381,3 +381,121 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+    
+
+# ==============================================================
+# WORK REQUEST MODULE — Phase 1
+# Append this block to the bottom of tasks/models.py
+# ==============================================================
+
+class WorkRequest(models.Model):
+    """
+    A request submitted by an employee or freelancer for a piece of work.
+
+    Lifecycle:
+        pending → under_review → approved / rejected
+        approved → quotation_created  (Phase 3, when linked to Quotation)
+    """
+
+    PRIORITY_CHOICES = (
+        ('low',    'Low'),
+        ('medium', 'Medium'),
+        ('high',   'High'),
+    )
+
+    STATUS_CHOICES = (
+        ('pending',            'Pending'),
+        ('under_review',       'Under Review'),
+        ('approved',           'Approved'),
+        ('rejected',           'Rejected'),
+        ('quotation_created',  'Quotation Created'),
+    )
+
+    # Auto-generated reference number e.g. WR00025
+    request_no = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+    )
+
+    # Who submitted this request
+    requested_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='work_requests',
+    )
+
+    # Customer this work is for (free-text for Phase 1; link to
+    # sales.Customer via FK in a later phase if needed)
+    customer_name = models.CharField(max_length=200)
+
+    title = models.CharField(max_length=200)
+
+    description = models.TextField()
+
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium',
+    )
+
+    required_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+    )
+
+    # Manager notes visible to employee after review
+    admin_notes = models.TextField(
+        blank=True,
+        null=True,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Work Request'
+        verbose_name_plural = 'Work Requests'
+
+    # ------------------------------------------------------------------
+    # Auto-number: WR00001, WR00002, …
+    # ------------------------------------------------------------------
+
+    def save(self, *args, **kwargs):
+        if not self.request_no:
+            # Use MAX(id)+1 as a safe sequential number before first save
+            last = WorkRequest.objects.order_by('id').last()
+            next_number = (last.id + 1) if last else 1
+            self.request_no = f"WR{next_number:05d}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.request_no} — {self.title}"
+
+    # ------------------------------------------------------------------
+    # Convenience status helpers
+    # ------------------------------------------------------------------
+
+    @property
+    def is_pending(self) -> bool:
+        return self.status == 'pending'
+
+    @property
+    def is_approved(self) -> bool:
+        return self.status == 'approved'
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status == 'rejected'
+
+    @property
+    def can_be_reviewed(self) -> bool:
+        """True when the manager can still approve or reject."""
+        return self.status in ('pending', 'under_review')

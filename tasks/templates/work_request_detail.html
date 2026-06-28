@@ -1,0 +1,196 @@
+{% extends "sales/dashboard.html" %}
+{% block content %}
+
+<div class="container-fluid py-4">
+
+  {# ── Back link ───────────────────────────────────────────── #}
+  {% if is_manager %}
+    <a href="{% url 'work_request_list' %}" class="text-decoration-none text-muted small">
+      ← Back to Work Requests
+    </a>
+  {% else %}
+    <a href="{% url 'my_requests' %}" class="text-decoration-none text-muted small">
+      ← My Requests
+    </a>
+  {% endif %}
+
+  {# ── Messages ────────────────────────────────────────────── #}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+
+  <div class="row mt-3 g-4">
+
+    {# ── Left: Request Details ────────────────────────────── #}
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+          {# Header row #}
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div>
+              <span class="text-muted small fw-semibold">{{ work_request.request_no }}</span>
+              <h5 class="fw-bold mb-0 mt-1">{{ work_request.title }}</h5>
+            </div>
+            {# Status Badge #}
+            {% if work_request.status == 'pending' %}
+              <span class="badge bg-warning text-dark fs-6">Pending</span>
+            {% elif work_request.status == 'under_review' %}
+              <span class="badge bg-info text-dark fs-6">Under Review</span>
+            {% elif work_request.status == 'approved' %}
+              <span class="badge bg-success fs-6">Approved</span>
+            {% elif work_request.status == 'rejected' %}
+              <span class="badge bg-danger fs-6">Rejected</span>
+            {% elif work_request.status == 'quotation_created' %}
+              <span class="badge bg-primary fs-6">Quotation Created</span>
+            {% endif %}
+          </div>
+
+          <hr>
+
+          {# Meta grid #}
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Customer</small>
+              <span class="fw-semibold">{{ work_request.customer_name }}</span>
+            </div>
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Requested By</small>
+              <span class="fw-semibold">
+                {{ work_request.requested_by.get_full_name|default:work_request.requested_by.username }}
+              </span>
+            </div>
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Priority</small>
+              {% if work_request.priority == 'high' %}
+                <span class="badge bg-danger">High</span>
+              {% elif work_request.priority == 'medium' %}
+                <span class="badge bg-warning text-dark">Medium</span>
+              {% else %}
+                <span class="badge bg-secondary">Low</span>
+              {% endif %}
+            </div>
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Required Date</small>
+              <span class="fw-semibold">
+                {% if work_request.required_date %}
+                  {{ work_request.required_date|date:"d M Y" }}
+                {% else %}
+                  —
+                {% endif %}
+              </span>
+            </div>
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Submitted</small>
+              <span class="fw-semibold">{{ work_request.created_at|date:"d M Y, H:i" }}</span>
+            </div>
+            <div class="col-6 col-md-4">
+              <small class="text-muted d-block">Last Updated</small>
+              <span class="fw-semibold">{{ work_request.updated_at|date:"d M Y, H:i" }}</span>
+            </div>
+          </div>
+
+          <hr>
+
+          {# Description #}
+          <h6 class="fw-bold">Description</h6>
+          <p class="text-secondary" style="white-space: pre-line;">{{ work_request.description }}</p>
+
+          {# Admin Notes (if any) #}
+          {% if work_request.admin_notes %}
+            <hr>
+            <h6 class="fw-bold">Manager Notes</h6>
+            <p class="text-secondary" style="white-space: pre-line;">{{ work_request.admin_notes }}</p>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+    {# ── Right: Manager Actions ──────────────────────────── #}
+    {% if is_manager %}
+    <div class="col-12 col-lg-4">
+
+      {# Mark Under Review #}
+      {% if work_request.status == 'pending' %}
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Mark as Under Review</h6>
+            <p class="text-muted small">Notify the employee that you have seen the request.</p>
+            <form method="post" action="{% url 'mark_under_review' work_request.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-info w-100">Mark Under Review</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+
+      {# Approve #}
+      {% if work_request.can_be_reviewed %}
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3 text-success">Approve Request</h6>
+            <form method="post" action="{% url 'approve_work_request' work_request.id %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label small text-muted">Notes for Employee (optional)</label>
+                <textarea
+                  name="admin_notes"
+                  class="form-control"
+                  rows="3"
+                  placeholder="e.g. Please proceed. We will send quotation shortly."
+                >{{ work_request.admin_notes|default:'' }}</textarea>
+              </div>
+              <button type="submit" class="btn btn-success w-100">✔ Approve</button>
+            </form>
+          </div>
+        </div>
+
+        {# Reject #}
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3 text-danger">Reject Request</h6>
+            <form method="post" action="{% url 'reject_work_request' work_request.id %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label small text-muted">Reason for Rejection <span class="text-danger">*</span></label>
+                <textarea
+                  name="admin_notes"
+                  class="form-control"
+                  rows="3"
+                  placeholder="e.g. Budget not approved at this time."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-danger w-100">✖ Reject</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+
+      {# Phase 3: Generate Quotation button (disabled until Phase 3) #}
+      {% if work_request.status == 'approved' %}
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h6 class="fw-bold mb-2">Generate Quotation</h6>
+            <p class="text-muted small mb-3">
+              Coming in Phase 3. The quotation form will open with this customer
+              and description pre-filled.
+            </p>
+            <button class="btn btn-primary w-100" disabled>
+              Generate Quotation
+            </button>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
