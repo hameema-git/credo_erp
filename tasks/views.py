@@ -3556,6 +3556,7 @@ def my_requests(request):
 
 @login_required
 def create_work_request(request):
+    print("===== CREATE WORK REQUEST VIEW CALLED =====")
     """
     Allow any logged-in employee or freelancer to submit a new WorkRequest.
     """
