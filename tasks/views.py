@@ -3554,37 +3554,102 @@ def my_requests(request):
 # Employee / Freelancer: Create Request
 # ------------------------------------------------------------------
 
+# @login_required
+# def create_work_request(request):
+#     print("===== CREATE WORK REQUEST VIEW CALLED =====")
+#     """
+#     Allow any logged-in employee or freelancer to submit a new WorkRequest.
+#     """
+#     if not _is_staff_member(request):
+#         return redirect('login')
+
+#     if request.method == 'POST':
+#         customer_name = request.POST.get('customer_name', '').strip()
+#         title         = request.POST.get('title', '').strip()
+#         description   = request.POST.get('description', '').strip()
+#         priority      = request.POST.get('priority', 'medium')
+#         required_date = request.POST.get('required_date') or None
+
+#         errors = []
+#         if not customer_name:
+#             errors.append('Customer name is required.')
+#         if not title:
+#             errors.append('Title is required.')
+#         if not description:
+#             errors.append('Description is required.')
+
+#         if errors:
+#             # return render(request, 'tasks/work_request_form.html', {
+#             #     'errors':        errors,
+#             #     'form_data':     request.POST,
+#             #     'priority_choices': WorkRequest.PRIORITY_CHOICES,
+#             #     'action':        'Create',
+#             # })
+
+#             return render(request, 'tasks/work_request_create.html', {
+#             'errors': errors,
+#             'form_data': request.POST,
+#             'priority_choices': WorkRequest.PRIORITY_CHOICES,
+#         })
+
+#         WorkRequest.objects.create(
+#             requested_by=request.user,
+#             customer_name=customer_name,
+#             title=title,
+#             description=description,
+#             priority=priority,
+#             required_date=required_date,
+#             status='pending',
+#         )
+
+#         messages.success(request, 'Work request submitted successfully.')
+#         return redirect('my_requests')
+
+#     # return render(request, 'tasks/work_request_form.html', {
+#     #     'priority_choices': WorkRequest.PRIORITY_CHOICES,
+#     #     'action': 'Create',
+#     # })
+
+#     return render(request, 'tasks/work_request_create.html', {
+#     'priority_choices': WorkRequest.PRIORITY_CHOICES,
+# })
+
+
 @login_required
 def create_work_request(request):
-    print("===== CREATE WORK REQUEST VIEW CALLED =====")
-    """
-    Allow any logged-in employee or freelancer to submit a new WorkRequest.
-    """
+
     if not _is_staff_member(request):
         return redirect('login')
 
     if request.method == 'POST':
+
         customer_name = request.POST.get('customer_name', '').strip()
-        title         = request.POST.get('title', '').strip()
-        description   = request.POST.get('description', '').strip()
-        priority      = request.POST.get('priority', 'medium')
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        priority = request.POST.get('priority', 'medium')
         required_date = request.POST.get('required_date') or None
 
         errors = []
+
         if not customer_name:
-            errors.append('Customer name is required.')
+            errors.append("Customer name is required.")
+
         if not title:
-            errors.append('Title is required.')
+            errors.append("Title is required.")
+
         if not description:
-            errors.append('Description is required.')
+            errors.append("Description is required.")
 
         if errors:
-            return render(request, 'tasks/work_request_form.html', {
-                'errors':        errors,
-                'form_data':     request.POST,
-                'priority_choices': WorkRequest.PRIORITY_CHOICES,
-                'action':        'Create',
-            })
+            return render(
+                request,
+                "tasks/work_request_create.html",
+                {
+                    "errors": errors,
+                    "form_data": request.POST,
+                    "priority_choices": WorkRequest.PRIORITY_CHOICES,
+                },
+            )
 
         WorkRequest.objects.create(
             requested_by=request.user,
@@ -3593,17 +3658,19 @@ def create_work_request(request):
             description=description,
             priority=priority,
             required_date=required_date,
-            status='pending',
+            status="pending",
         )
 
-        messages.success(request, 'Work request submitted successfully.')
-        return redirect('my_requests')
+        messages.success(request, "Work Request submitted successfully.")
+        return redirect("my_requests")
 
-    return render(request, 'tasks/work_request_form.html', {
-        'priority_choices': WorkRequest.PRIORITY_CHOICES,
-        'action': 'Create',
-    })
-
+    return render(
+        request,
+        "tasks/work_request_create.html",
+        {
+            "priority_choices": WorkRequest.PRIORITY_CHOICES,
+        },
+    )
 
 # ------------------------------------------------------------------
 # Employee / Freelancer: Edit own pending request
