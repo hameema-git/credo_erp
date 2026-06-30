@@ -30,11 +30,11 @@ DEBUG = True
 
 
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 # ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = [
-#     'credo-erp-v1rz.onrender.com'
-# ]
+ALLOWED_HOSTS = [
+    'credo-erp-v1rz.onrender.com'
+]
 
 
 # Application definition
@@ -89,12 +89,12 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 #use this when in local
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',    
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',    
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -113,13 +113,13 @@ DATABASES = {
 # }
 
 #live database
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.environ.get('DATABASE_URL'),
-#         conn_max_age=0,
-#         conn_health_checks=True
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=0,
+        conn_health_checks=True
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
