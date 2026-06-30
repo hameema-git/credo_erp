@@ -1490,6 +1490,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 @login_required
 def search_tasks(request):
@@ -1662,23 +1663,44 @@ def search_tasks(request):
     # ==========================================
     # RESPONSE
     # ==========================================
-
+    today = timezone.now().date()
     return JsonResponse({
+
+        # 'tasks': [
+
+        #     {
+        #         'id': t.id,
+        #         'user_id': t.assigned_to.id,
+        #         'title': t.title,
+        #         'description': t.description,
+        #         'assigned_to': t.assigned_to.username,
+        #         'deadline': str(t.deadline),
+        #         'status': t.status,
+        #         'priority': t.priority,
+
+        #     } for t in tasks
+        # ],
 
         'tasks': [
 
-            {
-                'id': t.id,
-                'user_id': t.assigned_to.id,
-                'title': t.title,
-                'description': t.description,
-                'assigned_to': t.assigned_to.username,
-                'deadline': str(t.deadline),
-                'status': t.status,
-                'priority': t.priority,
+        {
+            'id': t.id,
+            'user_id': t.assigned_to.id,
+            'title': t.title,
+            'description': t.description,
+            'assigned_to': t.assigned_to.username,
+            'deadline': str(t.deadline),
+            'status': t.status,
+            'priority': t.priority,
 
-            } for t in tasks
-        ],
+            'is_overdue': (
+                t.deadline
+                and t.deadline < today
+                and t.status != "completed"
+            ),
+
+        } for t in tasks
+    ],
 
         'freelancers': [
 
@@ -1958,24 +1980,46 @@ def freelancer_detail(request, user_id):
 #     })
 
 
+# @login_required
+# def task_detail(request, task_id):
+
+#     task = Task.objects.select_related(
+#         'assigned_to'
+#     ).get(id=task_id)
+
+#     profile = UserProfile.objects.get(
+#         user=request.user
+#     )
+
+#     return render(
+#         request,
+#         'task_detail.html',
+#         {
+#             'task': task,
+#             'profile': profile
+#         }
+#     )
+
 @login_required
 def task_detail(request, task_id):
 
     task = Task.objects.select_related(
-        'assigned_to'
+        "assigned_to",
+        "assigned_to__userprofile"
     ).get(id=task_id)
 
-    profile = UserProfile.objects.get(
-        user=request.user
-    )
+    profile = UserProfile.objects.get(user=request.user)
+
+    assigned_role = task.assigned_to.userprofile.role
 
     return render(
         request,
-        'task_detail.html',
+        "task_detail.html",
         {
-            'task': task,
-            'profile': profile
-        }
+            "task": task,
+            "profile": profile,
+            "assigned_role": assigned_role,
+        },
     )
 from django.http import JsonResponse
 
@@ -3159,8 +3203,179 @@ from django.db.models import Case, When, Value, IntegerField
 from .models import Task
 
 
+# @login_required
+# def freelancer_dashboard(request):
+
+#     user_tasks = Task.objects.filter(
+#         assigned_to=request.user
+#     ).order_by('-created_at')
+
+#     tasks = user_tasks
+
+#     task_id = request.GET.get('task_id')
+#     status = request.GET.get('status')
+#     priority = request.GET.get('priority')
+
+#     if task_id:
+#         tasks = tasks.filter(id=task_id)
+
+#     if status:
+#         tasks = tasks.filter(status=status)
+
+#     if priority:
+#         tasks = tasks.filter(priority=priority)
+
+#     priority_order = Case(
+#         When(priority='high', then=Value(1)),
+#         When(priority='medium', then=Value(2)),
+#         When(priority='low', then=Value(3)),
+#         output_field=IntegerField()
+#     )
+
+#     tasks = tasks.annotate(
+#         priority_rank=priority_order
+#     ).order_by(
+#         'priority_rank',
+#         '-deadline'
+#     )
+
+#     pending = tasks.filter(status='pending')
+#     in_progress = tasks.filter(status='in_progress')
+#     completed = tasks.filter(status='completed')
+
+#     # PAYMENT SUMMARY
+
+#     total_earnings = 0
+#     received_payment = 0
+#     balance_payment = 0
+
+#     for task in user_tasks:
+
+#         total_earnings += task.payment_amount or 0
+#         received_payment += task.paid_amount or 0
+#         balance_payment += task.balance_amount or 0
+
+#     context = {
+
+#         'user_tasks': user_tasks,
+
+#         'pending': pending,
+#         'in_progress': in_progress,
+#         'completed': completed,
+
+#         'pending_count': pending.count(),
+#         'progress_count': in_progress.count(),
+#         'completed_count': completed.count(),
+
+#         'total_earnings': total_earnings,
+#         'received_payment': received_payment,
+#         'balance_payment': balance_payment,
+
+#         'task_id': task_id,
+#         'status': status,
+#         'priority': priority,
+#     }
+
+#     return render(
+#         request,
+#         'freelancer_dashboard.html',
+#         context
+#     )
+
+
+
+# @login_required
+# def freelancer_dashboard(request):
+
+#     profile = UserProfile.objects.get(user=request.user)
+
+#     user_tasks = Task.objects.filter(
+#         assigned_to=request.user
+#     ).order_by('-created_at')
+
+#     tasks = user_tasks
+
+#     task_id = request.GET.get('task_id')
+#     status = request.GET.get('status')
+#     priority = request.GET.get('priority')
+
+#     if task_id:
+#         tasks = tasks.filter(id=task_id)
+
+#     if status:
+#         tasks = tasks.filter(status=status)
+
+#     if priority:
+#         tasks = tasks.filter(priority=priority)
+
+#     priority_order = Case(
+#         When(priority='high', then=Value(1)),
+#         When(priority='medium', then=Value(2)),
+#         When(priority='low', then=Value(3)),
+#         output_field=IntegerField()
+#     )
+
+#     tasks = tasks.annotate(
+#         priority_rank=priority_order
+#     ).order_by(
+#         'priority_rank',
+#         '-deadline'
+#     )
+
+#     pending = tasks.filter(status='pending')
+#     in_progress = tasks.filter(status='in_progress')
+#     completed = tasks.filter(status='completed')
+
+#     # PAYMENT SUMMARY
+#     total_earnings = 0
+#     received_payment = 0
+#     balance_payment = 0
+
+#     # Only calculate payments for freelancers
+#     if profile.role == "freelancer":
+#         for task in user_tasks:
+#             total_earnings += task.payment_amount or 0
+#             received_payment += task.paid_amount or 0
+#             balance_payment += task.balance_amount or 0
+
+#     context = {
+
+#         "profile": profile,
+
+#         "user_tasks": user_tasks,
+
+#         "pending": pending,
+#         "in_progress": in_progress,
+#         "completed": completed,
+
+#         "pending_count": pending.count(),
+#         "progress_count": in_progress.count(),
+#         "completed_count": completed.count(),
+
+#         "total_earnings": total_earnings,
+#         "received_payment": received_payment,
+#         "balance_payment": balance_payment,
+
+#         "task_id": task_id,
+#         "status": status,
+#         "priority": priority,
+#     }
+
+#     return render(
+#         request,
+#         "freelancer_dashboard.html",
+#         context
+#     )
+
+from django.utils import timezone
+from django.db.models import Case, When, Value, IntegerField
+
 @login_required
 def freelancer_dashboard(request):
+
+    profile = UserProfile.objects.get(user=request.user)
+
+    today = timezone.now().date()
 
     user_tasks = Task.objects.filter(
         assigned_to=request.user
@@ -3199,42 +3414,54 @@ def freelancer_dashboard(request):
     in_progress = tasks.filter(status='in_progress')
     completed = tasks.filter(status='completed')
 
-    # PAYMENT SUMMARY
+    overdue_tasks = tasks.filter(
+        deadline__lt=today
+    ).exclude(
+        status='completed'
+    )
 
+    # PAYMENT SUMMARY
     total_earnings = 0
     received_payment = 0
     balance_payment = 0
 
-    for task in user_tasks:
-
-        total_earnings += task.payment_amount or 0
-        received_payment += task.paid_amount or 0
-        balance_payment += task.balance_amount or 0
+    # Only calculate payments for freelancers
+    if profile.role == "freelancer":
+        for task in user_tasks:
+            total_earnings += task.payment_amount or 0
+            received_payment += task.paid_amount or 0
+            balance_payment += task.balance_amount or 0
 
     context = {
 
-        'user_tasks': user_tasks,
+        "profile": profile,
 
-        'pending': pending,
-        'in_progress': in_progress,
-        'completed': completed,
+        "today": today,
 
-        'pending_count': pending.count(),
-        'progress_count': in_progress.count(),
-        'completed_count': completed.count(),
+        "user_tasks": user_tasks,
+        "tasks": tasks,
 
-        'total_earnings': total_earnings,
-        'received_payment': received_payment,
-        'balance_payment': balance_payment,
+        "pending": pending,
+        "in_progress": in_progress,
+        "completed": completed,
 
-        'task_id': task_id,
-        'status': status,
-        'priority': priority,
+        "pending_count": pending.count(),
+        "progress_count": in_progress.count(),
+        "completed_count": completed.count(),
+        "overdue_count": overdue_tasks.count(),
+
+        "total_earnings": total_earnings,
+        "received_payment": received_payment,
+        "balance_payment": balance_payment,
+
+        "task_id": task_id,
+        "status": status,
+        "priority": priority,
     }
 
     return render(
         request,
-        'freelancer_dashboard.html',
+        "freelancer_dashboard.html",
         context
     )
 
@@ -3737,21 +3964,83 @@ def edit_work_request(request, request_id):
 # Manager: All Requests List
 # ------------------------------------------------------------------
 
+# @login_required
+# def work_request_list(request):
+#     """
+#     Manager view: list all WorkRequests with optional status filter.
+#     """
+#     if not _is_manager(request):
+#         return redirect('login')
+
+#     requests_qs = WorkRequest.objects.select_related(
+#         'requested_by', 'requested_by__userprofile'
+#     ).order_by('-created_at')
+
+#     status_filter   = request.GET.get('status', '').strip()
+#     priority_filter = request.GET.get('priority', '').strip()
+#     query           = request.GET.get('q', '').strip()
+
+#     if status_filter:
+#         requests_qs = requests_qs.filter(status=status_filter)
+
+#     if priority_filter:
+#         requests_qs = requests_qs.filter(priority=priority_filter)
+
+#     if query:
+#         requests_qs = requests_qs.filter(
+#             Q(title__icontains=query) |
+#             Q(customer_name__icontains=query) |
+#             Q(requested_by__username__icontains=query) |
+#             Q(request_no__icontains=query)
+#         )
+
+#     # Counts for the summary bar
+#     total_count    = WorkRequest.objects.count()
+#     pending_count  = WorkRequest.objects.filter(status='pending').count()
+#     approved_count = WorkRequest.objects.filter(status='approved').count()
+#     rejected_count = WorkRequest.objects.filter(status='rejected').count()
+
+#     return render(request, 'tasks/work_request_list.html', {
+#         'work_requests':    requests_qs,
+#         'status_filter':    status_filter,
+#         'priority_filter':  priority_filter,
+#         'query':            query,
+#         'status_choices':   WorkRequest.STATUS_CHOICES,
+#         'priority_choices': WorkRequest.PRIORITY_CHOICES,
+#         'total_count':      total_count,
+#         'pending_count':    pending_count,
+#         'approved_count':   approved_count,
+#         'rejected_count':   rejected_count,
+#     })
+
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 @login_required
 def work_request_list(request):
     """
-    Manager view: list all WorkRequests with optional status filter.
+    Manager View
+    Displays all work requests with search, filters and pagination.
     """
+
     if not _is_manager(request):
-        return redirect('login')
+        return redirect("login")
 
-    requests_qs = WorkRequest.objects.select_related(
-        'requested_by', 'requested_by__userprofile'
-    ).order_by('-created_at')
+    requests_qs = (
+        WorkRequest.objects
+        .select_related(
+            "requested_by",
+            "requested_by__userprofile"
+        )
+        .order_by("-created_at")
+    )
 
-    status_filter   = request.GET.get('status', '').strip()
-    priority_filter = request.GET.get('priority', '').strip()
-    query           = request.GET.get('q', '').strip()
+    # -----------------------------
+    # Filters
+    # -----------------------------
+    status_filter = request.GET.get("status", "").strip()
+    priority_filter = request.GET.get("priority", "").strip()
+    query = request.GET.get("q", "").strip()
 
     if status_filter:
         requests_qs = requests_qs.filter(status=status_filter)
@@ -3761,31 +4050,79 @@ def work_request_list(request):
 
     if query:
         requests_qs = requests_qs.filter(
+
+            Q(request_no__icontains=query) |
+
             Q(title__icontains=query) |
+
             Q(customer_name__icontains=query) |
+
+            Q(description__icontains=query) |
+
             Q(requested_by__username__icontains=query) |
-            Q(request_no__icontains=query)
+
+            Q(requested_by__first_name__icontains=query) |
+
+            Q(requested_by__last_name__icontains=query)
+
         )
 
-    # Counts for the summary bar
-    total_count    = WorkRequest.objects.count()
-    pending_count  = WorkRequest.objects.filter(status='pending').count()
-    approved_count = WorkRequest.objects.filter(status='approved').count()
-    rejected_count = WorkRequest.objects.filter(status='rejected').count()
+    # -----------------------------
+    # Pagination
+    # -----------------------------
+    paginator = Paginator(requests_qs, 10)
 
-    return render(request, 'tasks/work_request_list.html', {
-        'work_requests':    requests_qs,
-        'status_filter':    status_filter,
-        'priority_filter':  priority_filter,
-        'query':            query,
-        'status_choices':   WorkRequest.STATUS_CHOICES,
-        'priority_choices': WorkRequest.PRIORITY_CHOICES,
-        'total_count':      total_count,
-        'pending_count':    pending_count,
-        'approved_count':   approved_count,
-        'rejected_count':   rejected_count,
-    })
+    page_number = request.GET.get("page")
 
+    page_obj = paginator.get_page(page_number)
+
+    # -----------------------------
+    # Dashboard Counts
+    # -----------------------------
+    total_count = WorkRequest.objects.count()
+
+    pending_count = WorkRequest.objects.filter(
+        status="pending"
+    ).count()
+
+    review_count = WorkRequest.objects.filter(
+        status="under_review"
+    ).count()
+
+    approved_count = WorkRequest.objects.filter(
+        status="approved"
+    ).count()
+
+    quotation_count = WorkRequest.objects.filter(
+        status="quotation_created"
+    ).count()
+
+    rejected_count = WorkRequest.objects.filter(
+        status="rejected"
+    ).count()
+
+    return render(
+        request,
+        "tasks/work_request_list.html",
+        {
+            "work_requests": page_obj,
+            "page_obj": page_obj,
+
+            "status_filter": status_filter,
+            "priority_filter": priority_filter,
+            "query": query,
+
+            "status_choices": WorkRequest.STATUS_CHOICES,
+            "priority_choices": WorkRequest.PRIORITY_CHOICES,
+
+            "total_count": total_count,
+            "pending_count": pending_count,
+            "review_count": review_count,
+            "approved_count": approved_count,
+            "quotation_count": quotation_count,
+            "rejected_count": rejected_count,
+        },
+    )
 
 # ------------------------------------------------------------------
 # Manager + Submitter: Request Detail
@@ -3793,6 +4130,8 @@ def work_request_list(request):
 
 @login_required
 def work_request_detail(request, request_id):
+
+    print("===== WORK REQUEST DETAIL VIEW =====")
     """
     Detail page for a single WorkRequest.
 
@@ -3893,3 +4232,88 @@ def mark_under_review(request, request_id):
         messages.info(request, f'Request {work_request.request_no} marked as Under Review.')
 
     return redirect('work_request_detail', request_id=request_id)
+
+
+
+
+@login_required
+def admin_edit_work_request(request, request_id):
+    """
+    Manager view: edit any WorkRequest directly from the admin list,
+    regardless of submitter or current status.
+    """
+    if not _is_manager(request):
+        return redirect('login')
+ 
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+ 
+    if request.method == 'POST':
+        customer_name = request.POST.get('customer_name', '').strip()
+        title         = request.POST.get('title', '').strip()
+        description   = request.POST.get('description', '').strip()
+        priority      = request.POST.get('priority', 'medium')
+        required_date = request.POST.get('required_date') or None
+        status        = request.POST.get('status', work_request.status)
+ 
+        errors = []
+        if not customer_name:
+            errors.append('Customer name is required.')
+        if not title:
+            errors.append('Title is required.')
+        if not description:
+            errors.append('Description is required.')
+ 
+        if errors:
+            return render(request, 'tasks/work_request_form.html', {
+                'errors':           errors,
+                'form_data':        request.POST,
+                'priority_choices': WorkRequest.PRIORITY_CHOICES,
+                'status_choices':   WorkRequest.STATUS_CHOICES,
+                'work_request':     work_request,
+                'action':           'Edit',
+                'is_admin_edit':    True,
+            })
+ 
+        work_request.customer_name = customer_name
+        work_request.title         = title
+        work_request.description   = description
+        work_request.priority      = priority
+        work_request.required_date = required_date
+        work_request.status        = status
+        work_request.save()
+ 
+        messages.success(request, f'Request {work_request.request_no} updated.')
+        return redirect('work_request_list')
+ 
+    return render(request, 'tasks/work_request_form.html', {
+        'priority_choices': WorkRequest.PRIORITY_CHOICES,
+        'status_choices':   WorkRequest.STATUS_CHOICES,
+        'work_request':     work_request,
+        'action':           'Edit',
+        'is_admin_edit':    True,
+    })
+ 
+ 
+# ──────────────────────────────────────────────────────────────
+# 4. ADD this new view — Delete (manager only)
+# ──────────────────────────────────────────────────────────────
+ 
+@login_required
+def delete_work_request(request, request_id):
+    """
+    Manager view: permanently delete a WorkRequest.
+    Requires POST for safety (confirmation handled in template).
+    """
+    if not _is_manager(request):
+        return redirect('login')
+ 
+    work_request = get_object_or_404(WorkRequest, id=request_id)
+ 
+    if request.method == 'POST':
+        ref = work_request.request_no
+        work_request.delete()
+        messages.success(request, f'Request {ref} deleted.')
+        return redirect('work_request_list')
+ 
+    return redirect('work_request_detail', request_id=request_id)
+ 

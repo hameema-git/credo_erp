@@ -63,6 +63,8 @@ path(
     path('work-requests/<int:request_id>/approve/', views.approve_work_request, name='approve_work_request'),
     path('work-requests/<int:request_id>/reject/',  views.reject_work_request,  name='reject_work_request'),
     path('work-requests/<int:request_id>/review/',  views.mark_under_review,    name='mark_under_review'),
+        path('work-requests/<int:request_id>/edit/',    views.admin_edit_work_request,  name='admin_edit_work_request'),
+    path('work-requests/<int:request_id>/delete/',  views.delete_work_request,      name='delete_work_request'),
 
  path('employee-data/<int:user_id>/', views.employee_detail, name='employee_data'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

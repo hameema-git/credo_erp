@@ -11,3 +11,4 @@ admin.site.register(QuotationItem)
 admin.site.register(Invoice)
 admin.site.register(InvoiceItem)
 admin.site.register(PaymentReceipt)
+

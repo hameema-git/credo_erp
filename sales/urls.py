@@ -46,7 +46,7 @@ from .views import (
     service_detail, edit_service,
     delete_invoice, delete_quotation,
     delete_customer, delete_service,   # ✅ comma added
-    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail,delete_lpo ,delete_receipt  # ✅ clean line
+    create_lpo, lpo_detail, lpo_pdf ,edit_lpo,add_supplier,edit_supplier,delete_supplier,supplier_detail,delete_lpo ,delete_receipt,create_quotation_from_request  # ✅ clean line
 )
 urlpatterns = [
 
@@ -105,4 +105,10 @@ urlpatterns = [
     path('supplier/<int:pk>/edit/', edit_supplier, name='edit_supplier'),
     path('supplier/<int:pk>/delete/', delete_supplier, name='delete_supplier'),
     path('supplier/<int:pk>/', supplier_detail, name='supplier_detail'),
+
+    path(
+    "quotation/from-request/<int:request_id>/",
+    create_quotation_from_request,
+    name="create_quotation_from_request",
+)
 ]

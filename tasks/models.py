@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
+from sales.models import Quotation
 
 
 # class User(AbstractUser):
@@ -432,6 +433,14 @@ class WorkRequest(models.Model):
     title = models.CharField(max_length=200)
 
     description = models.TextField()
+
+    quotation = models.ForeignKey(
+    Quotation,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name="work_requests"
+)
 
     priority = models.CharField(
         max_length=10,

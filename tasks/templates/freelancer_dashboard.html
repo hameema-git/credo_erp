@@ -1,1299 +1,1116 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Tasks</title>
-
-    <!-- 🔥 IMPORTANT -->
+    <meta charset="UTF-8">
+    <title>Credo ERP - My Tasks</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
- <link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
     <style>
+        * { box-sizing: border-box; }
         body {
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            overflow-x:hidden ;
+            background: #f7f7fb;
+            color: #222;
+            display: flex;
+            min-height: 100vh;
         }
 
-        .card-hover:hover {
-            transform: translateY(-3px);
-            transition: 0.2s;
-        }
+        /* ── SIDEBAR ─────────────────────────────────────────── */
+        /* .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #fff;
+            border-right: 1px solid #ececf3;
+            position: fixed;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 200;
+        } */
 
-        .urgent {
-            border: 2px solid red !important;
-            background-color: #fff5f5;
-        }
+                .sidebar{
+    width:210px;
+    height:100vh;
+    background:#fff;
+    border-right:1px solid #ebebeb;
 
-        /* 🔥 MOBILE FIX */
-        @media (max-width: 768px) {
+    position:fixed;
+    top:0;
+    left:0;
 
-            h2 {
-                font-size: 20px;
-            }
+    display:flex;
+    flex-direction:column;
 
-            h4 {
-                font-size: 18px;
-            }
+    overflow-y:auto;
+    overflow-x:hidden;
 
-            .btn {
-                font-size: 13px;
-                padding: 8px;
-            }
-
-            .card-body {
-                padding: 15px !important;
-            }
-
-            .d-flex {
-                flex-wrap: wrap;
-            }
-
-            .gap-2 {
-                gap: 6px !important;
-            }
-        }
-        /* .task-card{
-    max-width: 650px;
-    margin: 0 auto 15px auto;
-} */
-
-/* .task-card{
-    width:100%;
-    max-width:320px;
-    min-height:220px;
-} */
-
-.task-card{
-    width:100%;
-    min-height:220px;
+    z-index:200;
+}
+.sidebar::-webkit-scrollbar{
+    width:6px;
 }
 
-        .progress{
-    height:22px;
+.sidebar::-webkit-scrollbar-thumb{
+    background:#cfcfcf;
     border-radius:20px;
 }
 
-.progress-bar{
-    font-weight:600;
+.sidebar::-webkit-scrollbar-thumb:hover{
+    background:#999;
 }
 
-.card{
-    border-radius:15px;
-}
- /* .card{
-    border-radius:15px;
-    max-width:600px;
-    margin-left:auto;
-    margin-right:auto;
-} */
-
-
-
-.card-hover:hover{
-    transform:translateY(-5px);
-    transition:.3s;
+         .sidebar-logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:18px 15px;
+    border-bottom:1px solid #f0f0f0;
+    margin-bottom:15px;
 }
 
-.badge{
-    font-size:12px;
+.sidebar-logo-img{
+    width:150px;
+    height:auto;
+    object-fit:contain;
+    display:block;
 }
 
-.list-group-item{
-    cursor:pointer;
-    transition:.2s;
+        .sidebar-nav {
+            padding: 10px 8px;
+            flex: 1;
+        }
+/* 
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 20px 16px;
+        } */
+        .sidebar-logo .logo-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 18px;
+        }
+        .sidebar-logo .logo-text { font-weight: 800; font-size: 17px; color: #1a1a2e; line-height: 1.1; }
+        .sidebar-logo .logo-text span { color: #7c3aed; }
+        .sidebar-logo .logo-sub { font-size: 9.5px; color: #aaa; letter-spacing: .06em; text-transform: uppercase; }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 6px 12px;
+            scrollbar-width: thin;
+        }
+        .sidebar-nav::-webkit-scrollbar { width: 6px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: #e0e0e8; border-radius: 20px; }
+
+        .nav-item-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: 10px;
+            color: #6b6b7b;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-bottom: 3px;
+            transition: background .15s, color .15s;
+        }
+        .nav-item-link i { font-size: 16px; width: 18px; text-align: center; }
+        .nav-item-link:hover  { background: #f4f1ff; color: #7c3aed; }
+        .nav-item-link.active { background: linear-gradient(90deg,#7c3aed,#a855f7); color: #fff; font-weight: 600; }
+
+        .sidebar-help {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            padding: 14px 12px;
+            flex-shrink: 0;
+        }
+        .sidebar-help-inner {
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 14px;
+            padding: 15px 13px;
+            color: #fff;
+        }
+
+
+        #sidebarOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:none;
+    z-index:150;
 }
 
-.list-group-item:hover{
-    background:#f8f9fa;
-    padding-left:25px;
+#sidebarOverlay.show{
+    display:block;
 }
+        .sidebar-help .sh-title { font-weight: 700; font-size: 13.5px; }
+        .sidebar-help .sh-sub   { font-size: 11px; opacity: .85; margin-top: 2px; line-height: 1.3; }
+        .sidebar-help .sh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 11px;
+            background: rgba(255,255,255,.22);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+            transition: background .15s;
+        }
+        .sidebar-help .sh-btn:hover { background: rgba(255,255,255,.35); color: #fff; }
 
-.modal-body p{
-    line-height:1.8;
-}
+        /* ── PAGE WRAPPER ────────────────────────────────────── */
+        .page-wrapper {
+            margin-left: 220px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-.list-group-item{
-    transition:.2s;
-    cursor:pointer;
-}
+        /* ── TOPBAR ──────────────────────────────────────────── */
+        .topbar {
+            padding: 20px 28px 0;
+        }
+        .topbar-greeting {
+            font-size: 13.5px;
+            color: #888;
+            margin-bottom: 2px;
+        }
+        .topbar-greeting .wave { display: inline-block; }
+        .topbar-heading {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .topbar-sub { font-size: 13px; color: #999; margin-top: 2px; }
 
-.list-group-item:hover{
-    background:#f8f9fa;
-    padding-left:25px;
+        .topbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .topbar-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+        .icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid #ececf3;
+            display: flex; align-items: center; justify-content: center;
+            color: #666;
+            font-size: 16px;
+            text-decoration: none;
+            position: relative;
+            transition: background .15s;
+        }
+        .icon-btn:hover { background: #f4f1ff; color: #7c3aed; }
+
+        .avatar-circle {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 15px;
+            text-decoration: none;
+        }
+
+        .btn-logout-tb {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 10px;
+            background: #fee2e2;
+            color: #dc2626;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+        .btn-logout-tb:hover { background: #fecaca; color: #b91c1c; }
+
+        /* ── CONTENT ─────────────────────────────────────────── */
+        .content-area { padding: 18px 28px 28px; flex: 1; }
+
+        /* ── FILTER ROW ──────────────────────────────────────── */
+        .filter-row {
+            background: #fff;
+            border: 1px solid #ececf3;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-row select {
+            padding: 9px 14px;
+            border: 1px solid #ececf3;
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            background: #fafafc;
+            color: #333;
+            transition: border-color .15s;
+            flex: 1;
+            min-width: 140px;
+        }
+        .filter-row select:focus { border-color: #7c3aed; background: #fff; }
+
+        .btn-filter {
+            padding: 9px 24px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-filter:hover { opacity: .88; color: #fff; }
+
+        .btn-completed-pill {
+            padding: 9px 18px;
+            background: #d1fae5;
+            color: #065f46;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: background .15s;
+        }
+        .btn-completed-pill:hover { background: #a7f3d0; }
+        .btn-completed-pill .badge-count {
+            background: #fff;
+            color: #065f46;
+            border-radius: 50px;
+            padding: 1px 8px;
+            font-size: 11.5px;
+        }
+
+        /* ── REQUEST ACTION BAR ─────────────────────────────── */
+        .request-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .request-bar h6 { font-size: 13.5px; color: #888; font-weight: 700; margin: 0; }
+
+        .btn-my-requests {
+            background: #fff;
+            border: 1px solid #ececf3;
+            color: #555;
+            border-radius: 10px;
+            padding: 9px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+        .btn-my-requests:hover { background: #f4f1ff; color: #7c3aed; }
+
+        .btn-new-request {
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .15s;
+        }
+        .btn-new-request:hover { opacity: .88; color: #fff; }
+
+        /* ── WAVY STAT CARDS ─────────────────────────────────── */
+        .stat-card {
+            border: 1px solid #ececf3;
+            border-radius: 16px;
+            padding: 18px 20px 14px;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-icon-box {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px; margin-bottom: 12px;
+        }
+        .sib-purple { background: #ede9fe; color: #7c3aed; }
+        .sib-amber  { background: #fef3c7; color: #d97706; }
+        .sib-blue   { background: #dbeafe; color: #2563eb; }
+        .sib-green  { background: #d1fae5; color: #059669; }
+        .st-label { font-size: 12.5px; color: #999; font-weight: 600; margin-bottom: 2px; }
+        .st-value { font-size: 25px; font-weight: 800; color: #1a1a2e; }
+
+        .stat-wave {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 22px;
+            opacity: .5;
+        }
+
+        /* ── PAYMENT CARDS ───────────────────────────────────── */
+        .pay-card {
+            border: 1px solid #ececf3;
+            border-radius: 16px;
+            padding: 16px 18px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .pay-card .pay-icon {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .pay-card.pc-purple .pay-icon { background: #ede9fe; color: #7c3aed; }
+        .pay-card.pc-green  .pay-icon { background: #d1fae5; color: #059669; }
+        .pay-card.pc-amber  .pay-icon { background: #fef3c7; color: #d97706; }
+        .pay-label { font-size: 12px; color: #999; font-weight: 600; }
+        .pay-value { font-size: 19px; font-weight: 800; color: #1a1a2e; }
+
+        /* ── SECTION CARD ────────────────────────────────────── */
+        .section-card {
+            background: #fff;
+            border: 1px solid #ececf3;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .section-header {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .section-header.sh-amber { background: #fef3e2; color: #92400e; }
+        .section-header.sh-blue  { background: #e7eefe; color: #1e40af; }
+        .section-header .count-pill {
+            background: rgba(0,0,0,.08);
+            border-radius: 50px;
+            padding: 2px 11px;
+            font-size: 12px;
+        }
+        .section-body { padding: 18px; }
+
+        /* ── TASK CARD ───────────────────────────────────────── */
+        .task-card {
+            border: 1px solid #ececf3;
+            border-radius: 14px;
+            padding: 16px;
+            background: #fff;
+            height: 100%;
+            transition: box-shadow .15s;
+        }
+        .task-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+        .task-card.urgent { border: 1.5px solid #ef4444; background: #fff5f5; }
+        .task-card.overdue {
+            background: #fff5f5;
+            border: 2px solid #dc3545;
+            border-left: 6px solid #dc3545;
+        }
+
+        .overdue-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #dc3545;
+            color: #fff;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 50px;
+            margin-bottom: 8px;
+        }
+
+        .task-title { font-weight: 700; color: #1a1a2e; font-size: 14px; }
+
+        .badge-priority {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 10.5px;
+            font-weight: 600;
+        }
+        .bp-high   { background: #fee2e2; color: #dc2626; }
+        .bp-medium { background: #fef3c7; color: #d97706; }
+        .bp-low    { background: #d1fae5; color: #059669; }
+
+        .task-meta { font-size: 12px; color: #999; margin: 9px 0; }
+        .task-meta div { margin-bottom: 4px; }
+
+        .badge-tstatus {
+            display: inline-block;
+            padding: 3px 11px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .bts-pending { background: #fef3c7; color: #92400e; }
+        .bts-progress { background: #dbeafe; color: #1e40af; }
+
+        .payment-mini {
+            background: #fafafc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+        .payment-mini div { margin-bottom: 3px; }
+
+        .btn-task-view {
+            background: #ede9fe;
+            color: #7c3aed;
+            border: none;
+            border-radius: 9px;
+            padding: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            width: 100%;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: background .15s;
+        }
+        .btn-task-view:hover { background: #ddd6fe; color: #6d28d9; }
+
+        .btn-task-start {
+            background: #fef3c7;
+            color: #92400e;
+            border: none;
+            border-radius: 9px;
+            padding: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            width: 100%;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: background .15s;
+        }
+        .btn-task-start:hover { background: #fde68a; color: #78350f; }
+
+        .btn-task-complete {
+            background: #d1fae5;
+            color: #065f46;
+            border: none;
+            border-radius: 9px;
+            padding: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            width: 100%;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: background .15s;
+        }
+        .btn-task-complete:hover { background: #a7f3d0; color: #064e3b; }
+
+        /* ── EMPTY STATE ─────────────────────────────────────── */
+        .empty-block {
+            text-align: center;
+            padding: 28px 16px;
+            color: #bbb;
+        }
+        .empty-block i { font-size: 30px; display: block; margin-bottom: 8px; }
+        .empty-block p { margin: 0; font-size: 13px; }
+
+        /* ── FOOTER ──────────────────────────────────────────── */
+        .page-footer {
+            text-align: center;
+            font-size: 11.5px;
+            color: #bbb;
+            padding: 18px;
+        }
+
+        /* ── MOBILE ──────────────────────────────────────────── */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: 1px solid #ececf3;
+            border-radius: 10px;
+            padding: 7px 11px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        /* @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform .25s; }
+            .sidebar.open { transform: translateX(0); }
+            .page-wrapper { margin-left: 0; }
+            .mobile-toggle { display: inline-flex; }
+            .topbar { padding: 14px 16px 0; }
+            .content-area { padding: 14px 16px 20px; }
+            .topbar-heading { font-size: 19px; }
+        } */
+
+        @media (max-width:768px){
+
+    .sidebar{
+        width:250px;
+        transform:translateX(-100%);
+        transition:.3s;
+        z-index:200;
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .page-wrapper{
+        margin-left:0;
+    }
+
+    .mobile-toggle{
+        display:inline-flex;
+    }
+
 }
     </style>
 </head>
+<body>
+    <div id="sidebarOverlay"></div>
 
-<body class="bg-light">
+<!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
 
-<div class="container mt-3">
-
-    <!-- HEADER -->
-    <!-- <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h5 class="mb-2">👨‍💻 My Tasks</h5>
-
-        <div class="d-flex gap-2">
-            <a href="/profile/" class="btn btn-outline-primary btn-sm">Profile</a>
-            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+    <!-- <div class="sidebar-logo">
+        <div class="logo-icon">C</div>
+        <div>
+            <div class="logo-text">Credo<span>.intl</span></div>
+            <div class="logo-sub">Digital Designs</div>
         </div>
     </div> -->
-
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-
-    <div>
-        <!-- <h5 class="mb-0">
-            👨‍💻 {{ request.user.username }}
-        </h5> -->
-
-
-        <h5 class="mb-0">
-    Welcome, {{ request.user.first_name|default:request.user.username }}
-</h5>
-        <small class="text-muted">
-            {{ request.user.get_role_display }}
-        </small>
-    </div>
-
-    <div class="d-flex gap-2">
-        <!-- <a href="/profile/" class="btn btn-outline-primary btn-sm">
-            Profile
-        </a> -->
-
-        <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
-    Profile
-</a>
-<a href="{% url 'my_requests' %}" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-inbox"></i> My Requests
-</a>
-
-        <a href="{% url 'logout' %}"
-           class="btn btn-danger btn-sm">
-            Logout
-        </a>
- 
-          <!-- <a href="{% url 'dashboard' %}"
-       class="btn btn-secondary">
-       ← Back to ERP
-    </a> -->
-        <!-- <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a> -->
-    </div>
-
+    <div class="sidebar-logo">
+    <img src="{% static 'logo6.png' %}" class="sidebar-logo-img" alt="Credo">
 </div>
 
-<form method="GET" class="card shadow-sm p-3 mb-3">
+    <nav class="sidebar-nav">
+        <a href="{% url 'freelancer_dashboard' %}" class="nav-item-link active">
+            <i class="bi bi-grid-fill"></i> Dashboard
+        </a>
+        <a href="{% url 'freelancer_dashboard' %}" class="nav-item-link">
+            <i class="bi bi-check2-square"></i> My Tasks
+        </a>
+        <a href="{% url 'my_requests' %}" class="nav-item-link">
+            <i class="bi bi-inbox-fill"></i> My Requests
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-kanban-fill"></i> My Projects
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-receipt"></i> Invoices
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-arrow-left-right"></i> Transactions
+        </a>
+        <a href="{% url 'profile' %}" class="nav-item-link">
+            <i class="bi bi-person-fill"></i> Profile
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-gear-fill"></i> Settings
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="bi bi-life-preserver"></i> Support
+        </a>
+    </nav>
 
-    <div class="row g-2">
+    <div class="sidebar-help">
+        <div class="sidebar-help-inner">
+            <div class="sh-title">Need Help?</div>
+            <div class="sh-sub">Contact Support For Assistance</div>
+            <a href="#" class="sh-btn"><i class="bi bi-headset"></i> Contact Support</a>
+        </div>
+    </div>
 
-        <!-- <div class="col-md-5">
-            <input type="text"
-                   name="q"
-                   value="{{ request.GET.q }}"
-                   class="form-control"
-                   placeholder="Search task name, description...">
-        </div> -->
+</aside>
 
-        <div class="col-md-5">
+<!-- ══ PAGE WRAPPER ══════════════════════════════════════════ -->
+<div class="page-wrapper">
 
-    <!-- <select name="task_id" class="form-select">
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-row">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <!-- <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"> -->
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <div class="topbar-greeting">
+                        Good day, {{ request.user.first_name|default:request.user.username }}
+                        <span class="wave">👋</span>
+                    </div>
+                    <div class="topbar-heading">My Tasks</div>
+                    <div class="topbar-sub">Here's what's happening with your tasks today.</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a href="#" class="icon-btn"><i class="bi bi-bell"></i></a>
+                <a href="{% url 'profile' %}" class="avatar-circle">
+                    {{ request.user.username|first|upper }}
+                </a>
+                <a href="{% url 'logout' %}" class="btn-logout-tb">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
 
-        <option value="">
-            All Tasks
-        </option>
+    <!-- CONTENT -->
+    <div class="content-area">
 
-        {% for task in user_tasks %}
-
-        <option value="{{ task.id }}"
-            {% if task_id == task.id|stringformat:"s" %}
-                selected
-            {% endif %}
-        >
-            {{ task.title }}
-        </option>
-
+        {# ── Django Messages ───────────────────────────────── #}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         {% endfor %}
 
-    </select> -->
-<select name="task_id" class="form-select">
+        {# ── Filter Row ────────────────────────────────────── #}
+        <form method="GET" class="filter-row">
 
-    <option value="">All Tasks</option>
-<!-- 
-    {% for task in user_tasks %}
+            <select name="task_id">
+                <option value="">All Tasks</option>
+                {% for task in user_tasks %}
+                    {% if task.status != 'completed' %}
+                        <option value="{{ task.id }}">
+                            {% if task.priority == 'high' %}🔴{% elif task.priority == 'medium' %}🟡{% else %}🟢{% endif %}
+                            {{ task.title }}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
 
-    <option value="{{ task.id }}">
-        {% if task.priority == 'high' %}
-            🔴
-        {% elif task.priority == 'medium' %}
-            🟡
-        {% else %}
-            🟢
-        {% endif %}
-
-        {{ task.title }}
-    </option>
-
-    {% endfor %} -->
-    {% for task in user_tasks %}
-
-    {% if task.status != 'completed' %}
-
-    <option value="{{ task.id }}">
-        {% if task.priority == 'high' %}
-            🔴
-        {% elif task.priority == 'medium' %}
-            🟡
-        {% else %}
-            🟢
-        {% endif %}
-
-        {{ task.title }}
-    </option>
-
-    {% endif %}
-
-{% endfor %}
-
-</select>
-</div>
-
-        <div class="col-md-3">
-            <select name="status" class="form-select">
+            <select name="status">
                 <option value="">All Status</option>
-
-                <option value="pending"
-                    {% if request.GET.status == 'pending' %}selected{% endif %}>
-                    Pending
-                </option>
-
-                <option value="in_progress"
-                    {% if request.GET.status == 'in_progress' %}selected{% endif %}>
-                    In Progress
-                </option>
-
-                <!-- <option value="completed"
-                    {% if request.GET.status == 'completed' %}selected{% endif %}>
-                    Completed
-                </option> -->
-
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
             </select>
-        </div>
 
-        <div class="col-md-2">
-            <select name="priority" class="form-select">
-
+            <select name="priority">
                 <option value="">All Priority</option>
-
-                <option value="high"
-                    {% if request.GET.priority == 'high' %}selected{% endif %}>
-                    High
-                </option>
-
-                <option value="medium"
-                    {% if request.GET.priority == 'medium' %}selected{% endif %}>
-                    Medium
-                </option>
-
-                <option value="low"
-                    {% if request.GET.priority == 'low' %}selected{% endif %}>
-                    Low
-                </option>
-
+                <option value="high" {% if request.GET.priority == 'high' %}selected{% endif %}>High</option>
+                <option value="medium" {% if request.GET.priority == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="low" {% if request.GET.priority == 'low' %}selected{% endif %}>Low</option>
             </select>
-        </div>
 
-        <div class="col-md-2 d-grid">
-            <button class="btn btn-primary">
-                Search
+            <button type="submit" class="btn-filter">
+                <i class="bi bi-search"></i> Search
             </button>
-        </div>
-        <button
-    type="button"
-    class="btn btn-success w-100"
-    data-bs-toggle="modal"
-    data-bs-target="#completedTasksModal">
 
-    ✅ Completed
-    <span class="badge bg-light text-dark ms-1">
-        {{ completed_count }}
-    </span>
+            <button
+                type="button"
+                class="btn-completed-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#completedTasksModal"
+            >
+                <i class="bi bi-check-circle-fill"></i> Completed
+                <span class="badge-count">{{ completed_count }}</span>
+            </button>
 
-</button>
+        </form>
 
-    </div>
-
-</form>
-
-
-<!-- Work Request Quick Action -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h6 class="mb-0 text-muted">My Tasks</h6>
-    <a href="{% url 'create_work_request' %}" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-circle"></i> + New Request
-    </a>
-</div>
-    <!-- SUMMARY -->
-    <!-- <div class="row text-center mb-3">
-        <div class="col-4 col-md-4 mb-2">
-            <div class="card bg-warning p-2 shadow">
-                <small>Pending</small>
-                <h6>{{ pending|length }}</h6>
+        {# ── Request Action Bar ──────────────────────────────── #}
+        <div class="request-bar">
+            <h6>Quick Actions</h6>
+            <div class="d-flex gap-2">
+                <a href="{% url 'my_requests' %}" class="btn-my-requests">
+                    <i class="bi bi-inbox"></i> My Requests
+                </a>
+                <a href="{% url 'create_work_request' %}" class="btn-new-request">
+                    <i class="bi bi-plus-circle"></i> + New Request
+                </a>
             </div>
         </div>
 
-        <div class="col-4 col-md-4 mb-2">
-            <div class="card bg-primary text-white p-2 shadow">
-                <small>Progress</small>
-                <h6>{{ in_progress|length }}</h6>
+        {# ── Task Stat Cards (wavy style) ────────────────────── #}
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon-box sib-purple"><i class="bi bi-stack"></i></div>
+                    <div class="st-label">Total</div>
+                    <div class="st-value">{{ pending_count|add:progress_count|add:completed_count }}</div>
+                    <svg class="stat-wave" viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q25,0 50,10 T100,10 T150,10 T200,10" stroke="#7c3aed" stroke-width="2" fill="none"/></svg>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon-box sib-amber"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="st-label">Pending</div>
+                    <div class="st-value">{{ pending_count }}</div>
+                    <svg class="stat-wave" viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q25,0 50,10 T100,10 T150,10 T200,10" stroke="#d97706" stroke-width="2" fill="none"/></svg>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon-box sib-blue"><i class="bi bi-arrow-repeat"></i></div>
+                    <div class="st-label">In Progress</div>
+                    <div class="st-value">{{ progress_count }}</div>
+                    <svg class="stat-wave" viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q25,0 50,10 T100,10 T150,10 T200,10" stroke="#2563eb" stroke-width="2" fill="none"/></svg>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon-box sib-green"><i class="bi bi-check-circle-fill"></i></div>
+                    <div class="st-label">Done</div>
+                    <div class="st-value">{{ completed_count }}</div>
+                    <svg class="stat-wave" viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q25,0 50,10 T100,10 T150,10 T200,10" stroke="#059669" stroke-width="2" fill="none"/></svg>
+                </div>
             </div>
         </div>
 
-        <div class="col-4 col-md-4 mb-2">
-            <div class="card bg-success text-white p-2 shadow">
-                <small>Done</small>
-                <h6>{{ completed|length }}</h6>
+        {# ── Payment Summary ─────────────────────────────────── #}
+        <!-- <div class="row g-3 mb-4">
+            <div class="col-md-4 col-12">
+                <div class="pay-card pc-purple">
+                    <div class="pay-icon"><i class="bi bi-wallet2"></i></div>
+                    <div>
+                        <div class="pay-label">Total Work Value</div>
+                        <div class="pay-value">₹{{ total_earnings }}</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div> -->
-
-    <!-- DASHBOARD STATS -->
-
-<div class="row mb-4">
-
-    <div class="col-md-3 col-6 mb-2">
-        <div class="card bg-dark text-white shadow">
-            <div class="card-body text-center">
-                <h6>Total</h6>
-                <h2>
-                    {{ pending_count|add:progress_count|add:completed_count }}
-                </h2>
+            <div class="col-md-4 col-12">
+                <div class="pay-card pc-green">
+                    <div class="pay-icon"><i class="bi bi-cash-coin"></i></div>
+                    <div>
+                        <div class="pay-label">Received</div>
+                        <div class="pay-value">₹{{ received_payment }}</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-6 mb-2">
-        <div class="card bg-warning shadow">
-            <div class="card-body text-center">
-                <h6>Pending</h6>
-                <h2>{{ pending_count }}</h2>
+            <div class="col-md-4 col-12">
+                <div class="pay-card pc-amber">
+                    <div class="pay-icon"><i class="bi bi-hourglass-split"></i></div>
+                    <div>
+                        <div class="pay-label">Balance</div>
+                        <div class="pay-value">₹{{ balance_payment }}</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-6 mb-2">
-        <div class="card bg-primary text-white shadow">
-            <div class="card-body text-center">
-                <h6>Progress</h6>
-                <h2>{{ progress_count }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-6 mb-2">
-        <div class="card bg-success text-white shadow">
-            <div class="card-body text-center">
-                <h6>Done</h6>
-                <h2>{{ completed_count }}</h2>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-</div> <!-- End of Task Statistics Row -->
-
-
-<!-- PAYMENT SUMMARY -->
-
-<!-- <div class="row mb-4">
-
-    <div class="col-md-4 mb-2">
-        <div class="card border-danger shadow">
-            <div class="card-body text-center">
-                <h6>🔴 Pending Payment</h6>
-                <h4>₹{{ pending_payment }}</h4>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-2">
-        <div class="card border-warning shadow">
-            <div class="card-body text-center">
-                <h6>🟡 Partial Payment</h6>
-                <h4>₹{{ partial_payment }}</h4>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-2">
-        <div class="card border-success shadow">
-            <div class="card-body text-center">
-                <h6>🟢 Paid</h6>
-                <h4>₹{{ paid_payment }}</h4>
-            </div>
-        </div>
-    </div>
-
-</div> -->
-
-<!-- <div class="row mb-4"> -->
-    <div class="row justify-content-center g-4 mb-4">
-
-    <div class="col-md-4 col-12 mb-3">
-
-        <div class="card shadow border-primary">
-
-            <div class="card-body text-center">
-
-                <h6 class="text-primary">
-                    💰 Total Work Value
-                </h6>
-
-                <h3 class="fw-bold">
-                    ₹{{ total_earnings }}
-                </h3>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4 col-12 mb-3">
-
-        <div class="card shadow border-success">
-
-            <div class="card-body text-center">
-
-                <h6 class="text-success">
-                    💵 Received
-                </h6>
-
-                <h3 class="fw-bold">
-                    ₹{{ received_payment }}
-                </h3>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4 col-12 mb-3">
-
-        <div class="card shadow border-warning">
-
-            <div class="card-body text-center">
-
-                <h6 class="text-warning">
-                    ⏳ Balance
-                </h6>
-
-                <h3 class="fw-bold">
-                    ₹{{ balance_payment }}
-                </h3>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card shadow-sm mb-4">
-
-<div class="card shadow-sm mb-4">
-
-    <!-- <div class="card-body"> -->
-
-        <!-- <div class="d-flex justify-content-between">
-
-            <strong>Task Completion</strong>
-
-            <span>
-                {{ completed_count }}
-                /
-                {{ pending_count|add:progress_count|add:completed_count }}
-            </span>
-
         </div> -->
+        {% if profile.role == "freelancer" %}
 
-        <!-- <div class="progress mt-3">
-
-            <div class="progress-bar bg-success"
-                 style="width:
-                 {% widthratio completed_count pending_count|add:progress_count|add:completed_count 100 %}%">
-
-                {% widthratio completed_count pending_count|add:progress_count|add:completed_count 100 %}%
-
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-12">
+        <div class="pay-card pc-purple">
+            <div class="pay-icon"><i class="bi bi-wallet2"></i></div>
+            <div>
+                <div class="pay-label">Total Work Value</div>
+                <div class="pay-value">₹{{ total_earnings }}</div>
             </div>
-
-        </div> -->
-
-    <!-- </div> -->
-
-</div>
-
-    <!-- 🔶 PENDING -->
-<!-- 🔶 PENDING SECTION -->
-
-<div class="card shadow-sm mb-4">
-
-    <div class="card-header bg-warning">
-
-        <div class="d-flex justify-content-between">
-
-            <strong>
-                ⏳ Pending Tasks
-            </strong>
-
-            <span class="badge bg-dark">
-                {{ pending_count }}
-            </span>
-
         </div>
-
     </div>
 
-    <div class="card-body">
-
-        {% if pending %}
-
-        <!-- <div class="row"> -->
-            <div class="row justify-content-center">
-
-            {% for task in pending %}
-
-            <!-- <div class="col-xl-4 col-lg-4 col-md-6 mb-3"> -->
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
-
-                <div class="card task-card h-100 shadow-sm
-                    {% if task.priority == 'high' %}
-                        border-danger border-2
-                    {% endif %}
-                ">
-
-                    <div class="card-body">
-
-                        <!-- Header -->
-
-                        <div class="d-flex justify-content-between align-items-start">
-
-                            <h6 class="fw-bold text-primary mb-0">
-                                {{ task.title }}
-                            </h6>
-
-                            {% if task.priority == 'high' %}
-
-                                <span class="badge bg-danger">
-                                    High
-                                </span>
-
-                            {% elif task.priority == 'medium' %}
-
-                                <span class="badge bg-warning text-dark">
-                                    Medium
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-success">
-                                    Low
-                                </span>
-
-                            {% endif %}
-
-                        </div>
-
-                        <!-- Description -->
-
-                        <!-- <p class="text-muted small mt-2 mb-2">
-                            {{ task.description|truncatechars:100 }}
-                        </p> -->
-
-                        <!-- Details -->
-
-                        <div class="small mb-3">
-
-                            <!-- <div>
-                                📅 {{ task.deadline|default:"No Deadline" }}
-                            </div> -->
-                            <div>
-    📅 Due: {{ task.deadline|default:"No Deadline" }}
-</div>
-
-<div>
-    🕒 Created: {{ task.created_at|date:"d M Y" }}
-</div>
-
-                            <div class="mt-1">
-
-                                <span class="badge bg-warning text-dark">
-                                    Pending
-                                </span>
-
-                            </div>
-
-                        </div>
-                        {% if task.payment_amount %}
-
-<hr>
-
-<div class="small">
-
-    <div>
-        💰 Amount :
-        ₹{{ task.payment_amount }}
+    <div class="col-md-4 col-12">
+        <div class="pay-card pc-green">
+            <div class="pay-icon"><i class="bi bi-cash-coin"></i></div>
+            <div>
+                <div class="pay-label">Received</div>
+                <div class="pay-value">₹{{ received_payment }}</div>
+            </div>
+        </div>
     </div>
 
-    <div>
-        💵 Paid :
-        ₹{{ task.paid_amount }}
+    <div class="col-md-4 col-12">
+        <div class="pay-card pc-amber">
+            <div class="pay-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div>
+                <div class="pay-label">Balance</div>
+                <div class="pay-value">₹{{ balance_payment }}</div>
+            </div>
+        </div>
     </div>
-
-    <div class="fw-bold text-danger">
-        ⏳ Balance :
-        ₹{{ task.balance_amount }}
-    </div>
-
-    <div class="mt-2">
-
-        {% if task.payment_status == 'paid' %}
-
-            <span class="badge bg-success">
-                Paid
-            </span>
-
-        {% elif task.payment_status == 'partial' %}
-
-            <span class="badge bg-warning text-dark">
-                Partial
-            </span>
-
-        {% else %}
-
-            <span class="badge bg-danger">
-                Pending
-            </span>
-
-        {% endif %}
-
-    </div>
-
 </div>
 
 {% endif %}
 
-                        <!-- Buttons -->
-
-                        <div class="d-grid gap-2">
-
-                            <a href="{% url 'task_detail' task.id %}"
-                               class="btn btn-info btn-sm">
-
-                                <i class="bi bi-eye"></i> View
-
-                            </a>
-
-                            <a href="{% url 'update_status' task.id %}"
-                               class="btn btn-warning btn-sm">
-
-                             <i class="bi bi-play-circle"></i> Start
-
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+        {# ── Pending Tasks Section ───────────────────────────── #}
+        <div class="section-card">
+            <div class="section-header sh-amber">
+                <span><i class="bi bi-hourglass-split me-1"></i> Pending Tasks</span>
+                <span class="count-pill">{{ pending_count }}</span>
             </div>
+            <div class="section-body">
+                {% if pending %}
+                    <div class="row g-3">
+                        {% for task in pending %}
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                <div class="task-card
+                                    {% if task.priority == 'high' %}urgent{% endif %}
+                                    {% if task.deadline and task.deadline < today %}overdue{% endif %}
+                                ">
+                                    {% if task.deadline and task.deadline < today %}
+                                        <span class="overdue-badge">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> OVERDUE
+                                        </span>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="task-title">{{ task.title }}</div>
+                                        {% if task.priority == 'high' %}
+                                            <span class="badge-priority bp-high">High</span>
+                                        {% elif task.priority == 'medium' %}
+                                            <span class="badge-priority bp-medium">Medium</span>
+                                        {% else %}
+                                            <span class="badge-priority bp-low">Low</span>
+                                        {% endif %}
+                                    </div>
 
-            {% endfor %}
+                                    <div class="task-meta {% if task.deadline and task.deadline < today %}text-danger fw-bold{% endif %}">
+                                        <div><i class="bi bi-calendar3"></i> Due: {{ task.deadline|default:"No Deadline" }}</div>
+                                        <div><i class="bi bi-clock"></i> Created: {{ task.created_at|date:"d M Y" }}</div>
+                                        <div class="mt-1"><span class="badge-tstatus bts-pending">Pending</span></div>
+                                    </div>
 
-        </div>
+                                    {% if task.payment_amount %}
+                                        <div class="payment-mini">
+                                            <div>💰 Amount: ₹{{ task.payment_amount }}</div>
+                                            <div>💵 Paid: ₹{{ task.paid_amount }}</div>
+                                            <div style="font-weight:600;color:#dc2626;">⏳ Balance: ₹{{ task.balance_amount }}</div>
+                                        </div>
+                                    {% endif %}
 
-        {% else %}
-
-        <div class="alert alert-warning text-center mb-0">
-
-            🎉 No pending tasks
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
-</div>
-
-
-    <!-- 🔵 IN PROGRESS -->
-<!-- 🚀 IN PROGRESS SECTION -->
-
-<div class="card shadow-sm mb-4">
-
-    <div class="card-header bg-primary text-white">
-
-        <div class="d-flex justify-content-between">
-
-            <strong>
-                🚀 In Progress Tasks
-            </strong>
-
-            <span class="badge bg-light text-dark">
-                {{ progress_count }}
-            </span>
-
-        </div>
-
-    </div>
-
-    <div class="card-body">
-
-        {% if in_progress %}
-
-        <!-- <div class="row"> -->
-            <div class="row justify-content-center">
-
-            {% for task in in_progress %}
-
-            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
-
-                <div class="card task-card h-100 shadow-sm
-                    {% if task.priority == 'high' %}
-                        border-danger border-2
-                    {% endif %}
-                ">
-
-                    <div class="card-body">
-
-                        <!-- Header -->
-
-                        <div class="d-flex justify-content-between align-items-start">
-
-                            <h6 class="fw-bold text-primary mb-0">
-                                {{ task.title }}
-                            </h6>
-
-                            {% if task.priority == 'high' %}
-
-                                <span class="badge bg-danger">
-                                    High
-                                </span>
-
-                            {% elif task.priority == 'medium' %}
-
-                                <span class="badge bg-warning text-dark">
-                                    Medium
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-success">
-                                    Low
-                                </span>
-
-                            {% endif %}
-
-                        </div>
-
-                        <!-- Description -->
-
-                        <!-- <p class="text-muted small mt-2 mb-2">
-                            {{ task.description|truncatechars:100 }}
-                        </p> -->
-
-                        <!-- Details -->
-
-                        <div class="small mb-3">
-
-                            <!-- <div>
-                                📅 {{ task.deadline|default:"No Deadline" }}
-                            </div> -->
-
-                            <div>
-    📅 Due: {{ task.deadline|default:"No Deadline" }}
-</div>
-
-<div>
-    🕒 Created: {{ task.created_at|date:"d M Y" }}
-</div>
-
-                            <div class="mt-1">
-
-                                <span class="badge bg-primary">
-                                    In Progress
-                                </span>
-
+                                    <div class="d-grid gap-2 mt-2">
+                                        <a href="{% url 'task_detail' task.id %}" class="btn-task-view">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a href="{% url 'update_status' task.id %}" class="btn-task-start">
+                                            <i class="bi bi-play-circle"></i> Start
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-
-                        </div>
-
-                        {% if task.payment_amount %}
-
-<hr>
-
-<div class="small">
-
-    <div>
-        💰 Amount :
-        ₹{{ task.payment_amount }}
-    </div>
-
-    <div>
-        💵 Paid :
-        ₹{{ task.paid_amount }}
-    </div>
-
-    <div class="fw-bold text-danger">
-        ⏳ Balance :
-        ₹{{ task.balance_amount }}
-    </div>
-
-    <div class="mt-2">
-
-        {% if task.payment_status == 'paid' %}
-
-            <span class="badge bg-success">
-                Paid
-            </span>
-
-        {% elif task.payment_status == 'partial' %}
-
-            <span class="badge bg-warning text-dark">
-                Partial
-            </span>
-
-        {% else %}
-
-            <span class="badge bg-danger">
-                Pending
-            </span>
-
-        {% endif %}
-
-    </div>
-
-</div>
-
-{% endif %}
-
-                        <!-- Buttons -->
-
-                        <!-- <div class="d-grid gap-2"> -->
-
-                            <!-- <a href="{% url 'task_detail' task.id %}"
-                               class="btn btn-info btn-sm">
-
-                              <i class="bi bi-eye"></i> View
-
-                            </a> -->
-
-                            <!-- <a href="{% url 'update_status' task.id %}"
-                               class="btn btn-success btn-sm"> -->
-
-                                <!-- <a href="{% url 'update_status' task.id %}"
-   class="btn btn-success btn-sm w-100">
-   ✅ Complete
-</a> -->
-
-                            <!-- </a> -->
-
-                        <!-- </div> -->
-
-                        <div class="d-grid gap-2">
-
-    <a href="{% url 'task_detail' task.id %}"
-       class="btn btn-info btn-sm">
-       <i class="bi bi-eye"></i> View
-    </a>
-
-    <a href="{% url 'update_status' task.id %}"
-       class="btn btn-success btn-sm">
-       <i class="bi bi-check-circle"></i> Complete
-    </a>
-
-</div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-        {% else %}
-
-        <div class="alert alert-primary text-center mb-0">
-
-            🚀 No tasks in progress
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
-</div>
-
-    <!-- 🟢 COMPLETED -->
-   <!-- <h6 class="text-success mt-4 mb-3">
-    ✅ Completed Tasks
-</h6>
-
-<div class="list-group shadow-sm">
-
-    {% for task in completed %}
-
-    <a href="#"
-       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-
-       data-bs-toggle="modal"
-       data-bs-target="#completedTaskModal{{ task.id }}">
-
-        <span>
-            ✓ {{ task.title }}
-        </span>
-
-        <span class="badge bg-success">
-            Completed
-        </span>
-
-    </a>
-
-    {% empty %}
-
-    <div class="list-group-item text-muted">
-        No completed tasks
-    </div>
-
-    {% endfor %}
-
-</div> -->
-
-<!-- <h6 class="text-success mt-4">
-    <a class="text-success text-decoration-none"
-       data-bs-toggle="collapse"
-       href="#completedTasks">
-
-        ✅ Completed Tasks ({{ completed|length }})
-    </a>
-</h6> -->
-
-<!-- <button
-    class="btn btn-success"
-    data-bs-toggle="modal"
-    data-bs-target="#completedTasksModal">
-
-    ✅ Completed Tasks ({{ completed|length }})
-
-</button> -->
-
-<div class="collapse" id="completedTasks">
-
-    <div class="list-group shadow-sm">
-
-        {% for task in completed %}
-
-        <a href="#"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-           data-bs-toggle="modal"
-           data-bs-target="#completedTaskModal{{ task.id }}">
-
-            <span>
-                ✓ {{ task.title }}
-            </span>
-
-            <span class="badge bg-success">
-                Completed
-            </span>
-
-        </a>
-
-        {% endfor %}
-
-    </div>
-
-</div>
-
-{% for task in completed %}
-
-<div class="modal fade"
-     id="completedTaskModal{{ task.id }}"
-     tabindex="-1">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header bg-success text-white">
-
-                <h5 class="modal-title">
-                    {{ task.title }}
-                </h5>
-
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <p>
-                    <strong>Description:</strong><br>
-                    {{ task.description }}
-                </p>
-
-                <hr>
-
-                <div class="row">
-
-                    <div class="col-md-4">
-                        <strong>Priority</strong><br>
-
-                        {% if task.priority == 'high' %}
-                            <span class="badge bg-danger">High</span>
-
-                        {% elif task.priority == 'medium' %}
-                            <span class="badge bg-warning text-dark">Medium</span>
-
-                        {% else %}
-                            <span class="badge bg-success">Low</span>
-
-                        {% endif %}
-                    </div>
-
-                    <div class="col-md-4">
-                        <strong>Status</strong><br>
-                        <span class="badge bg-success">
-                            Completed
-                        </span>
-                    </div>
-
-                    <div class="col-md-4">
-                        <strong>Deadline</strong><br>
-                        {{ task.deadline|default:"No Deadline" }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <a href="{% url 'task_detail' task.id %}"
-                   class="btn btn-info">
-
-                    View Details
-
-                </a>
-
-                <a href="{% url 'update_status' task.id %}"
-                   class="btn btn-warning">
-
-                    Update
-
-                </a>
-
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-
-                    Close
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-{% endfor %}
-
-<div class="modal fade"
-     id="completedTasksModal"
-     tabindex="-1">
-
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-
-        <div class="modal-content">
-
-            <div class="modal-header bg-success text-white">
-
-                <h5 class="modal-title">
-                    Completed Tasks
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close btn-close-white"
-                    data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                {% if completed %}
-
-                    <div class="list-group">
-
-                        {% for task in completed %}
-
-                        <a
-                            href="#"
-                            class="list-group-item list-group-item-action"
-
-                            data-bs-toggle="modal"
-                            data-bs-target="#completedTaskModal{{ task.id }}">
-
-                            ✓ {{ task.title }}
-
-                            <span class="badge bg-success float-end">
-                                Completed
-                            </span>
-
-                        </a>
-
                         {% endfor %}
-
                     </div>
-
                 {% else %}
-
-                    <div class="alert alert-info">
-                        No completed tasks found.
+                    <div class="empty-block">
+                        <i class="bi bi-emoji-smile"></i>
+                        <p>No pending tasks. Great! You have no pending tasks.</p>
                     </div>
-
                 {% endif %}
-
             </div>
-
         </div>
 
-    </div>
+        {# ── In Progress Tasks Section ───────────────────────── #}
+        <div class="section-card">
+            <div class="section-header sh-blue">
+                <span><i class="bi bi-arrow-repeat me-1"></i> In Progress Tasks</span>
+                <span class="count-pill">{{ progress_count }}</span>
+            </div>
+            <div class="section-body">
+                {% if in_progress %}
+                    <div class="row g-3">
+                        {% for task in in_progress %}
+                            <div class="col-xl-4 col-lg-4 col-md-6">
+                                <div class="task-card
+                                    {% if task.priority == 'high' %}urgent{% endif %}
+                                    {% if task.deadline and task.deadline < today %}overdue{% endif %}
+                                ">
+                                    {% if task.deadline and task.deadline < today %}
+                                        <span class="overdue-badge">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> OVERDUE
+                                        </span>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="task-title">{{ task.title }}</div>
+                                        {% if task.priority == 'high' %}
+                                            <span class="badge-priority bp-high">High</span>
+                                        {% elif task.priority == 'medium' %}
+                                            <span class="badge-priority bp-medium">Medium</span>
+                                        {% else %}
+                                            <span class="badge-priority bp-low">Low</span>
+                                        {% endif %}
+                                    </div>
 
+                                    <div class="task-meta {% if task.deadline and task.deadline < today %}text-danger fw-bold{% endif %}">
+                                        <div><i class="bi bi-calendar3"></i> Due: {{ task.deadline|default:"No Deadline" }}</div>
+                                        <div><i class="bi bi-clock"></i> Created: {{ task.created_at|date:"d M Y" }}</div>
+                                        <div class="mt-1"><span class="badge-tstatus bts-progress">In Progress</span></div>
+                                    </div>
+
+                                    {% if task.payment_amount %}
+                                        <div class="payment-mini">
+                                            <div>💰 Amount: ₹{{ task.payment_amount }}</div>
+                                            <div>💵 Paid: ₹{{ task.paid_amount }}</div>
+                                            <div style="font-weight:600;color:#dc2626;">⏳ Balance: ₹{{ task.balance_amount }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="d-grid gap-2 mt-2">
+                                        <a href="{% url 'task_detail' task.id %}" class="btn-task-view">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a href="{% url 'update_status' task.id %}" class="btn-task-complete">
+                                            <i class="bi bi-check-circle"></i> Mark Complete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-block">
+                        <i class="bi bi-rocket-takeoff"></i>
+                        <p>No tasks in progress</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="page-footer">
+            © 2026 Credo Intl. All rights reserved.
+        </div>
+
+    </div><!-- /content-area -->
+
+</div><!-- /page-wrapper -->
+
+{# ── Completed Tasks Modal ──────────────────────────────────── #}
+<div class="modal fade" id="completedTasksModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius:16px;border:none;">
+            <div class="modal-header" style="background:linear-gradient(90deg,#10b981,#059669);color:#fff;border:none;">
+                <h5 class="modal-title">Completed Tasks</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% if completed %}
+                    <div class="list-group">
+                        {% for task in completed %}
+                            <a href="#" class="list-group-item list-group-item-action"
+                               data-bs-toggle="modal" data-bs-target="#completedTaskModal{{ task.id }}">
+                                ✓ {{ task.title }}
+                                <span class="badge bg-success float-end">Completed</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">No completed tasks found.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {% for task in completed %}
-
-<div class="modal fade"
-     id="completedTaskModal{{ task.id }}"
-     tabindex="-1">
-
+<div class="modal fade" id="completedTaskModal{{ task.id }}" tabindex="-1">
     <div class="modal-dialog">
-
-        <div class="modal-content">
-
+        <div class="modal-content" style="border-radius:16px;border:none;">
             <div class="modal-header">
-
-                <h5 class="modal-title">
-                    {{ task.title }}
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
-
+                <h5 class="modal-title">{{ task.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
-
-                <p>
-                    <strong>Description:</strong><br>
-                    {{ task.description }}
-                </p>
-
+                <p><strong>Description:</strong><br>{{ task.description }}</p>
                 <hr>
-
-                <p>
-                    <strong>Priority:</strong>
-                    {{ task.get_priority_display }}
-                </p>
-
-                <p>
-                    <strong>Deadline:</strong>
-                    {{ task.deadline|default:"No Deadline" }}
-                </p>
-
-                <p>
-                    <strong>Status:</strong>
-
-                    <span class="badge bg-success">
-                        Completed
-                    </span>
-                </p>
-
+                <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                <p><strong>Deadline:</strong> {{ task.deadline|default:"No Deadline" }}</p>
+                <p><strong>Status:</strong> <span class="badge bg-success">Completed</span></p>
             </div>
-
             <div class="modal-footer">
-
-                <a href="{% url 'task_detail' task.id %}"
-                   class="btn btn-info">
-
-                    View Details
-
-                </a>
-
-                <button
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-
-                    Close
-
-                </button>
-
+                <a href="{% url 'task_detail' task.id %}" class="btn btn-info">View Details</a>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-
         </div>
-
     </div>
-
 </div>
-
 {% endfor %}
-
-<!-- 🔥 MODAL -->
-<div class="modal fade" id="whatsappModal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-        <div class="modal-header bg-success text-white">
-            <h6>Send Update</h6>
-            <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body">
-            <textarea id="customMsg" class="form-control"
-                rows="4"
-                placeholder="Type update..."></textarea>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-success w-100" onclick="sendWhatsApp()">
-                Copy Message
-            </button>
-        </div>
-
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
 
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+
+function toggleSidebar(){
+
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+
+}
+
+overlay.addEventListener("click",function(){
+
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+
+});
+
+// Close sidebar when any menu item is clicked (mobile)
+document.querySelectorAll(".nav-item-link").forEach(function(item){
+
+    item.addEventListener("click",function(){
+
+        if(window.innerWidth <= 768){
+
+            sidebar.classList.remove("open");
+            overlay.classList.remove("show");
+
+        }
+
+    });
+
+});
+
+</script>
 </body>
 </html>

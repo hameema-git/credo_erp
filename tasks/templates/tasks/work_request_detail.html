@@ -1,196 +1,337 @@
-{% extends "sales/dashboard.html" %}
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ work_request.request_no }} – Work Request – Credo.intl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-<div class="container-fluid py-4">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background: #f5f6fa;
+            color: #222;
+        }
 
-  {# ── Back link ───────────────────────────────────────────── #}
-  {% if is_manager %}
-    <a href="{% url 'work_request_list' %}" class="text-decoration-none text-muted small">
-      ← Back to Work Requests
+        .page-container {
+            max-width: 820px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+
+        /* ── Back Link ───────────────────────────────────────── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 18px;
+            transition: color .15s;
+        }
+        .back-link:hover { color: #7c3aed; }
+
+        /* ── Header Card ─────────────────────────────────────── */
+        .req-header {
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 16px;
+            padding: 24px 28px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .req-header .ref { font-size: 12.5px; opacity: .85; font-weight: 600; letter-spacing: .03em; }
+        .req-header h3 { font-weight: 700; margin: 4px 0 0; font-size: 21px; }
+
+        /* ── Main Card ───────────────────────────────────────── */
+        .detail-card {
+            background: #fff;
+            border: 1px solid #ebebeb;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .field-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            margin-bottom: 4px;
+        }
+        .field-value {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        /* ── Badges ──────────────────────────────────────────── */
+        .badge-status {
+            display: inline-block;
+            padding: 5px 13px;
+            border-radius: 50px;
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+        .bs-pending   { background: #fef3c7; color: #92400e; }
+        .bs-approved  { background: #d1fae5; color: #065f46; }
+        .bs-rejected  { background: #fee2e2; color: #991b1b; }
+        .bs-quotation { background: #ede9fe; color: #5b21b6; }
+
+        .badge-priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .bp-high   { background: #fee2e2; color: #dc2626; }
+        .bp-medium { background: #fef3c7; color: #d97706; }
+        .bp-low    { background: #f3f4f6; color: #6b7280; }
+
+        hr { border-color: #f0f0f0; margin: 24px 0; }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-title i { color: #7c3aed; }
+
+        .description-text {
+            color: #444;
+            line-height: 1.7;
+            white-space: pre-line;
+            font-size: 14px;
+        }
+
+        /* ── Action Buttons ──────────────────────────────────── */
+        .btn-approve {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: opacity .15s;
+        }
+        .btn-approve:hover { opacity: .88; color: #fff; }
+
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: opacity .15s;
+        }
+        .btn-reject:hover { opacity: .88; color: #fff; }
+
+        .btn-convert {
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .15s;
+        }
+        .btn-convert:hover { opacity: .88; color: #fff; }
+
+        .btn-open-quote {
+            background: #ede9fe;
+            color: #7c3aed;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+        .btn-open-quote:hover { background: #ddd6fe; color: #6d28d9; }
+
+        .action-bar {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 24px;
+        }
+        .action-bar-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #999;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+    {# ── Back Button ──────────────────────────────────────── #}
+    <a href="{% url 'work_request_list' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Back to Work Requests
     </a>
-  {% else %}
-    <a href="{% url 'my_requests' %}" class="text-decoration-none text-muted small">
-      ← My Requests
-    </a>
-  {% endif %}
 
-  {# ── Messages ────────────────────────────────────────────── #}
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
-      {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    {# ── Django Messages ─────────────────────────────────────── #}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {# ── Header ──────────────────────────────────────────────── #}
+    <div class="req-header">
+        <div class="ref">{{ work_request.request_no }}</div>
+        <h3>{{ work_request.title }}</h3>
     </div>
-  {% endfor %}
 
-  <div class="row mt-3 g-4">
+    {# ── Detail Card ─────────────────────────────────────────── #}
+    <div class="detail-card">
 
-    {# ── Left: Request Details ────────────────────────────── #}
-    <div class="col-12 col-lg-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-
-          {# Header row #}
-          <div class="d-flex align-items-start justify-content-between mb-3">
-            <div>
-              <span class="text-muted small fw-semibold">{{ work_request.request_no }}</span>
-              <h5 class="fw-bold mb-0 mt-1">{{ work_request.title }}</h5>
-            </div>
-            {# Status Badge #}
-            {% if work_request.status == 'pending' %}
-              <span class="badge bg-warning text-dark fs-6">Pending</span>
-            {% elif work_request.status == 'under_review' %}
-              <span class="badge bg-info text-dark fs-6">Under Review</span>
-            {% elif work_request.status == 'approved' %}
-              <span class="badge bg-success fs-6">Approved</span>
-            {% elif work_request.status == 'rejected' %}
-              <span class="badge bg-danger fs-6">Rejected</span>
-            {% elif work_request.status == 'quotation_created' %}
-              <span class="badge bg-primary fs-6">Quotation Created</span>
-            {% endif %}
-          </div>
-
-          <hr>
-
-          {# Meta grid #}
-          <div class="row g-3 mb-3">
+        <div class="row g-4">
             <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Customer</small>
-              <span class="fw-semibold">{{ work_request.customer_name }}</span>
+                <div class="field-label">Customer</div>
+                <div class="field-value">{{ work_request.customer_name }}</div>
             </div>
+
             <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Requested By</small>
-              <span class="fw-semibold">
-                {{ work_request.requested_by.get_full_name|default:work_request.requested_by.username }}
-              </span>
+                <div class="field-label">Requested By</div>
+                <div class="field-value">
+                    {{ work_request.requested_by.get_full_name|default:work_request.requested_by.username }}
+                </div>
             </div>
+
             <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Priority</small>
-              {% if work_request.priority == 'high' %}
-                <span class="badge bg-danger">High</span>
-              {% elif work_request.priority == 'medium' %}
-                <span class="badge bg-warning text-dark">Medium</span>
-              {% else %}
-                <span class="badge bg-secondary">Low</span>
-              {% endif %}
-            </div>
-            <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Required Date</small>
-              <span class="fw-semibold">
-                {% if work_request.required_date %}
-                  {{ work_request.required_date|date:"d M Y" }}
+                <div class="field-label">Priority</div>
+                {% if work_request.priority == 'high' %}
+                    <span class="badge-priority bp-high">High</span>
+                {% elif work_request.priority == 'medium' %}
+                    <span class="badge-priority bp-medium">Medium</span>
                 {% else %}
-                  —
+                    <span class="badge-priority bp-low">Low</span>
                 {% endif %}
-              </span>
             </div>
+
             <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Submitted</small>
-              <span class="fw-semibold">{{ work_request.created_at|date:"d M Y, H:i" }}</span>
+                <div class="field-label">Status</div>
+                {% if work_request.status == 'pending' %}
+                    <span class="badge-status bs-pending">Pending</span>
+                {% elif work_request.status == 'approved' %}
+                    <span class="badge-status bs-approved">Approved</span>
+                {% elif work_request.status == 'rejected' %}
+                    <span class="badge-status bs-rejected">Rejected</span>
+                {% elif work_request.status == 'quotation_created' %}
+                    <span class="badge-status bs-quotation">Quotation Created</span>
+                {% endif %}
             </div>
+
             <div class="col-6 col-md-4">
-              <small class="text-muted d-block">Last Updated</small>
-              <span class="fw-semibold">{{ work_request.updated_at|date:"d M Y, H:i" }}</span>
+                <div class="field-label">Required Date</div>
+                <div class="field-value">
+                    {% if work_request.required_date %}
+                        {{ work_request.required_date|date:"d M Y" }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
             </div>
-          </div>
 
-          <hr>
-
-          {# Description #}
-          <h6 class="fw-bold">Description</h6>
-          <p class="text-secondary" style="white-space: pre-line;">{{ work_request.description }}</p>
-
-          {# Admin Notes (if any) #}
-          {% if work_request.admin_notes %}
-            <hr>
-            <h6 class="fw-bold">Manager Notes</h6>
-            <p class="text-secondary" style="white-space: pre-line;">{{ work_request.admin_notes }}</p>
-          {% endif %}
-
+            <div class="col-6 col-md-4">
+                <div class="field-label">Submitted</div>
+                <div class="field-value" style="font-weight:500;color:#888;">
+                    {{ work_request.created_at|date:"d M Y, H:i" }}
+                </div>
+            </div>
         </div>
-      </div>
+
+        <hr>
+
+        <div class="section-title">
+            <i class="bi bi-card-text"></i> Description
+        </div>
+        <p class="description-text">{{ work_request.description }}</p>
+
+        {# ── Approve / Reject ────────────────────────────────── #}
+        {% if work_request.status == 'pending' %}
+            <div class="action-bar">
+                <div class="action-bar-label">Review This Request</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <form method="post" action="{% url 'approve_work_request' work_request.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-approve">
+                            <i class="bi bi-check-circle"></i> Approve
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'reject_work_request' work_request.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-reject">
+                            <i class="bi bi-x-circle"></i> Reject
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+        {# ── Convert to Quotation ────────────────────────────── #}
+        {% if work_request.status == 'approved' %}
+            <div class="action-bar">
+                <div class="action-bar-label">Next Step</div>
+                <a href="{% url 'create_quotation_from_request' work_request.id %}" class="btn-convert">
+                    <i class="bi bi-file-earmark-plus"></i> Convert to Quotation
+                </a>
+            </div>
+        {% endif %}
+
+        {# ── Open Quotation ──────────────────────────────────── #}
+        {% if work_request.status == 'quotation_created' %}
+            <div class="action-bar">
+                <div class="action-bar-label">Linked Quotation</div>
+                <a href="{% url 'quotation_detail' work_request.quotation.id %}" class="btn-open-quote">
+                    <i class="bi bi-file-earmark-text"></i> Open Quotation
+                </a>
+            </div>
+        {% endif %}
+
+        {# ── Rejected — informational only ───────────────────── #}
+        {% if work_request.status == 'rejected' %}
+            <div class="action-bar" style="background:#fff1f2;">
+                <div class="d-flex align-items-center gap-2" style="color:#9f1239;">
+                    <i class="bi bi-x-circle-fill"></i>
+                    <span style="font-size:13px;font-weight:600;">This request has been rejected.</span>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
-    {# ── Right: Manager Actions ──────────────────────────── #}
-    {% if is_manager %}
-    <div class="col-12 col-lg-4">
-
-      {# Mark Under Review #}
-      {% if work_request.status == 'pending' %}
-        <div class="card border-0 shadow-sm mb-3">
-          <div class="card-body">
-            <h6 class="fw-bold mb-3">Mark as Under Review</h6>
-            <p class="text-muted small">Notify the employee that you have seen the request.</p>
-            <form method="post" action="{% url 'mark_under_review' work_request.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-info w-100">Mark Under Review</button>
-            </form>
-          </div>
-        </div>
-      {% endif %}
-
-      {# Approve #}
-      {% if work_request.can_be_reviewed %}
-        <div class="card border-0 shadow-sm mb-3">
-          <div class="card-body">
-            <h6 class="fw-bold mb-3 text-success">Approve Request</h6>
-            <form method="post" action="{% url 'approve_work_request' work_request.id %}">
-              {% csrf_token %}
-              <div class="mb-3">
-                <label class="form-label small text-muted">Notes for Employee (optional)</label>
-                <textarea
-                  name="admin_notes"
-                  class="form-control"
-                  rows="3"
-                  placeholder="e.g. Please proceed. We will send quotation shortly."
-                >{{ work_request.admin_notes|default:'' }}</textarea>
-              </div>
-              <button type="submit" class="btn btn-success w-100">✔ Approve</button>
-            </form>
-          </div>
-        </div>
-
-        {# Reject #}
-        <div class="card border-0 shadow-sm mb-3">
-          <div class="card-body">
-            <h6 class="fw-bold mb-3 text-danger">Reject Request</h6>
-            <form method="post" action="{% url 'reject_work_request' work_request.id %}">
-              {% csrf_token %}
-              <div class="mb-3">
-                <label class="form-label small text-muted">Reason for Rejection <span class="text-danger">*</span></label>
-                <textarea
-                  name="admin_notes"
-                  class="form-control"
-                  rows="3"
-                  placeholder="e.g. Budget not approved at this time."
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" class="btn btn-danger w-100">✖ Reject</button>
-            </form>
-          </div>
-        </div>
-      {% endif %}
-
-      {# Phase 3: Generate Quotation button (disabled until Phase 3) #}
-      {% if work_request.status == 'approved' %}
-        <div class="card border-0 shadow-sm">
-          <div class="card-body">
-            <h6 class="fw-bold mb-2">Generate Quotation</h6>
-            <p class="text-muted small mb-3">
-              Coming in Phase 3. The quotation form will open with this customer
-              and description pre-filled.
-            </p>
-            <button class="btn btn-primary w-100" disabled>
-              Generate Quotation
-            </button>
-          </div>
-        </div>
-      {% endif %}
-
-    </div>
-    {% endif %}
-
-  </div>
 </div>
 
-{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

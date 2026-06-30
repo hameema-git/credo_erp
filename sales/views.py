@@ -10,6 +10,13 @@ from num2words import num2words
 from sales.google_drive import GoogleDriveService
 from django.utils import timezone
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from tasks.models import WorkRequest
+from .models import Customer, Quotation, QuotationItem, Service
+
 
 import logging
 
@@ -1930,3 +1937,82 @@ def login_view(request):
             return redirect('dashboard')
 
     return render(request, 'login.html')
+
+
+@login_required
+def create_quotation_from_request(request, request_id):
+
+    work_request = get_object_or_404(
+        WorkRequest,
+        id=request_id,
+        status="approved"
+    )
+
+    customer, created = Customer.objects.get_or_create(
+        name=work_request.customer_name
+    )
+
+    if request.method == "POST":
+
+        quotation = Quotation.objects.create(
+            number=generate_quotation_number(),
+            customer=customer,
+            attention=request.POST.get("attention"),
+            sales_person=request.POST.get("sales_person"),
+            note=request.POST.get("note"),
+        )
+
+        subtotal = 0
+
+        descriptions = request.POST.getlist("description")
+        quantities = request.POST.getlist("quantity")
+        prices = request.POST.getlist("price")
+
+        for description, quantity, price in zip(
+            descriptions,
+            quantities,
+            prices
+        ):
+
+            if not description.strip():
+                continue
+
+            qty = int(quantity)
+            price = float(price)
+            total = qty * price
+
+            QuotationItem.objects.create(
+                quotation=quotation,
+                description=description,
+                quantity=qty,
+                price=price,
+                total=total
+            )
+
+            subtotal += total
+
+        quotation.subtotal = subtotal
+        quotation.vat = subtotal * 0.05
+        quotation.total = quotation.subtotal + quotation.vat
+        quotation.save()
+
+        work_request.status = "quotation_created"
+        work_request.quotation = quotation
+        work_request.save()
+
+        messages.success(
+            request,
+            "Quotation created successfully."
+        )
+
+        return redirect("quotation_detail", pk=quotation.id)
+
+    return render(
+        request,
+        "sales/create_quotation_from_request.html",
+        {
+            "work_request": work_request,
+            "customer": customer,
+            "services": Service.objects.all(),
+        },
+    )

@@ -234,7 +234,7 @@
 
             <!-- PAYMENT SECTION -->
 
-            <hr class="my-4">
+            <!-- <hr class="my-4">
 
             <h5 class="mb-3">
                 💰 Payment Information
@@ -344,7 +344,123 @@
 
                 </div>
 
+            </div> -->
+
+            {% if assigned_role == "freelancer" %}
+
+<hr class="my-4">
+
+<h5 class="mb-3">
+    💰 Payment Information
+</h5>
+
+<div class="row g-3">
+
+    <div class="col-md-3">
+
+        <div class="info-box text-center">
+
+            <small class="text-muted">
+                Task Amount
+            </small>
+
+            <h5 class="mt-2">
+
+                {% if task.payment_amount %}
+                    ₹{{ task.payment_amount }}
+                {% else %}
+                    -
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="info-box text-center">
+
+            <small class="text-muted">
+                Paid Amount
+            </small>
+
+            <h5 class="mt-2">
+
+                {% if task.payment_amount %}
+                    ₹{{ task.paid_amount }}
+                {% else %}
+                    -
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="info-box text-center">
+
+            <small class="text-muted">
+                Balance
+            </small>
+
+            <h5 class="mt-2">
+
+                {% if task.payment_amount %}
+                    ₹{{ task.balance_amount }}
+                {% else %}
+                    -
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="info-box text-center">
+
+            <small class="text-muted">
+                Payment Status
+            </small>
+
+            <div class="mt-2">
+
+                {% if task.payment_status == 'paid' %}
+
+                    <span class="badge bg-success badge-large">
+                        🟢 Paid
+                    </span>
+
+                {% elif task.payment_status == 'partial' %}
+
+                    <span class="badge bg-warning text-dark badge-large">
+                        🟡 Partial
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-danger badge-large">
+                        🔴 Pending
+                    </span>
+
+                {% endif %}
+
             </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
 
             <!-- ACTIONS -->
 

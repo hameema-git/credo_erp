@@ -21,7 +21,11 @@
             display: flex;
             min-height: 100vh;
         }
-
+.task-card.overdue{
+    background:#fff5f5;
+    border:2px solid #dc3545;
+    border-left:8px solid #dc3545;
+}
         /* .sidebar-logo{
     text-align:center;
     padding:20px 10px;
@@ -34,7 +38,7 @@
 } */
 
         /* ══ SIDEBAR ═══════════════════════════════════════════ */
-        .sidebar {
+        /* .sidebar {
             width: 200px;
             min-height: 100vh;
             background: #fff;
@@ -45,7 +49,38 @@
             top: 0; left: 0;
             z-index: 200;
             overflow-y: auto;
-        }
+        } */
+
+        .sidebar{
+    width:210px;
+    height:100vh;
+    background:#fff;
+    border-right:1px solid #ebebeb;
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    display:flex;
+    flex-direction:column;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    z-index:200;
+}
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#cfcfcf;
+    border-radius:20px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover{
+    background:#999;
+}
 
         /* .sidebar-logo {
             padding: 18px 16px 14px;
@@ -55,6 +90,32 @@
             gap: 10px;
         }
  */
+
+ .sidebar-footer{
+    padding:12px 10px;
+    border-top:1px solid #f0f0f0;
+}
+
+.logout-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    background:#fff5f5;
+    color:#dc3545;
+    text-decoration:none;
+    font-weight:600;
+    border:1px solid #ffd6d6;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#dc3545;
+    color:#fff;
+}
 
 
  .sidebar-logo{
@@ -548,6 +609,32 @@
             margin-bottom: 12px;
         }
 
+        .ta-copy{
+
+    background:#198754;
+
+    color:#fff;
+
+    border:none;
+
+    padding:6px 12px;
+
+    border-radius:8px;
+
+    font-size:.85rem;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.ta-copy:hover{
+
+    background:#157347;
+
+}
+
         .task-meta-row {
             display: flex;
             align-items: center;
@@ -841,6 +928,14 @@
     </a>
     </nav>
 
+    <div class="sidebar-footer">
+    <a href="{% url 'logout' %}" class="logout-btn"
+       onclick="return confirm('Are you sure you want to logout?')">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </a>
+</div>
+
     <!-- Help card -->
     <div class="sidebar-help">
         <div class="sh-title">Need Help</div>
@@ -1105,84 +1200,174 @@
             </div>
 
         </div><!-- /ef-grid -->
+<!-- ── TASKS ────────────────────────────────────────── -->
+<div id="taskSection">
 
-        <!-- ── TASKS ────────────────────────────────────────── -->
-        <div id="taskSection">
-            <div class="tasks-heading">Tasks</div>
-            <div class="tasks-grid">
-            {% for task in tasks %}
-            <div class="task-card">
+    <div class="tasks-heading">
+        Tasks
+    </div>
 
-                <!-- Category / title -->
-                <div class="task-category">
-                    {% if task.title == 'Quotations' or 'Quotation' in task.title %}
-                        <i class="bi bi-file-earmark-text"></i>
-                    {% elif 'SEO' in task.title %}
-                        <i class="bi bi-graph-up-arrow"></i>
-                    {% else %}
-                        <i class="bi bi-tag"></i>
-                    {% endif %}
-                    {{ task.title }}
-                </div>
+    <div class="tasks-grid">
 
-                <div class="task-description">
-                    {{ task.description|truncatechars:90 }}
-                </div>
+    {% for task in tasks %}
 
-                <div class="task-meta-row">
-                    <i class="bi bi-person-fill"></i> {{ task.assigned_to.username }}
-                </div>
-                <div class="task-meta-row">
-                    <i class="bi bi-calendar3"></i> {{ task.deadline }}
-                </div>
+    <!-- <div class="task-card"> -->
+<div class="task-card
+{% if task.deadline and task.deadline < today and task.status != 'completed' %}
+overdue
+{% endif %}
+">
+        <!-- Category -->
+        <div class="task-category">
 
-                <!-- Status + Priority badges -->
-                <div class="task-badges-row">
-                    <span class="tbadge tb-{{ task.status }}">
-                        {{ task.status|title }}
-                    </span>
-                    <span class="tbadge tb-{{ task.priority }}">
-                        {{ task.priority|title }}
-                    </span>
-                </div>
+            {% if task.title == 'Quotations' or 'Quotation' in task.title %}
+                <i class="bi bi-file-earmark-text"></i>
 
-                <!-- Payment info -->
-                <div class="task-payment-row">
-                    <span>Total : ₹{{ task.payment_amount }}</span>
-                    <span>Paid : ₹{{ task.paid_amount }}</span>
-                    <span class="balance">Balance :₹{{ task.balance_amount }}</span>
-                </div>
+            {% elif 'SEO' in task.title %}
+                <i class="bi bi-graph-up-arrow"></i>
 
-                <!-- WhatsApp -->
-                <button class="btn-wa"
-                    onclick="copyTaskMessage(
-                        '{{ task.assigned_to.username }}',
-                        '{{ task.title }}',
-                        '{{ task.deadline }}',
-                        '{{ task.priority }}',
-                        '{{ task.status }}'
-                    )">
-                    <i class="bi bi-whatsapp"></i> Whatsapp
-                </button>
+            {% else %}
+                <i class="bi bi-tag"></i>
 
-                <!-- Actions -->
-                <div class="task-action-row">
-                    <a href="{% url 'task_detail' task.id %}" class="ta-view">View</a>
-                    <a href="{% url 'edit_task' task.id %}" class="ta-edit">Edit</a>
-                    <a href="{% url 'delete_task' task.id %}" class="ta-delete"
-                       onclick="return confirm('⚠️ Delete this task?')">Delete</a>
-                </div>
+            {% endif %}
 
-            </div>
-            {% empty %}
-                <div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa;">
-                    <i class="bi bi-kanban" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:10px;"></i>
-                    No tasks found.
-                </div>
-            {% endfor %}
-            </div>
+            {{ task.title }}
+
         </div>
 
+        <!-- Description -->
+        <div class="task-description"
+             id="task-copy-{{ task.id }}">
+
+            {{ task.description|truncatechars:90 }}
+
+        </div>
+
+        <!-- Assigned -->
+        <div class="task-meta-row">
+            <i class="bi bi-person-fill"></i>
+            {{ task.assigned_to.username }}
+        </div>
+
+        <!-- Deadline -->
+    <!-- Deadline -->
+<div class="task-meta-row">
+    <i class="bi bi-calendar3"></i>
+
+    {% if task.deadline %}
+        {{ task.deadline }}
+    {% else %}
+        -
+    {% endif %}
+</div>
+
+<!-- Status + Priority -->
+<div class="task-badges-row">
+    <span class="tbadge tb-{{ task.status }}">
+        {{ task.status|title }}
+    </span>
+
+    {% if task.status != "completed" %}
+    <span class="tbadge tb-{{ task.priority }}">
+        {{ task.priority|title }}
+    </span>
+    {% endif %}
+</div>
+
+        <!-- Payment -->
+        {% if task.payment_amount %}
+
+        <div class="task-payment-row">
+
+            <span>
+                Total :
+                ₹{{ task.payment_amount }}
+            </span>
+
+            <span>
+                Paid :
+                ₹{{ task.paid_amount }}
+            </span>
+
+            <span class="balance">
+                Balance :
+                ₹{{ task.balance_amount }}
+            </span>
+
+        </div>
+
+        {% endif %}
+
+        <!-- Actions -->
+
+        <div class="task-action-row">
+
+            <a href="{% url 'task_detail' task.id %}"
+               class="ta-view">
+
+                <i class="bi bi-eye"></i>
+                View
+
+            </a>
+
+            <a href="{% url 'edit_task' task.id %}"
+               class="ta-edit">
+
+                <i class="bi bi-pencil"></i>
+                Edit
+
+            </a>
+
+            <a href="{% url 'delete_task' task.id %}"
+               class="ta-delete"
+               onclick="return confirm('⚠️ Delete this task?')">
+
+                <i class="bi bi-trash"></i>
+                Delete
+
+            </a>
+
+            <button
+                type="button"
+                class="ta-copy"
+                onclick="copyTask('{{ task.assigned_to.username }}',
+                                  '{{ task.title|escapejs }}',
+                                  '{{ task.description|escapejs }}',
+                                  '{{ task.deadline }}',
+                                  '{{ task.status }}')">
+
+                <i class="bi bi-copy"></i>
+                Copy
+
+            </button>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div
+        style="grid-column:1/-1;
+               text-align:center;
+               padding:40px;
+               color:#aaa;">
+
+        <i class="bi bi-kanban"
+           style="font-size:2.5rem;
+                  opacity:.3;
+                  display:block;
+                  margin-bottom:10px;"></i>
+
+        No tasks found.
+
+    </div>
+
+    {% endfor %}
+
+    </div>
+
+</div>
         <!-- Pagination -->
         <nav class="mt-4 mb-2">
             <ul class="pagination justify-content-center flex-wrap">
@@ -1460,32 +1645,101 @@ function personCardHTML(img, p, type){
 }
 
 function taskCardHTML(t){
-    const statusMap = { pending:'tb-pending', in_progress:'tb-in_progress', completed:'tb-completed' };
-    const prioMap   = { high:'tb-high', medium:'tb-medium', low:'tb-low' };
-    const sClass    = statusMap[t.status]   || 'tb-pending';
-    const pClass    = prioMap[t.priority]   || 'tb-low';
+
+    const statusMap = {
+        pending:'tb-pending',
+        in_progress:'tb-in_progress',
+        completed:'tb-completed'
+    };
+
+    const prioMap = {
+        high:'tb-high',
+        medium:'tb-medium',
+        low:'tb-low'
+    };
+
+    const sClass = statusMap[t.status] || 'tb-pending';
+    const pClass = prioMap[t.priority] || 'tb-low';
+
+    const overdueClass = t.is_overdue ? "overdue" : "";
+    const deadlineClass = t.is_overdue ? "text-danger fw-bold" : "";
 
     return `
-    <div class="task-card">
-        <div class="task-category"><i class="bi bi-tag"></i> ${t.title}</div>
-        <div class="task-description">${(t.description||'').substring(0,90)}…</div>
-        <div class="task-meta-row"><i class="bi bi-person-fill"></i> ${t.assigned_to}</div>
-        <div class="task-meta-row"><i class="bi bi-calendar3"></i> ${t.deadline}</div>
+
+    <div class="task-card ${overdueClass}">
+
+        <div class="task-category">
+            <i class="bi bi-tag"></i>
+            ${t.title}
+        </div>
+
+        <div class="task-description">
+            ${(t.description || '').substring(0,90)}...
+        </div>
+
+        <div class="task-meta-row">
+            <i class="bi bi-person-fill"></i>
+            ${t.assigned_to}
+        </div>
+
+        <div class="task-meta-row ${deadlineClass}">
+            <i class="bi bi-calendar3"></i>
+            ${t.deadline || "-"}
+        </div>
+
+        ${t.is_overdue ? `
+        <div class="mb-2">
+            <span class="badge bg-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                OVERDUE
+            </span>
+        </div>
+        ` : ""}
+
         <div class="task-badges-row">
-            <span class="tbadge ${sClass}">${t.status}</span>
-            <span class="tbadge ${pClass}">${t.priority}</span>
+
+            <span class="tbadge ${sClass}">
+                ${t.status.replace("_"," ")}
+            </span>
+
+            ${
+                t.status !== "completed"
+                ?
+                `<span class="tbadge ${pClass}">
+                    ${t.priority}
+                </span>`
+                :
+                ""
+            }
+
         </div>
-        <button class="btn-wa" onclick="copyMessage(${t.id})">
-            <i class="bi bi-whatsapp"></i> Whatsapp
-        </button>
+
         <div class="task-action-row">
-            <a href="/task/${t.id}/" class="ta-view">View</a>
-            <a href="/edit-task/${t.id}/" class="ta-edit">Edit</a>
-            <a href="/tasks/delete-task/${t.id}/" class="ta-delete" onclick="return confirm('Delete?')">Delete</a>
+
+            <button
+                class="ta-copy"
+                onclick="copyMessage(${t.id})">
+                Copy
+            </button>
+
+            <a href="/tasks/task/${t.id}/" class="ta-view">
+                View
+            </a>
+
+            <a href="/tasks/edit-task/${t.id}/" class="ta-edit">
+                Edit
+            </a>
+
+            <a href="/tasks/delete-task/${t.id}/"
+               class="ta-delete"
+               onclick="return confirm('Delete this task?')">
+                Delete
+            </a>
+
         </div>
+
     </div>`;
 }
-
 /* ── MODALS ──────────────────────────────────────────── */
 let currentTask = null;
 
@@ -1539,6 +1793,25 @@ function copyTaskMessage(user, title, deadline, priority, status){
     const msg = `Hello ${user} 👋,\n\n📝 Task Update Notification\n\n📌 Task: ${title}\n📅 Deadline: ${deadline}\n⚡ Priority: ${priority}\n📊 Status: ${status}\n\n👉 Please log in and update your progress.\n\n- Task Management System`;
     navigator.clipboard.writeText(msg);
     alert("WhatsApp message copied!");
+}
+
+function copyTask(user,title,description,deadline,status){
+
+    const text =
+`Task : ${title}
+
+Assigned To : ${user}
+
+Description :
+${description}
+
+Deadline : ${deadline}
+
+Status : ${status}`;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Task copied successfully.");
 }
 
 function copyTaskMessageFromModal(){

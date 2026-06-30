@@ -289,7 +289,29 @@
                                 Assign To
                             </label>
 
-                            {{ form.assigned_to }}
+                            <!-- {{ form.assigned_to }} -->
+
+                            <select
+    name="assigned_to"
+    id="id_assigned_to"
+    class="form-select"
+>
+
+{% for user in form.fields.assigned_to.queryset %}
+
+<option
+    value="{{ user.id }}"
+    data-role="{{ user.userprofile.role }}"
+>
+
+{{ user.get_full_name|default:user.username }}
+({{ user.userprofile.role|title }})
+
+</option>
+
+{% endfor %}
+
+</select>
 
                         </div>
 
@@ -319,7 +341,8 @@
 
                         <!-- PAYMENT SECTION -->
 
-                        <div class="payment-card mt-4 mb-4">
+                        <!-- <div class="payment-card mt-4 mb-4"> -->
+                            <div class="payment-card mt-4 mb-4" id="paymentSection">
 
                             <div class="payment-header">
 
@@ -497,6 +520,43 @@ document.querySelector("form").addEventListener(
         `;
     }
 );
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const assignField = document.getElementById("id_assigned_to");
+
+    const paymentSection = document.getElementById("paymentSection");
+
+    function togglePayment(){
+
+        const selected =
+            assignField.options[
+                assignField.selectedIndex
+            ];
+
+        const role = selected.dataset.role;
+
+        if(role === "employee"){
+
+            paymentSection.style.display = "none";
+
+        }
+        else{
+
+            paymentSection.style.display = "block";
+
+        }
+
+    }
+
+    togglePayment();
+
+    assignField.addEventListener(
+        "change",
+        togglePayment
+    );
+
+});
 
 </script>
 
