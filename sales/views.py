@@ -1055,10 +1055,116 @@ def search_ajax(request):
 #     })
 
 
+# def search_results(request):
+#     # query = request.GET.get('q')
+#     query = request.GET.get('q', '').strip()
+#     search_type = request.GET.get('type')  # 🔥 ADD THIS
+
+#     customers = Customer.objects.none()
+#     quotations = Quotation.objects.none()
+#     invoices = Invoice.objects.none()
+#     services = Service.objects.none()
+#     suppliers = Supplier.objects.none()
+#     lpos = LPO.objects.none()
+#     receipts = PaymentReceipt.objects.none()
+
+#     # 🔥 APPLY FILTER
+# #     if search_type == "customer":
+# #         customers = Customer.objects.filter(name__icontains=query)
+
+# #     elif search_type == "quotation":
+# #         quotations = Quotation.objects.filter(number__icontains=query)
+
+# #     elif search_type == "invoice":
+# #         invoices = Invoice.objects.filter(number__icontains=query)
+# #     elif search_type == "service":
+# #         services = Service.objects.filter(name__icontains=query)
+
+# #     elif search_type == "supplier":
+# #         suppliers = Supplier.objects.filter(name__icontains=query)
+
+# #     elif search_type == "lpo":
+# #         lpos = LPO.objects.filter(number__icontains=query)
+
+
+# #     elif search_type == "receipt":
+# #         receipts = PaymentReceipt.objects.filter(
+# #             receipt_number__icontains=query
+# #         )
+# #     else:  # default = all
+# #         customers = Customer.objects.filter(name__icontains=query)
+# #         quotations = Quotation.objects.filter(number__icontains=query)
+# #         invoices = Invoice.objects.filter(number__icontains=query)
+# #         services = Service.objects.filter(name__icontains=query)
+# #         suppliers = Supplier.objects.filter(name__icontains=query)
+# #         lpos = LPO.objects.filter(number__icontains=query)
+# #         receipts = PaymentReceipt.objects.filter(
+# #     receipt_number__icontains=query
+# # )
+
+#     # CUSTOMER
+#     if search_type == "customer":
+#         customers = Customer.objects.filter(name__icontains=query) if query else Customer.objects.all()
+
+#     # QUOTATION
+#     elif search_type == "quotation":
+#         quotations = Quotation.objects.filter(number__icontains=query) if query else Quotation.objects.all()
+
+#     # INVOICE
+#     elif search_type == "invoice":
+#         invoices = Invoice.objects.filter(number__icontains=query) if query else Invoice.objects.all()
+
+#     # SERVICE
+#     elif search_type == "service":
+#         services = Service.objects.filter(name__icontains=query) if query else Service.objects.all()
+
+#     # SUPPLIER
+#     elif search_type == "supplier":
+#         suppliers = Supplier.objects.filter(name__icontains=query) if query else Supplier.objects.all()
+
+#     # LPO
+#     elif search_type == "lpo":
+#         lpos = LPO.objects.filter(number__icontains=query) if query else LPO.objects.all()
+
+#     # RECEIPTS
+#     elif search_type == "receipt":
+#         receipts = (
+#             PaymentReceipt.objects.filter(receipt_number__icontains=query)
+#             if query else PaymentReceipt.objects.all()
+#         )
+
+#     # ALL
+#     else:
+#         customers = Customer.objects.filter(name__icontains=query) if query else Customer.objects.all()
+#         quotations = Quotation.objects.filter(number__icontains=query) if query else Quotation.objects.all()
+#         invoices = Invoice.objects.filter(number__icontains=query) if query else Invoice.objects.all()
+#         services = Service.objects.filter(name__icontains=query) if query else Service.objects.all()
+#         suppliers = Supplier.objects.filter(name__icontains=query) if query else Supplier.objects.all()
+#         lpos = LPO.objects.filter(number__icontains=query) if query else LPO.objects.all()
+#         receipts = (
+#             PaymentReceipt.objects.filter(receipt_number__icontains=query)
+#             if query else PaymentReceipt.objects.all()
+#         )
+
+#     return render(request, "sales/search_results.html", {
+#         "customers": customers,
+#         "quotations": quotations,
+#         "invoices": invoices,
+#         "query": query,
+#         "services": services,
+#         "search_type": search_type ,  # 🔥 PASS THIS
+#         "suppliers": suppliers,
+#         "lpos": lpos,
+#         "receipts": receipts,
+#     })
+
+
+from django.shortcuts import render
+
 def search_results(request):
-    # query = request.GET.get('q')
-    query = request.GET.get('q', '').strip()
-    search_type = request.GET.get('type')  # 🔥 ADD THIS
+
+    query = request.GET.get("q", "").strip()
+    search_type = request.GET.get("type")
 
     customers = Customer.objects.none()
     quotations = Quotation.objects.none()
@@ -1068,94 +1174,129 @@ def search_results(request):
     lpos = LPO.objects.none()
     receipts = PaymentReceipt.objects.none()
 
-    # 🔥 APPLY FILTER
-#     if search_type == "customer":
-#         customers = Customer.objects.filter(name__icontains=query)
-
-#     elif search_type == "quotation":
-#         quotations = Quotation.objects.filter(number__icontains=query)
-
-#     elif search_type == "invoice":
-#         invoices = Invoice.objects.filter(number__icontains=query)
-#     elif search_type == "service":
-#         services = Service.objects.filter(name__icontains=query)
-
-#     elif search_type == "supplier":
-#         suppliers = Supplier.objects.filter(name__icontains=query)
-
-#     elif search_type == "lpo":
-#         lpos = LPO.objects.filter(number__icontains=query)
-
-
-#     elif search_type == "receipt":
-#         receipts = PaymentReceipt.objects.filter(
-#             receipt_number__icontains=query
-#         )
-#     else:  # default = all
-#         customers = Customer.objects.filter(name__icontains=query)
-#         quotations = Quotation.objects.filter(number__icontains=query)
-#         invoices = Invoice.objects.filter(number__icontains=query)
-#         services = Service.objects.filter(name__icontains=query)
-#         suppliers = Supplier.objects.filter(name__icontains=query)
-#         lpos = LPO.objects.filter(number__icontains=query)
-#         receipts = PaymentReceipt.objects.filter(
-#     receipt_number__icontains=query
-# )
-
+    # -----------------------------
     # CUSTOMER
+    # -----------------------------
     if search_type == "customer":
-        customers = Customer.objects.filter(name__icontains=query) if query else Customer.objects.all()
+        customers = (
+            Customer.objects.filter(name__icontains=query)
+            if query else Customer.objects.all()
+        )
 
+    # -----------------------------
     # QUOTATION
+    # -----------------------------
     elif search_type == "quotation":
-        quotations = Quotation.objects.filter(number__icontains=query) if query else Quotation.objects.all()
+        quotations = (
+            Quotation.objects.filter(number__icontains=query)
+            if query else Quotation.objects.all()
+        )
 
+    # -----------------------------
     # INVOICE
+    # -----------------------------
     elif search_type == "invoice":
-        invoices = Invoice.objects.filter(number__icontains=query) if query else Invoice.objects.all()
+        invoices = (
+            Invoice.objects.filter(number__icontains=query)
+            if query else Invoice.objects.all()
+        )
 
+    # -----------------------------
     # SERVICE
+    # -----------------------------
     elif search_type == "service":
-        services = Service.objects.filter(name__icontains=query) if query else Service.objects.all()
+        services = (
+            Service.objects.filter(name__icontains=query)
+            if query else Service.objects.all()
+        )
 
+    # -----------------------------
     # SUPPLIER
+    # -----------------------------
     elif search_type == "supplier":
-        suppliers = Supplier.objects.filter(name__icontains=query) if query else Supplier.objects.all()
+        suppliers = (
+            Supplier.objects.filter(name__icontains=query)
+            if query else Supplier.objects.all()
+        )
 
+    # -----------------------------
     # LPO
+    # -----------------------------
     elif search_type == "lpo":
-        lpos = LPO.objects.filter(number__icontains=query) if query else LPO.objects.all()
+        lpos = (
+            LPO.objects.filter(number__icontains=query)
+            if query else LPO.objects.all()
+        )
 
-    # RECEIPTS
+    # -----------------------------
+    # RECEIPT
+    # -----------------------------
     elif search_type == "receipt":
         receipts = (
             PaymentReceipt.objects.filter(receipt_number__icontains=query)
             if query else PaymentReceipt.objects.all()
         )
 
+    # -----------------------------
     # ALL
+    # -----------------------------
     else:
-        customers = Customer.objects.filter(name__icontains=query) if query else Customer.objects.all()
-        quotations = Quotation.objects.filter(number__icontains=query) if query else Quotation.objects.all()
-        invoices = Invoice.objects.filter(number__icontains=query) if query else Invoice.objects.all()
-        services = Service.objects.filter(name__icontains=query) if query else Service.objects.all()
-        suppliers = Supplier.objects.filter(name__icontains=query) if query else Supplier.objects.all()
-        lpos = LPO.objects.filter(number__icontains=query) if query else LPO.objects.all()
+        customers = (
+            Customer.objects.filter(name__icontains=query)
+            if query else Customer.objects.all()
+        )
+
+        quotations = (
+            Quotation.objects.filter(number__icontains=query)
+            if query else Quotation.objects.all()
+        )
+
+        invoices = (
+            Invoice.objects.filter(number__icontains=query)
+            if query else Invoice.objects.all()
+        )
+
+        services = (
+            Service.objects.filter(name__icontains=query)
+            if query else Service.objects.all()
+        )
+
+        suppliers = (
+            Supplier.objects.filter(name__icontains=query)
+            if query else Supplier.objects.all()
+        )
+
+        lpos = (
+            LPO.objects.filter(number__icontains=query)
+            if query else LPO.objects.all()
+        )
+
         receipts = (
             PaymentReceipt.objects.filter(receipt_number__icontains=query)
             if query else PaymentReceipt.objects.all()
         )
 
+    # -----------------------------
+    # SORTING
+    # -----------------------------
+    customers = customers.order_by("name")
+    quotations = quotations.order_by("id")
+    invoices = invoices.order_by("id")
+    services = services.order_by("name")
+    suppliers = suppliers.order_by("name")
+    lpos = lpos.order_by("id")
+    receipts = receipts.order_by("id")
+
     return render(request, "sales/search_results.html", {
         "customers": customers,
         "quotations": quotations,
         "invoices": invoices,
-        "query": query,
         "services": services,
-        "search_type": search_type ,  # 🔥 PASS THIS
         "suppliers": suppliers,
         "lpos": lpos,
         "receipts": receipts,
+        "query": query,
+        "search_type": search_type,
     })
 
 
