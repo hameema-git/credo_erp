@@ -154,13 +154,22 @@
 
                 <div class="mt-4">
 
-                    <button
+                    <!-- <button
                         type="submit"
                         class="btn btn-primary">
 
                         Submit Request
 
-                    </button>
+                    </button> -->
+
+                    <button
+    type="submit"
+    class="btn btn-primary"
+    id="submitBtn">
+
+    Submit Request
+
+</button>
 
                     <a
                         href="{% url 'my_requests' %}"
@@ -179,6 +188,17 @@
     </div>
 
 </div>
+
+<script>
+document.querySelector("form").addEventListener("submit", function () {
+
+    const btn = document.getElementById("submitBtn");
+
+    btn.disabled = true;
+    btn.innerHTML = "Submitting...";
+
+});
+</script>
 
 </body>
 </html>

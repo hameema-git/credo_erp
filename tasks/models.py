@@ -480,9 +480,18 @@ class WorkRequest(models.Model):
     def save(self, *args, **kwargs):
         if not self.request_no:
             # Use MAX(id)+1 as a safe sequential number before first save
-            last = WorkRequest.objects.order_by('id').last()
-            next_number = (last.id + 1) if last else 1
-            self.request_no = f"WR{next_number:05d}"
+            # last = WorkRequest.objects.order_by('id').last()
+            # next_number = (last.id + 1) if last else 1
+
+            last = WorkRequest.objects.order_by("-created_at").first()
+
+            if last:
+                last_no = int(last.request_no.replace("WR", ""))
+            else:
+                last_no = 0
+
+            self.request_no = f"WR{last_no+1:05d}"
+            # self.request_no = f"WR{next_number:05d}"
         super().save(*args, **kwargs)
 
     def __str__(self):
