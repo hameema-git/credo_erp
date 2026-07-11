@@ -9,6 +9,7 @@ from weasyprint import HTML
 from num2words import num2words
 from sales.google_drive import GoogleDriveService
 from django.utils import timezone
+from django.db import transaction
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -114,18 +115,111 @@ def dashboard(request):
     })
 
 # ---------------- CUSTOMER ----------------
-def add_customer(request):
-    if request.method == "POST":
-        Customer.objects.create(
-            name=request.POST.get("name"),
-            phone=request.POST.get("phone"),
-            email=request.POST.get("email"),
-            address=request.POST.get("address"),
-            trn_number=request.POST.get("trn_number")  # ✅ ADD
-        )
-        return redirect('dashboard')   # 🔥 updated
+# def add_customer(request):
+#     if request.method == "POST":
+#         Customer.objects.create(
+#             name=request.POST.get("name"),
+#             phone=request.POST.get("phone"),
+#             email=request.POST.get("email"),
+#             address=request.POST.get("address"),
+#             trn_number=request.POST.get("trn_number")  # ✅ ADD
+#         )
+#         return redirect('dashboard')   # 🔥 updated
 
-    return render(request, "customers/add_customer.html")
+#     return render(request, "customers/add_customer.html")
+
+
+from django.contrib import messages
+
+# def add_customer(request):
+#     if request.method == "POST":
+
+#         name = " ".join(
+#             request.POST.get("name", "").split()
+#         ).title()
+
+#         phone = request.POST.get("phone")
+#         email = request.POST.get("email")
+#         address = request.POST.get("address")
+#         trn_number = request.POST.get("trn_number")
+
+#         # Check if customer already exists
+#         customer = Customer.objects.filter(
+#             name__iexact=name
+#         ).first()
+
+#         if customer:
+#             messages.warning(
+#                 request,
+#                 f'"{name}" already exists.'
+#             )
+#             return redirect("dashboard")
+
+#         Customer.objects.create(
+#             name=name,
+#             phone=phone,
+#             email=email,
+#             address=address,
+#             trn_number=trn_number,
+#         )
+
+#         messages.success(request, "Customer added successfully.")
+#         return redirect("dashboard")
+
+#     return render(request, "customers/add_customer.html")
+
+from django.contrib import messages
+
+def add_customer(request):
+
+    if request.method == "POST":
+
+        name = " ".join(
+            request.POST.get("name", "").split()
+        ).title()
+
+        phone = request.POST.get("phone", "").strip()
+        email = request.POST.get("email", "").strip()
+        address = request.POST.get("address", "").strip()
+        trn_number = request.POST.get("trn_number", "").strip()
+
+        # Check if customer already exists (case-insensitive)
+        existing_customer = Customer.objects.filter(
+            name__iexact=name
+        ).first()
+
+        # if existing_customer:
+        #     messages.warning(
+        #         request,
+        #         f'Customer "{name}" already exists.'
+        #     )
+        #     return redirect("dashboard")
+        if existing_customer:
+            messages.warning(
+                request,
+                f'Customer "{name}" already exists.'
+            )
+            return redirect("customer_detail", existing_customer.id)
+
+        Customer.objects.create(
+            name=name,
+            phone=phone,
+            email=email,
+            address=address,
+            trn_number=trn_number,
+        )
+
+        messages.success(
+            request,
+            "Customer added successfully."
+        )
+
+        return redirect("dashboard")
+
+    return render(
+        request,
+        "customers/add_customer.html"
+    )
 
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, id=pk)
@@ -2080,6 +2174,96 @@ def login_view(request):
     return render(request, 'login.html')
 
 
+# @login_required
+# def create_quotation_from_request(request, request_id):
+
+#     work_request = get_object_or_404(
+#         WorkRequest,
+#         id=request_id,
+#         status="approved"
+#     )
+
+#     # customer, created = Customer.objects.get_or_create(
+#     #     name=work_request.customer_name
+#     # )
+
+#     customer_name = " ".join(
+#         work_request.customer_name.split()
+#     ).title()
+
+#     customer = Customer.objects.filter(
+#         name__iexact=customer_name
+#     ).first()
+
+#     if not customer:
+#         customer = Customer.objects.create(
+#             name=customer_name
+#         )
+#     if request.method == "POST":
+
+#         quotation = Quotation.objects.create(
+#             number=generate_quotation_number(),
+#             customer=customer,
+#             attention=request.POST.get("attention"),
+#             sales_person=request.POST.get("sales_person"),
+#             note=request.POST.get("note"),
+#         )
+
+#         subtotal = 0
+
+#         descriptions = request.POST.getlist("description")
+#         quantities = request.POST.getlist("quantity")
+#         prices = request.POST.getlist("price")
+
+#         for description, quantity, price in zip(
+#             descriptions,
+#             quantities,
+#             prices
+#         ):
+
+#             if not description.strip():
+#                 continue
+
+#             qty = int(quantity)
+#             price = float(price)
+#             total = qty * price
+
+#             QuotationItem.objects.create(
+#                 quotation=quotation,
+#                 description=description,
+#                 quantity=qty,
+#                 price=price,
+#                 total=total
+#             )
+
+#             subtotal += total
+
+#         quotation.subtotal = subtotal
+#         quotation.vat = subtotal * 0.05
+#         quotation.total = quotation.subtotal + quotation.vat
+#         quotation.save()
+
+#         work_request.status = "quotation_created"
+#         work_request.quotation = quotation
+#         work_request.save()
+
+#         messages.success(
+#             request,
+#             "Quotation created successfully."
+#         )
+
+#         return redirect("quotation_detail", pk=quotation.id)
+
+#     return render(
+#         request,
+#         "sales/create_quotation_from_request.html",
+#         {
+#             "work_request": work_request,
+#             "customer": customer,
+#             "services": Service.objects.all(),
+#         },
+#     )
+
 @login_required
 def create_quotation_from_request(request, request_id):
 
@@ -2089,11 +2273,23 @@ def create_quotation_from_request(request, request_id):
         status="approved"
     )
 
-    customer, created = Customer.objects.get_or_create(
-        name=work_request.customer_name
-    )
-
     if request.method == "POST":
+
+        # Normalize customer name
+        customer_name = " ".join(
+            work_request.customer_name.split()
+        ).title()
+
+        # Find existing customer (case-insensitive)
+        customer = Customer.objects.filter(
+            name__iexact=customer_name
+        ).first()
+
+        # Create only if it doesn't exist
+        if not customer:
+            customer = Customer.objects.create(
+                name=customer_name
+            )
 
         quotation = Quotation.objects.create(
             number=generate_quotation_number(),
@@ -2147,6 +2343,15 @@ def create_quotation_from_request(request, request_id):
         )
 
         return redirect("quotation_detail", pk=quotation.id)
+
+    # For GET request (display only)
+    customer_name = " ".join(
+        work_request.customer_name.split()
+    ).title()
+
+    customer = Customer.objects.filter(
+        name__iexact=customer_name
+    ).first()
 
     return render(
         request,
