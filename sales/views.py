@@ -866,17 +866,51 @@ def invoice_pdf(request, pk):
 
 #     return redirect('invoice_detail', pk=pk)
 
+# def update_payment(request, pk):
+#     invoice = get_object_or_404(Invoice, id=pk)
+
+#     if request.method == "POST":
+#         paid = request.POST.get("paid_amount")
+
+#         if paid:
+#             invoice.paid_amount = float(paid)
+#             invoice.save()
+
+#     return redirect('invoice_detail', pk=pk)
+
+from decimal import Decimal, InvalidOperation
+
 def update_payment(request, pk):
     invoice = get_object_or_404(Invoice, id=pk)
 
     if request.method == "POST":
-        paid = request.POST.get("paid_amount")
+        paid = request.POST.get("paid_amount", "").strip()
 
         if paid:
-            invoice.paid_amount = float(paid)
-            invoice.save()
+            try:
+                paid_amount = Decimal(paid)
 
-    return redirect('invoice_detail', pk=pk)
+                if paid_amount < 0:
+                    paid_amount = Decimal("0.00")
+
+                if paid_amount > invoice.total:
+                    paid_amount = invoice.total
+
+                invoice.paid_amount = paid_amount
+
+                if paid_amount == Decimal("0.00"):
+                    invoice.payment_status = "pending"
+                elif paid_amount >= invoice.total:
+                    invoice.payment_status = "paid"
+                else:
+                    invoice.payment_status = "partial"
+
+                invoice.save()
+
+            except (InvalidOperation, ValueError):
+                pass
+
+    return redirect("invoice_detail", pk=pk)
 
 
 # def payment_receipt_pdf(request, pk):
