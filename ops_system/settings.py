@@ -24,14 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_2ix6r$@cvkbb8wq8_r80p@q7q$dbo-^#b8*7jh1d=p!!5805*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-# DEBUG = False
+DEBUG = False
 
 
 
 # ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']  #local
 ALLOWED_HOSTS = [
     'credo-erp-v1rz.onrender.com'
 ]
@@ -102,10 +102,22 @@ WSGI_APPLICATION = 'ops_system.wsgi.application'
 #         'NAME': 'credo_local',
 #         'USER': 'postgres',
 #         'PASSWORD': 'cheppu@89',
-#         'HOST': 'host.docker.internal',
+#         # 'HOST': 'host.docker.internal',
+#         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
 # }
+
+# DATABASES = {                                                     #local
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('DB_NAME', 'credo_local'),
+#         'USER': os.environ.get('DB_USER', 'postgres'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD', 'cheppu@89'),
+#         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+#         'PORT': os.environ.get('DB_PORT', '5432'),
+#     }
+# }                                                               #till this local
 
 
 # DATABASES = {

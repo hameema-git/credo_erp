@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -87,7 +88,6 @@
 <div class="mb-4">
     <label><b>Supplier</b></label>
 
-
     <select name="supplier" class="form-select" required>
         <option value="">Select Supplier</option>
         {% for s in suppliers %}
@@ -99,11 +99,22 @@
         + Add Supplier
     </a>
 </div>
-    <div class="mb-3">
+
+<div class="mb-3">
     <label><b>Quotation Ref</b></label>
     <input type="text" name="quote_ref" class="form-control" placeholder="Enter quotation reference">
 </div>
 
+<!-- CURRENCY -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label><b>Currency</b></label>
+        <select name="currency" id="currency" class="form-select">
+            <option value="AED" selected>AED - UAE Dirham</option>
+            <option value="INR">INR - Indian Rupee</option>
+        </select>
+    </div>
+</div>
 
 <!-- DATES -->
 <div class="row mb-4">
@@ -121,9 +132,9 @@
 <thead>
 <tr>
     <th>Description</th>
-    <th>Unit Price</th>
+    <th>Unit Price (<span class="currency-label">AED</span>)</th>
     <th>Qty</th>
-    <th>Total</th>
+    <th>Total (<span class="currency-label">AED</span>)</th>
     <th>Action</th>
 </tr>
 </thead>
@@ -168,28 +179,26 @@
 
 <div class="col-md-6">
 <div class="total-box text-end">
-<h6>Subtotal: AED <span id="subtotal">0.00</span></h6>
-<h6>VAT (5%): AED <span id="vat">0.00</span></h6>
-<h4><b>Total: AED <span id="grand-total">0.00</span></b></h4>
+<h6>Subtotal: <span class="currency-label">AED</span> <span id="subtotal">0.00</span></h6>
+<h6 id="vat-label">VAT (5%): <span class="currency-label">AED</span> <span id="vat">0.00</span></h6>
+<h4><b>Total: <span class="currency-label">AED</span> <span id="grand-total">0.00</span></b></h4>
 </div>
 </div>
 </div>
 
 <!-- ACTION -->
 <div class="mt-4 d-flex justify-content-between">
-    <!-- <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a> -->
 
     <button
-    type="button"
-    class="btn btn-secondary"
-    onclick="history.back()">
-    Back
-</button>
-    <!-- <button type="submit" class="btn btn-gradient">Save LPO</button> -->
+        type="button"
+        class="btn btn-secondary"
+        onclick="history.back()">
+        Back
+    </button>
 
     <button type="submit" class="btn btn-gradient" id="saveBtn">
-    Save LPO
-</button>
+        Save LPO
+    </button>
 </div>
 
 </form>
@@ -198,98 +207,147 @@
 </div>
 
 <script>
+function getCurrency() {
+    return document.getElementById("currency").value;
+}
+
+function getVatRate() {
+    return getCurrency() === "AED" ? 0.05 : 0;
+}
+
+// function updateCurrencyLabels() {
+//     const currency = getCurrency();
+
+//     document.querySelectorAll(".currency-label").forEach(el => {
+//         el.innerText = currency;
+//     });
+
+//     document.getElementById("vat-label").innerText =
+//         currency === "AED" ? "VAT (5%): " : "VAT (0%): ";
+
+//     calculateTotal();
+// }
+function updateCurrencyLabels() {
+    const currency = getCurrency();
+
+    document.querySelectorAll(".currency-label").forEach(el => {
+        el.innerText = currency;
+    });
+
+    document.getElementById("vat-label").innerHTML =
+        `${currency === "AED" ? "VAT (5%):" : "VAT (0%):"} 
+         <span class="currency-label">${currency}</span>
+         <span id="vat">0.00</span>`;
+
+    calculateTotal();
+}
+
 function calculateRow(el) {
-    let row = el.closest("tr");
-
-    let price = parseFloat(row.querySelector(".price").value) || 0;
-    let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
-
-    // let total = price * qty;
-
-    let base = price * qty;
-    let vat = base * 0.05;
-    let total = base + vat;
-    row.querySelector(".row-total").value = total.toFixed(2);
-
     calculateTotal();
 }
 
 // function calculateTotal() {
 //     let subtotal = 0;
+//     let totalVat = 0;
+//     let grandTotal = 0;
 
-//     document.querySelectorAll(".row-total").forEach(el => {
-//         subtotal += parseFloat(el.value) || 0;
+//     const vatRate = getVatRate();
+
+//     document.querySelectorAll("#items-table tbody tr").forEach(row => {
+//         let price = parseFloat(row.querySelector(".price").value) || 0;
+//         let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+
+//         let base = price * qty;
+//         let vat = base * vatRate;
+//         let total = base + vat;
+
+//         row.querySelector(".row-total").value = total.toFixed(2);
+
+//         subtotal += base;
+//         totalVat += vat;
+//         grandTotal += total;
 //     });
 
-//     let vat = subtotal * 0.05;
-//     let grandTotal = subtotal + vat;
-
 //     document.getElementById("subtotal").innerText = subtotal.toFixed(2);
-//     document.getElementById("vat").innerText = vat.toFixed(2);
+//     document.getElementById("vat").innerText = totalVat.toFixed(2);
 //     document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
 // }
 
 function calculateTotal() {
     let subtotal = 0;
     let totalVat = 0;
-    let grandTotal = 0;
+
+    const vatRate = getVatRate();
 
     document.querySelectorAll("#items-table tbody tr").forEach(row => {
-        let price = parseFloat(row.querySelector(".price").value) || 0;
-        let qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
+        const price = parseFloat(row.querySelector(".price").value) || 0;
+        const qty = parseFloat(row.querySelector("input[name='quantity']").value) || 0;
 
-        let base = price * qty;
-        let vat = base * 0.05;
-        let total = base + vat;
+        const base = price * qty;
+        const vat = base * vatRate;
+        const total = base + vat;
+
+        row.querySelector(".row-total").value = total.toFixed(2);
 
         subtotal += base;
         totalVat += vat;
-        grandTotal += total;
     });
+
+    const grandTotal = subtotal + totalVat;
 
     document.getElementById("subtotal").innerText = subtotal.toFixed(2);
     document.getElementById("vat").innerText = totalVat.toFixed(2);
     document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
 }
-
 function addRow() {
     let table = document.querySelector("#items-table tbody");
     let row = table.rows[0].cloneNode(true);
 
     row.querySelectorAll("input, textarea").forEach(el => el.value = "");
+
+    row.querySelector("input[name='quantity']").value = "1";
     row.querySelector(".row-total").value = "";
 
     table.appendChild(row);
-}
-
-function deleteRow(btn) {
-    btn.closest("tr").remove();
     calculateTotal();
 }
 
-window.onload = calculateTotal;
+function deleteRow(btn) {
+    let table = document.querySelector("#items-table tbody");
+
+    if (table.rows.length > 1) {
+        btn.closest("tr").remove();
+    } else {
+        let row = btn.closest("tr");
+        row.querySelectorAll("input, textarea").forEach(el => el.value = "");
+        row.querySelector("input[name='quantity']").value = "1";
+    }
+
+    calculateTotal();
+}
+
+document.getElementById("currency").addEventListener("change", updateCurrencyLabels);
+
+window.onload = function() {
+    updateCurrencyLabels();
+};
 </script>
 
 <script>
-document.querySelector("form").addEventListener(
-    "submit",
-    function(){
+document.querySelector("form").addEventListener("submit", function() {
+    let btn = document.getElementById("saveBtn");
 
-        let btn =
-            document.getElementById("saveBtn");
-
-        if(btn.disabled){
-            return false;
-        }
-
-        btn.disabled = true;
-
-        btn.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Saving LPO...
-        `;
+    if (btn.disabled) {
+        return false;
     }
-);
+
+    btn.disabled = true;
+
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Saving LPO...
+    `;
+});
 </script>
 
 </body>

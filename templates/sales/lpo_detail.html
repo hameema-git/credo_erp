@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -86,6 +87,8 @@
 
 <body>
 
+{% with currency=lpo.currency|default:"AED" %}
+
 <div class="container">
 <div class="container-box">
 
@@ -115,9 +118,11 @@
     <div class="mb-4">
         <p><b>Supplier:</b> {{ lpo.supplier.name }}</p>
 
-         {% if lpo.quote_ref %}
-    <p><b>Quotation Ref:</b> {{ lpo.quote_ref }}</p>
-    {% endif %}
+        {% if lpo.quote_ref %}
+        <p><b>Quotation Ref:</b> {{ lpo.quote_ref }}</p>
+        {% endif %}
+
+        <p><b>Currency:</b> {{ currency }}</p>
         <p><b>Delivery Date:</b> {{ lpo.delivery_date }}</p>
     </div>
 
@@ -128,9 +133,9 @@
                 <tr>
                     <th>Description</th>
                     <th>Qty</th>
-                    <th>Unit Price</th>
-                    <th>VAT</th>
-                    <th>Total</th>
+                    <th>Unit Price ({{ currency }})</th>
+                    <th>VAT ({{ currency }})</th>
+                    <th>Total ({{ currency }})</th>
                 </tr>
             </thead>
 
@@ -139,9 +144,9 @@
                 <tr>
                     <td>{{ item.description }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td>AED {{ item.price|floatformat:2 }}</td>
-                    <td>AED {{ item.vat|floatformat:2 }}</td>
-                    <td>AED {{ item.total|floatformat:2 }}</td>
+                    <td>{{ currency }} {{ item.price|floatformat:2 }}</td>
+                    <td>{{ currency }} {{ item.vat|floatformat:2 }}</td>
+                    <td>{{ currency }} {{ item.total|floatformat:2 }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -158,9 +163,17 @@
 
         <div class="col-md-6">
             <div class="total-box">
-                <h6>Subtotal: AED {{ lpo.subtotal|floatformat:2 }}</h6>
-                <h6>VAT: AED {{ lpo.vat|floatformat:2 }}</h6>
-                <h5><strong>Total: AED {{ lpo.total|floatformat:2 }}</strong></h5>
+                <h6>Subtotal: {{ currency }} {{ lpo.subtotal|floatformat:2 }}</h6>
+
+                <h6>
+                    VAT ({{ currency }}):
+                    {{ lpo.vat|floatformat:2 }}
+                    {% if currency == "AED" %}(5%){% else %}(0%){% endif %}
+                </h6>
+
+                <h5>
+                    <strong>Total: {{ currency }} {{ lpo.total|floatformat:2 }}</strong>
+                </h5>
             </div>
         </div>
     </div>
@@ -168,28 +181,20 @@
     <!-- ACTION -->
     <div class="mt-4 d-flex justify-content-between">
 
-        <!-- <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-            Back
-        </a> -->
         <button
-    type="button"
-    class="btn btn-secondary"
-    onclick="history.back()">
-    Back
-</button>
+            type="button"
+            class="btn btn-secondary"
+            onclick="history.back()">
+            Back
+        </button>
 
         <div class="d-flex gap-2 flex-wrap">
 
-            <!-- EDIT -->
-            <!-- <a href="{% url 'edit_supplier' lpo.supplier.id %}" class="btn btn-warning">
-    ✏️ Edit
+            <a href="{% url 'edit_lpo' lpo.id %}" class="btn btn-warning btn-sm">
+                ✏️ Edit
+            </a>
 
-            </a> -->
-
-             <a href="{% url 'edit_lpo' lpo.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
-
-            <!-- PDF -->
-            <a href="{% url 'lpo_pdf' lpo.id %}"  target="_blank" class="btn btn-danger pdf-btn">
+            <a href="{% url 'lpo_pdf' lpo.id %}" target="_blank" class="btn btn-danger pdf-btn">
                 Download PDF
             </a>
 
@@ -200,7 +205,7 @@
 </div>
 </div>
 
-</body>
+{% endwith %}
 
 <script>
 document.querySelectorAll('.pdf-btn').forEach(btn => {
@@ -212,4 +217,5 @@ document.querySelectorAll('.pdf-btn').forEach(btn => {
 });
 </script>
 
+</body>
 </html>

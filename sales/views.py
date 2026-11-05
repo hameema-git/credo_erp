@@ -1800,29 +1800,96 @@ from decimal import Decimal
 
 from decimal import Decimal
 
+# def create_lpo(request):
+#     suppliers = Supplier.objects.all()
+
+#     if request.method == "POST":
+#         supplier = Supplier.objects.get(id=request.POST.get("supplier"))
+
+#         lpo = LPO.objects.create(
+#             number=generate_lpo_number(),
+#             quote_ref=request.POST.get("quote_ref"),   # ✅ ADD THIS LINE
+#             supplier=supplier,
+#             note=request.POST.get("note"),
+#             delivery_date=request.POST.get("delivery_date") or None
+#         )
+
+#         descriptions = request.POST.getlist("description")
+#         quantities = request.POST.getlist("quantity")
+#         prices = request.POST.getlist("price")
+
+#         subtotal = Decimal("0")
+#         total_vat = Decimal("0")
+#         grand_total = Decimal("0")
+
+#         # ✅ LOOP MUST BE INSIDE POST
+#         for i in range(len(quantities)):
+#             if not descriptions[i].strip():
+#                 continue
+
+#             qty = Decimal(quantities[i])
+#             price = Decimal(prices[i])
+
+#             item_total = qty * price
+#             item_vat = item_total * Decimal("0.05")
+#             item_grand = item_total + item_vat
+
+#             LPOItem.objects.create(
+#                 lpo=lpo,
+#                 description=descriptions[i],
+#                 quantity=qty,
+#                 price=price,
+#                 vat=item_vat,
+#                 total=item_grand
+#             )
+
+#             subtotal += item_total
+#             total_vat += item_vat
+#             grand_total += item_grand
+
+#         # ✅ SAVE AFTER LOOP
+#         lpo.subtotal = subtotal
+#         lpo.vat = total_vat
+#         lpo.total = grand_total
+#         lpo.save()
+
+#         # ✅ RETURN AFTER LOOP
+#         return redirect("lpo_detail", pk=lpo.id)
+
+#     # ✅ GET REQUEST
+#     return render(request, "sales/create_lpo.html", {
+#         "suppliers": suppliers
+#     })
+
 def create_lpo(request):
     suppliers = Supplier.objects.all()
 
     if request.method == "POST":
         supplier = Supplier.objects.get(id=request.POST.get("supplier"))
 
+        currency = request.POST.get("currency", "AED")
+        if currency not in ["AED", "INR"]:
+            currency = "AED"
+
         lpo = LPO.objects.create(
             number=generate_lpo_number(),
-            quote_ref=request.POST.get("quote_ref"),   # ✅ ADD THIS LINE
+            quote_ref=request.POST.get("quote_ref"),
             supplier=supplier,
             note=request.POST.get("note"),
-            delivery_date=request.POST.get("delivery_date") or None
+            delivery_date=request.POST.get("delivery_date") or None,
+            currency=currency,
         )
 
         descriptions = request.POST.getlist("description")
         quantities = request.POST.getlist("quantity")
         prices = request.POST.getlist("price")
 
-        subtotal = Decimal("0")
-        total_vat = Decimal("0")
-        grand_total = Decimal("0")
+        subtotal = Decimal("0.00")
+        total_vat = Decimal("0.00")
+        grand_total = Decimal("0.00")
 
-        # ✅ LOOP MUST BE INSIDE POST
+        vat_rate = Decimal("0.05") if currency == "AED" else Decimal("0.00")
+
         for i in range(len(quantities)):
             if not descriptions[i].strip():
                 continue
@@ -1831,7 +1898,7 @@ def create_lpo(request):
             price = Decimal(prices[i])
 
             item_total = qty * price
-            item_vat = item_total * Decimal("0.05")
+            item_vat = item_total * vat_rate
             item_grand = item_total + item_vat
 
             LPOItem.objects.create(
@@ -1847,16 +1914,13 @@ def create_lpo(request):
             total_vat += item_vat
             grand_total += item_grand
 
-        # ✅ SAVE AFTER LOOP
         lpo.subtotal = subtotal
         lpo.vat = total_vat
         lpo.total = grand_total
         lpo.save()
 
-        # ✅ RETURN AFTER LOOP
         return redirect("lpo_detail", pk=lpo.id)
 
-    # ✅ GET REQUEST
     return render(request, "sales/create_lpo.html", {
         "suppliers": suppliers
     })
@@ -2028,82 +2092,238 @@ def supplier_detail(request, pk):
         "lpos": lpos
     })
 
+# def edit_lpo(request, pk):
+#     lpo = get_object_or_404(LPO, id=pk)
+#     suppliers = Supplier.objects.all()
+
+#     if request.method == "POST":
+#         lpo.supplier_id = request.POST.get("supplier")
+#         lpo.quote_ref = request.POST.get("quote_ref")
+#         lpo.note = request.POST.get("note")
+#         lpo.delivery_date = request.POST.get("delivery_date") or None
+#         lpo.save()
+
+#         # delete old items
+#         lpo.items.all().delete()
+
+#         descriptions = request.POST.getlist("description")
+#         quantities = request.POST.getlist("quantity")
+#         prices = request.POST.getlist("price")
+
+#         # subtotal = 0
+
+#         # for i in range(len(quantities)):
+#         #     qty = int(quantities[i])
+#         #     price = float(prices[i])
+#         #     total = qty * price
+
+#         #     LPOItem.objects.create(
+#         #         lpo=lpo,
+#         #         description=descriptions[i],
+#         #         quantity=qty,
+#         #         price=price,
+#         #         total=total
+#         #     )
+
+#         #     subtotal += total
+
+#         # lpo.subtotal = subtotal
+#         # lpo.vat = subtotal * 0.05
+#         # lpo.total = subtotal + lpo.vat
+
+
+#         from decimal import Decimal
+
+#         subtotal = Decimal("0")
+#         total_vat = Decimal("0")
+#         grand_total = Decimal("0")
+
+#         for i in range(len(quantities)):
+#             if not descriptions[i].strip():
+#                 continue
+
+#             qty = Decimal(quantities[i])
+#             price = Decimal(prices[i])
+
+#             item_total = qty * price
+#             item_vat = item_total * Decimal("0.05")
+#             item_grand = item_total + item_vat
+
+#             LPOItem.objects.create(
+#                 lpo=lpo,
+#                 description=descriptions[i],
+#                 quantity=qty,
+#                 price=price,
+#                 vat=item_vat,          # ✅ FIX
+#                 total=item_grand       # ✅ FIX
+#             )
+
+#             subtotal += item_total
+#             total_vat += item_vat
+#             grand_total += item_grand
+
+#         lpo.subtotal = subtotal
+#         lpo.vat = total_vat
+#         lpo.total = grand_total
+#         lpo.save()
+
+#         return redirect("lpo_detail", pk=lpo.id)
+
+#     return render(request, "sales/edit_lpo.html", {
+#         "lpo": lpo,
+#         "suppliers": suppliers
+#     })
+
+
+# def edit_lpo(request, pk):
+#     lpo = get_object_or_404(LPO, id=pk)
+#     suppliers = Supplier.objects.all()
+
+#     if request.method == "POST":
+#         currency = request.POST.get("currency", "AED")
+#         if currency not in ["AED", "INR"]:
+#             currency = "AED"
+
+#         lpo.supplier_id = request.POST.get("supplier")
+#         lpo.quote_ref = request.POST.get("quote_ref")
+#         lpo.note = request.POST.get("note")
+#         lpo.delivery_date = request.POST.get("delivery_date") or None
+#         lpo.currency = currency
+#         lpo.save()
+
+#         lpo.items.all().delete()
+
+#         descriptions = request.POST.getlist("description")
+#         quantities = request.POST.getlist("quantity")
+#         prices = request.POST.getlist("price")
+
+#         subtotal = Decimal("0.00")
+#         total_vat = Decimal("0.00")
+#         grand_total = Decimal("0.00")
+
+#         vat_rate = Decimal("0.05") if currency == "AED" else Decimal("0.00")
+
+#         for i in range(len(quantities)):
+#             if not descriptions[i].strip():
+#                 continue
+
+#             qty = Decimal(quantities[i])
+#             price = Decimal(prices[i])
+
+#             item_total = qty * price
+#             item_vat = item_total * vat_rate
+#             item_grand = item_total + item_vat
+
+#             LPOItem.objects.create(
+#                 lpo=lpo,
+#                 description=descriptions[i],
+#                 quantity=qty,
+#                 price=price,
+#                 vat=item_vat,
+#                 total=item_grand
+#             )
+
+#             subtotal += item_total
+#             total_vat += item_vat
+#             grand_total += item_grand
+
+#         lpo.subtotal = subtotal
+#         lpo.vat = total_vat
+#         lpo.total = grand_total
+#         lpo.save()
+
+#         return redirect("lpo_detail", pk=lpo.id)
+
+#     return render(request, "sales/edit_lpo.html", {
+#         "lpo": lpo,
+#         "suppliers": suppliers
+#     })
+
+
 def edit_lpo(request, pk):
     lpo = get_object_or_404(LPO, id=pk)
     suppliers = Supplier.objects.all()
 
     if request.method == "POST":
-        lpo.supplier_id = request.POST.get("supplier")
-        lpo.quote_ref = request.POST.get("quote_ref")
-        lpo.note = request.POST.get("note")
-        lpo.delivery_date = request.POST.get("delivery_date") or None
-        lpo.save()
+        try:
+            currency = request.POST.get("currency", "AED")
 
-        # delete old items
-        lpo.items.all().delete()
+            if currency not in ["AED", "INR"]:
+                currency = "AED"
 
-        descriptions = request.POST.getlist("description")
-        quantities = request.POST.getlist("quantity")
-        prices = request.POST.getlist("price")
+            descriptions = request.POST.getlist("description")
+            quantities = request.POST.getlist("quantity")
+            prices = request.POST.getlist("price")
 
-        # subtotal = 0
+            subtotal = Decimal("0.00")
+            total_vat = Decimal("0.00")
+            grand_total = Decimal("0.00")
 
-        # for i in range(len(quantities)):
-        #     qty = int(quantities[i])
-        #     price = float(prices[i])
-        #     total = qty * price
-
-        #     LPOItem.objects.create(
-        #         lpo=lpo,
-        #         description=descriptions[i],
-        #         quantity=qty,
-        #         price=price,
-        #         total=total
-        #     )
-
-        #     subtotal += total
-
-        # lpo.subtotal = subtotal
-        # lpo.vat = subtotal * 0.05
-        # lpo.total = subtotal + lpo.vat
-
-
-        from decimal import Decimal
-
-        subtotal = Decimal("0")
-        total_vat = Decimal("0")
-        grand_total = Decimal("0")
-
-        for i in range(len(quantities)):
-            if not descriptions[i].strip():
-                continue
-
-            qty = Decimal(quantities[i])
-            price = Decimal(prices[i])
-
-            item_total = qty * price
-            item_vat = item_total * Decimal("0.05")
-            item_grand = item_total + item_vat
-
-            LPOItem.objects.create(
-                lpo=lpo,
-                description=descriptions[i],
-                quantity=qty,
-                price=price,
-                vat=item_vat,          # ✅ FIX
-                total=item_grand       # ✅ FIX
+            vat_rate = (
+                Decimal("0.05")
+                if currency == "AED"
+                else Decimal("0.00")
             )
 
-            subtotal += item_total
-            total_vat += item_vat
-            grand_total += item_grand
+            items_to_create = []
 
-        lpo.subtotal = subtotal
-        lpo.vat = total_vat
-        lpo.total = grand_total
-        lpo.save()
+            for i in range(len(quantities)):
+                description = descriptions[i].strip()
 
-        return redirect("lpo_detail", pk=lpo.id)
+                if not description:
+                    continue
+
+                qty = Decimal(quantities[i] or "0")
+                price = Decimal(prices[i] or "0")
+
+                if qty <= 0 or price < 0:
+                    raise ValueError("Invalid quantity or price.")
+
+                item_subtotal = qty * price
+                item_vat = (item_subtotal * vat_rate).quantize(
+                    Decimal("0.01")
+                )
+                item_grand = item_subtotal + item_vat
+
+                items_to_create.append(
+                    LPOItem(
+                        lpo=lpo,
+                        description=description,
+                        quantity=qty,
+                        price=price,
+                        vat=item_vat,
+                        total=item_grand
+                    )
+                )
+
+                subtotal += item_subtotal
+                total_vat += item_vat
+                grand_total += item_grand
+
+            # Update LPO only after validating all items
+            lpo.supplier_id = request.POST.get("supplier")
+            lpo.quote_ref = request.POST.get("quote_ref")
+            lpo.note = request.POST.get("note")
+            lpo.delivery_date = request.POST.get("delivery_date") or None
+            lpo.currency = currency
+            lpo.subtotal = subtotal
+            lpo.vat = total_vat
+            lpo.total = grand_total
+
+            from django.db import transaction
+
+            with transaction.atomic():
+                lpo.save()
+                lpo.items.all().delete()
+                LPOItem.objects.bulk_create(items_to_create)
+
+            return redirect("lpo_detail", pk=lpo.id)
+
+        except (ValueError, ArithmeticError, IndexError):
+            messages.error(
+                request,
+                "Please check the item descriptions, prices and quantities."
+            )
 
     return render(request, "sales/edit_lpo.html", {
         "lpo": lpo,

@@ -284,6 +284,17 @@ class LPO(models.Model):
     null=True
     )
 
+
+    CURRENCY_CHOICES = [
+        ("AED", "AED - UAE Dirham"),
+        ("INR", "INR - Indian Rupee"),
+    ]
+
+    currency = models.CharField(
+        max_length=3,
+        choices=CURRENCY_CHOICES,
+        default="AED",
+    )
     def __str__(self):
         return self.number
 

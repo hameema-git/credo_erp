@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -13,7 +14,7 @@
 body {
     font-family: Calibri, sans-serif;
     font-size: 13px;
-    line-height: 1.6;  
+    line-height: 1.6;
 }
 
 /* HEADER */
@@ -33,9 +34,9 @@ body {
     border-bottom: 2px solid black;
     display: inline-block;
     padding-bottom: 4px;
-    /* margin: 10px auto; */
-    margin: -10px auto 10px auto; 
+    margin: -10px auto 10px auto;
 }
+
 .section-title {
     font-weight: bold;
     display: inline-block;
@@ -43,6 +44,7 @@ body {
     padding-bottom: 2px;
     margin-bottom: 6px;
 }
+
 /* DETAILS */
 .details-table {
     width: 100%;
@@ -81,41 +83,16 @@ body {
     padding: 6px;
 }
 
-/* TOTAL */
 .total-row {
     font-weight: bold;
 }
 
 /* FOOTER */
-/* .footer {
-    position: fixed;
-    bottom: 15px;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-}
-
-.footer-row {
-    margin-top: 5px;
-}
-
-.footer-item {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-.footer-item img {
-    height: 12px;
-    vertical-align: middle;
-} */
-
-
 .footer {
     position: fixed;
     bottom: 20px;
     left: 0;
     right: 0;
-
     border-top: 1px solid #0d0c0c;
     padding-top: 10px;
     font-size: 12px;
@@ -129,23 +106,20 @@ body {
     margin-bottom: 8px;
 }
 
-/* 🔥 MAIN FIX */
 .footer-row {
     display: flex;
     justify-content: center;
     gap: 25px;
-    flex-wrap: nowrap;   /* 🔥 prevent line break */
+    flex-wrap: nowrap;
 }
 
-/* EACH ITEM */
 .footer-item {
     display: flex;
     align-items: center;
     gap: 6px;
-    white-space: nowrap;   /* 🔥 prevent text breaking */
+    white-space: nowrap;
 }
 
-/* ICON SIZE */
 .footer-item img {
     height: 12px;
     width: 12px;
@@ -157,17 +131,14 @@ body {
 
 <body>
 
+{% with currency=lpo.currency|default:"AED" %}
+
 <!-- HEADER -->
 <table class="header-table">
     <tr>
         <td>
             <img src="file:///{{ static_path }}/logo6.png" class="logo">
         </td>
-        <!-- <td style="text-align:right;">
-            <b>CREDO INTERNATIONAL DIGITAL DESIGNS LLC</b><br>
-            TRN: 105189276600001<br>
-            Abu Dhabi
-        </td> -->
     </tr>
 </table>
 
@@ -181,63 +152,57 @@ body {
 
 <tr>
 <td>
-<!-- <b><u>Supplier Details</u></b><br> -->
- <div class="section-title">Supplier Details</div><br>
 
-{{ lpo.supplier.name }}<br>
-TRN No: {{lpo.supplier.trn_number}}<br>
-<!-- {{ lpo.supplier.address }}<br> -->
-  {{ lpo.supplier.address|linebreaksbr }}<br>
+    <div class="section-title">Supplier Details</div><br>
 
-Tel: {{ lpo.supplier.phone }}<br>
-Email: {{ lpo.supplier.email }}
-Website: {{ lpo.supplier.website }}
+    {{ lpo.supplier.name }}<br>
+    TRN No: {{ lpo.supplier.trn_number }}<br>
+    {{ lpo.supplier.address|linebreaksbr }}<br>
 
+    Tel: {{ lpo.supplier.phone }}<br>
+    Email: {{ lpo.supplier.email }}<br>
+    Website: {{ lpo.supplier.website }}
 
-<div class="order-box">
-<b>Purchase Order No:</b> {{ lpo.number }}
-</div>
+    <div class="order-box">
+        <b>Purchase Order No:</b> {{ lpo.number }}
+    </div>
 
 </td>
 
 <td style="text-align: right;">
-<!-- <b><u>Delivery Address</u></b><br> -->
- <!-- <div class="section-title">Delivery Address</div><br> -->
-  <div class="section-title">Invoice To</div><br>
- 
 
-Credo International Digital Designs LLC<br>
-TRN No: 105189276600001<br>
-Abu Dhabi<br><br>
+    <div class="section-title">Invoice To</div><br>
 
-<b>Order Date:</b> {{ lpo.order_date }}<br>
-<b>Quote Ref:</b> {{ lpo.quote_ref }}<br>
-<b>Delivery Date:</b> {{ lpo.delivery_date }}
+    Credo International Digital Designs LLC<br>
+    TRN No: 105189276600001<br>
+    Abu Dhabi<br><br>
+
+    <b>Order Date:</b> {{ lpo.order_date }}<br>
+    <b>Quote Ref:</b> {{ lpo.quote_ref }}<br>
+    <b>Delivery Date:</b> {{ lpo.delivery_date }}<br>
+    <b>Currency:</b> {{ currency }}
 
 </td>
 </tr>
 
 </table>
 
-<!-- TABLE -->
+<!-- ITEMS -->
 <table class="items">
 
-<!-- <thead>
-<tr>
-    <th>Description</th>
-    <th>Qty</th>
-    <th>Unit Price</th>
-    <th>Tax 5%</th>
-    <th>Price</th>
-</tr>
-</thead> -->
 <thead>
 <tr>
     <th style="width:45%;">Description</th>
     <th style="width:7%; text-align:center;">Qty</th>
-    <th style="width:15%; text-align:center;">Unit Price</th>
-    <th style="width:15%; text-align:center;">Vat 5%</th>
-    <th style="width:18%; text-align:center;">Price</th>
+    <th style="width:15%; text-align:center;">
+        Unit Price ({{ currency }})
+    </th>
+    <th style="width:15%; text-align:center;">
+        VAT {% if currency == "AED" %}5%{% else %}0%{% endif %}
+    </th>
+    <th style="width:18%; text-align:center;">
+        Price ({{ currency }})
+    </th>
 </tr>
 </thead>
 
@@ -245,96 +210,83 @@ Abu Dhabi<br><br>
 
 {% for item in lpo.items.all %}
 <tr>
-    <!-- <td><b>{{ forloop.counter }}. {{ item.description }}</b></td> -->
 
-    <td><b>{{ forloop.counter }}. {{ item.description|linebreaksbr }}</b></td>
+    <td>
+        <b>{{ forloop.counter }}. {{ item.description|linebreaksbr }}</b>
+    </td>
 
     <td style="text-align:center;">
         {{ item.quantity }}
     </td>
 
     <td style="text-align:center;">
-        AED {{ item.price|floatformat:2 }}
+        {{ currency }} {{ item.price|floatformat:2 }}
     </td>
 
     <td style="text-align:center;">
-        AED {{ item.vat|floatformat:2 }}
+        {{ currency }} {{ item.vat|floatformat:2 }}
     </td>
 
     <td style="text-align:center;">
-        AED {{ item.total|floatformat:2 }}
+        {{ currency }} {{ item.total|floatformat:2 }}
+    </td>
+
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" style="text-align:center;">
+        No items added
     </td>
 </tr>
 {% endfor %}
 
+<!-- SUBTOTAL -->
 <tr class="total-row">
-    <td colspan="4" style="text-align:right;">Total</td>
-    <td>AED {{ lpo.total|floatformat:2 }}</td>
+    <td colspan="4" style="text-align:right;">
+        Subtotal
+    </td>
+    <td>
+        {{ currency }} {{ lpo.subtotal|floatformat:2 }}
+    </td>
+</tr>
+
+<!-- VAT -->
+<tr class="total-row">
+    <td colspan="4" style="text-align:right;">
+        VAT ({% if currency == "AED" %}5%{% else %}0%{% endif %})
+    </td>
+    <td>
+        {{ currency }} {{ lpo.vat|floatformat:2 }}
+    </td>
+</tr>
+
+<!-- GRAND TOTAL -->
+<tr class="total-row">
+    <td colspan="4" style="text-align:right;">
+        Grand Total
+    </td>
+    <td>
+        {{ currency }} {{ lpo.total|floatformat:2 }}
+    </td>
 </tr>
 
 </tbody>
 </table>
 
-<!-- TERMS -->
-<!-- <div style="margin-top:25px;">
-<b>Terms & Conditions:</b><br>
-- All payments through bank transfer
-</div> -->
-
-<!-- INVOICE TO -->
-<!-- <div style="margin-top:25px;font-weight: bold;">
-<b>INVOICE TO:</b><br>
-Credo International Digital Designs LLC<br>
-TRN No: 105189276600001<br>
-Abu Dhabi
-</div> -->
-
 <!-- PARAGRAPH -->
 <div style="margin-top:25px;">
-    <b>Dear Suppliers ,</b><br>
-We kindly request you to proceed with the supply and/or services as per the specifications,
-quantities, and terms mentioned in this LPO. All items should meet the agreed quality standards
-and be delivered within the stipulated time frame.
+    <b>Dear Suppliers,</b><br>
+
+    We kindly request you to proceed with the supply and/or services as per the specifications,
+    quantities, and terms mentioned in this LPO. All items should meet the agreed quality standards
+    and be delivered within the stipulated time frame.
 </div>
 
-<!-- SIGNATURE -->
-<!-- <div style="margin-top:40px;font-weight: bold;">
-Thanks & Regards<br>
-<b>Adwaitha</b><br>
-Operations Manager<br>
-Credo Digital Designs LLC
-</div> -->
-
-<!-- STAMP -->
-<!-- <div style="position:absolute; right:40px; bottom:120px;">
-<img src="file:///{{ static_path }}/stamp.jpeg" style="height:110px;">
-</div> -->
-
-
 <!-- SIGNATURE + STAMP -->
-<!-- <table style="width:100%; margin-top:50px;">
-<tr>
-
-<td style="width:70%; font-weight:bold; vertical-align:top;">
-Thanks & Regards<br>
-<b>Adwaitha</b><br>
-Operations Manager<br>
-Credo Digital Designs LLC
-</td>
-
-<td style="width:30%; text-align:right;">
-<img src="file:///{{ static_path }}/stamp.jpeg" style="height:130px;">
-</td>
-
-</tr>
-</table> -->
-
-
 <table style="width:100%; margin-top:80px; padding-top:20px;">
 
 <tr>
 
-<!-- LEFT -->
 <td style="width:40%; vertical-align:top; font-size:13px;">
     <b>Prepared By</b><br><br>
     Adwaitha<br>
@@ -342,12 +294,10 @@ Credo Digital Designs LLC
     Credo Digital Designs LLC
 </td>
 
-<!-- CENTER -->
 <td style="width:20%; text-align:center; vertical-align:middle;">
     <img src="file:///{{ static_path }}/stamp.jpeg" style="height:100px;">
 </td>
 
-<!-- RIGHT -->
 <td style="width:40%; text-align:right; vertical-align:top; font-size:13px;">
     <b>Approved By</b><br><br>
     Shilthra Surendran<br>
@@ -359,60 +309,38 @@ Credo Digital Designs LLC
 
 </table>
 
-<!-- <table style="width:100%; margin-top:60px;">
-
-<tr>
-
-
-<td style="width:40%; vertical-align:top; font-weight:bold;">
-Prepared By:<br>
-Adwaitha<br>
-Operations Manager<br>
-Credo Digital Designs LLC
-</td>
-
-
-<td style="width:20%; text-align:center; vertical-align:middle;">
-<img src="file:///{{ static_path }}/stamp.jpeg" style="height:110px;">
-</td>
-
-
-<td style="width:40%; text-align:right; vertical-align:top; font-weight:bold;">
-Approved By :<br>
-Shilthra Surendran<br>
-Director – Operations & Accounts<br>
-Credo Digital Designs LLC
-</td>
-
-</tr>
-
-</table> -->
 <!-- FOOTER -->
 <div class="footer">
 
-<div>For More Info:</div>
+    <div>For More Info:</div>
 
-<div class="footer-row">
+    <div class="footer-row">
 
-<span class="footer-item">
-<img src="file:///{{ static_path }}/icons/mail.png"> info@credodesigns.ae
-</span>
+        <span class="footer-item">
+            <img src="file:///{{ static_path }}/icons/mail.png">
+            info@credodesigns.ae
+        </span>
 
-<span class="footer-item">
-<img src="file:///{{ static_path }}/icons/phone.png"> +971566981200
-</span>
+        <span class="footer-item">
+            <img src="file:///{{ static_path }}/icons/phone.png">
+            +971566981200
+        </span>
 
-<span class="footer-item">
-<img src="file:///{{ static_path }}/icons/whatsapp.png"> +971 50 913 2555
-</span>
+        <span class="footer-item">
+            <img src="file:///{{ static_path }}/icons/whatsapp.png">
+            +971 50 913 2555
+        </span>
 
-<span class="footer-item">
-<img src="file:///{{ static_path }}/icons/location.png"> Abu Dhabi
-</span>
+        <span class="footer-item">
+            <img src="file:///{{ static_path }}/icons/location.png">
+            Abu Dhabi
+        </span>
+
+    </div>
 
 </div>
 
-</div>
+{% endwith %}
 
 </body>
 </html>
