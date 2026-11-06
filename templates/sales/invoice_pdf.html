@@ -288,7 +288,7 @@ html, body {
     </div>
 
     <div class="info">
-        <div class="title">INVOICE</div><br>
+        <div class="title">TAX INVOICE</div><br>
       <b> Invoice No :</b>  {{ invoice.number }}<br>
        <b>  Date : </b> {{ invoice.date }}<br>
         <b>TRN No :</b> 105189276600001
@@ -303,7 +303,7 @@ html, body {
 <div class="client">
     To:<br>
     {{ invoice.customer.name }}<br>
-    <b> TRN No:</b> {{ invoice.customer.trn_number }}
+    <b>Client TRN No:</b> {{ invoice.customer.trn_number }}
 </div>
 
 <!-- COMPANY -->
