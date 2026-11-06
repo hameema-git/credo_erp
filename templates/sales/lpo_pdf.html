@@ -3,23 +3,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <style>
 
 @page {
     size: A4;
-    margin: 30px;
+    margin: 30px 30px 90px 30px;
 }
 
 body {
     font-family: Calibri, sans-serif;
     font-size: 13px;
     line-height: 1.6;
+    margin: 0;
 }
 
 /* HEADER */
 .header-table {
     width: 100%;
+    border-collapse: collapse;
 }
 
 .logo {
@@ -50,19 +51,24 @@ body {
     width: 100%;
     margin-top: 20px;
     font-weight: bold;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .details-table td {
     vertical-align: top;
     width: 50%;
+    padding: 0;
 }
 
-/* ORDER BOX */
+/* PURCHASE ORDER BOX */
 .order-box {
     border: 1px solid black;
-    padding: 5px;
-    display: inline-block;
-    margin-top: 10px;
+    padding: 5px 8px;
+    display: block;
+    width: fit-content;
+    margin-top: 12px;
+    clear: both;
 }
 
 /* TABLE */
@@ -70,6 +76,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: fixed;
 }
 
 .items th {
@@ -81,24 +88,61 @@ body {
 .items td {
     border: 1px solid #999;
     padding: 6px;
+    vertical-align: middle;
+    word-wrap: break-word;
 }
 
 .total-row {
     font-weight: bold;
 }
 
+/* PARAGRAPH */
+.terms {
+    margin-top: 25px;
+}
+
+/* SIGNATURE SECTION */
+.signature-table {
+    width: 100%;
+    margin-top: 55px;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+}
+
+.signature-table td {
+    vertical-align: top;
+    padding: 0;
+}
+
+.signature-left,
+.signature-right {
+    width: 40%;
+    font-size: 13px;
+}
+
+.signature-center {
+    width: 20%;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.stamp {
+    height: 100px;
+}
+
 /* FOOTER */
 .footer {
     position: fixed;
-    bottom: 20px;
+    bottom: -60px;
     left: 0;
     right: 0;
     border-top: 1px solid #0d0c0c;
-    padding-top: 10px;
+    padding-top: 8px;
     font-size: 12px;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bolder;
+    background: white;
 }
 
 .footer-title {
@@ -109,14 +153,15 @@ body {
 .footer-row {
     display: flex;
     justify-content: center;
-    gap: 25px;
+    align-items: center;
+    gap: 20px;
     flex-wrap: nowrap;
 }
 
 .footer-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     white-space: nowrap;
 }
 
@@ -126,7 +171,6 @@ body {
 }
 
 </style>
-
 </head>
 
 <body>
@@ -149,7 +193,6 @@ body {
 
 <!-- DETAILS -->
 <table class="details-table">
-
 <tr>
 <td>
 
@@ -169,7 +212,7 @@ body {
 
 </td>
 
-<td style="text-align: right;">
+<td style="text-align:right;">
 
     <div class="section-title">Invoice To</div><br>
 
@@ -179,17 +222,15 @@ body {
 
     <b>Order Date:</b> {{ lpo.order_date }}<br>
     <b>Quote Ref:</b> {{ lpo.quote_ref }}<br>
-    <b>Delivery Date:</b> {{ lpo.delivery_date }}<br>
+    <b>Delivery Date:</b> {{ lpo.delivery_date|default:"-" }}<br>
     <b>Currency:</b> {{ currency }}
 
 </td>
 </tr>
-
 </table>
 
 <!-- ITEMS -->
 <table class="items">
-
 <thead>
 <tr>
     <th style="width:45%;">Description</th>
@@ -210,7 +251,6 @@ body {
 
 {% for item in lpo.items.all %}
 <tr>
-
     <td>
         <b>{{ forloop.counter }}. {{ item.description|linebreaksbr }}</b>
     </td>
@@ -230,7 +270,6 @@ body {
     <td style="text-align:center;">
         {{ currency }} {{ item.total|floatformat:2 }}
     </td>
-
 </tr>
 {% empty %}
 <tr>
@@ -240,41 +279,28 @@ body {
 </tr>
 {% endfor %}
 
-<!-- SUBTOTAL -->
 <tr class="total-row">
-    <td colspan="4" style="text-align:right;">
-        Subtotal
-    </td>
-    <td>
-        {{ currency }} {{ lpo.subtotal|floatformat:2 }}
-    </td>
+    <td colspan="4" style="text-align:right;">Subtotal</td>
+    <td>{{ currency }} {{ lpo.subtotal|floatformat:2 }}</td>
 </tr>
 
-<!-- VAT -->
 <tr class="total-row">
     <td colspan="4" style="text-align:right;">
         VAT ({% if currency == "AED" %}5%{% else %}0%{% endif %})
     </td>
-    <td>
-        {{ currency }} {{ lpo.vat|floatformat:2 }}
-    </td>
+    <td>{{ currency }} {{ lpo.vat|floatformat:2 }}</td>
 </tr>
 
-<!-- GRAND TOTAL -->
 <tr class="total-row">
-    <td colspan="4" style="text-align:right;">
-        Grand Total
-    </td>
-    <td>
-        {{ currency }} {{ lpo.total|floatformat:2 }}
-    </td>
+    <td colspan="4" style="text-align:right;">Grand Total</td>
+    <td>{{ currency }} {{ lpo.total|floatformat:2 }}</td>
 </tr>
 
 </tbody>
 </table>
 
 <!-- PARAGRAPH -->
-<div style="margin-top:25px;">
+<div class="terms">
     <b>Dear Suppliers,</b><br>
 
     We kindly request you to proceed with the supply and/or services as per the specifications,
@@ -283,22 +309,21 @@ body {
 </div>
 
 <!-- SIGNATURE + STAMP -->
-<table style="width:100%; margin-top:80px; padding-top:20px;">
-
+<table class="signature-table">
 <tr>
 
-<td style="width:40%; vertical-align:top; font-size:13px;">
+<td class="signature-left">
     <b>Prepared By</b><br><br>
     Adwaitha<br>
     Operations Manager<br>
     Credo Digital Designs LLC
 </td>
 
-<td style="width:20%; text-align:center; vertical-align:middle;">
-    <img src="file:///{{ static_path }}/stamp.jpeg" style="height:100px;">
+<td class="signature-center">
+    <img src="file:///{{ static_path }}/stamp.jpeg" class="stamp">
 </td>
 
-<td style="width:40%; text-align:right; vertical-align:top; font-size:13px;">
+<td class="signature-right" style="text-align:right;">
     <b>Approved By</b><br><br>
     Shilthra Surendran<br>
     Director – Operations & Accounts<br>
@@ -306,13 +331,12 @@ body {
 </td>
 
 </tr>
-
 </table>
 
 <!-- FOOTER -->
 <div class="footer">
 
-    <div>For More Info:</div>
+    <div class="footer-title">For More Info:</div>
 
     <div class="footer-row">
 
@@ -344,3 +368,4 @@ body {
 
 </body>
 </html>
+
