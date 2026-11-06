@@ -7,20 +7,18 @@
 
 @page {
     size: A4;
-    margin: 30px 30px 90px 30px;
+    margin: 30px 30px 65px 30px;
 }
 
 body {
     font-family: Calibri, sans-serif;
     font-size: 13px;
     line-height: 1.6;
-    margin: 0;
 }
 
 /* HEADER */
 .header-table {
     width: 100%;
-    border-collapse: collapse;
 }
 
 .logo {
@@ -61,17 +59,15 @@ body {
     padding: 0;
 }
 
-/* PURCHASE ORDER BOX */
+/* ORDER BOX */
 .order-box {
     border: 1px solid black;
-    padding: 5px 8px;
-    display: block;
-    width: fit-content;
-    margin-top: 12px;
-    clear: both;
+    padding: 5px;
+    display: table;
+    margin-top: 10px;
 }
 
-/* TABLE */
+/* ITEMS TABLE */
 .items {
     width: 100%;
     border-collapse: collapse;
@@ -89,22 +85,16 @@ body {
     border: 1px solid #999;
     padding: 6px;
     vertical-align: middle;
-    word-wrap: break-word;
 }
 
 .total-row {
     font-weight: bold;
 }
 
-/* PARAGRAPH */
-.terms {
-    margin-top: 25px;
-}
-
-/* SIGNATURE SECTION */
+/* SIGNATURE */
 .signature-table {
     width: 100%;
-    margin-top: 55px;
+    margin-top: 80px;
     border-collapse: collapse;
     page-break-inside: avoid;
 }
@@ -114,30 +104,14 @@ body {
     padding: 0;
 }
 
-.signature-left,
-.signature-right {
-    width: 40%;
-    font-size: 13px;
-}
-
-.signature-center {
-    width: 20%;
-    text-align: center;
-    vertical-align: middle !important;
-}
-
-.stamp {
-    height: 100px;
-}
-
 /* FOOTER */
 .footer {
     position: fixed;
-    bottom: -60px;
+    bottom: -38px;
     left: 0;
     right: 0;
     border-top: 1px solid #0d0c0c;
-    padding-top: 8px;
+    padding-top: 10px;
     font-size: 12px;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -153,15 +127,14 @@ body {
 .footer-row {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 20px;
+    gap: 25px;
     flex-wrap: nowrap;
 }
 
 .footer-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     white-space: nowrap;
 }
 
@@ -222,8 +195,7 @@ body {
 
     <b>Order Date:</b> {{ lpo.order_date }}<br>
     <b>Quote Ref:</b> {{ lpo.quote_ref }}<br>
-    <b>Delivery Date:</b> {{ lpo.delivery_date|default:"-" }}<br>
-    <b>Currency:</b> {{ currency }}
+    <b>Delivery Date:</b> {{ lpo.delivery_date }}
 
 </td>
 </tr>
@@ -231,19 +203,16 @@ body {
 
 <!-- ITEMS -->
 <table class="items">
+
 <thead>
 <tr>
     <th style="width:45%;">Description</th>
     <th style="width:7%; text-align:center;">Qty</th>
-    <th style="width:15%; text-align:center;">
-        Unit Price ({{ currency }})
-    </th>
+    <th style="width:15%; text-align:center;">Unit Price</th>
     <th style="width:15%; text-align:center;">
         VAT {% if currency == "AED" %}5%{% else %}0%{% endif %}
     </th>
-    <th style="width:18%; text-align:center;">
-        Price ({{ currency }})
-    </th>
+    <th style="width:18%; text-align:center;">Price</th>
 </tr>
 </thead>
 
@@ -251,6 +220,7 @@ body {
 
 {% for item in lpo.items.all %}
 <tr>
+
     <td>
         <b>{{ forloop.counter }}. {{ item.description|linebreaksbr }}</b>
     </td>
@@ -270,6 +240,7 @@ body {
     <td style="text-align:center;">
         {{ currency }} {{ item.total|floatformat:2 }}
     </td>
+
 </tr>
 {% empty %}
 <tr>
@@ -279,51 +250,45 @@ body {
 </tr>
 {% endfor %}
 
-<tr class="total-row">
-    <td colspan="4" style="text-align:right;">Subtotal</td>
-    <td>{{ currency }} {{ lpo.subtotal|floatformat:2 }}</td>
-</tr>
-
+<!-- TOTAL -->
 <tr class="total-row">
     <td colspan="4" style="text-align:right;">
-        VAT ({% if currency == "AED" %}5%{% else %}0%{% endif %})
+        Total
     </td>
-    <td>{{ currency }} {{ lpo.vat|floatformat:2 }}</td>
-</tr>
-
-<tr class="total-row">
-    <td colspan="4" style="text-align:right;">Grand Total</td>
-    <td>{{ currency }} {{ lpo.total|floatformat:2 }}</td>
+    <td>
+        {{ currency }} {{ lpo.total|floatformat:2 }}
+    </td>
 </tr>
 
 </tbody>
 </table>
 
 <!-- PARAGRAPH -->
-<div class="terms">
-    <b>Dear Suppliers,</b><br>
+<div style="margin-top:25px;">
+    <b>Dear Suppliers ,</b><br>
 
-    We kindly request you to proceed with the supply and/or services as per the specifications,
-    quantities, and terms mentioned in this LPO. All items should meet the agreed quality standards
-    and be delivered within the stipulated time frame.
+    We kindly request you to proceed with the supply and/or services as per the specifications, quantities, and
+    terms mentioned in this LPO. All items should meet the agreed quality standards and be delivered within the
+    stipulated time frame.
 </div>
 
 <!-- SIGNATURE + STAMP -->
 <table class="signature-table">
+
 <tr>
 
-<td class="signature-left">
+<td style="width:40%; vertical-align:top; font-size:13px;">
     <b>Prepared By</b><br><br>
     Adwaitha<br>
     Operations Manager<br>
     Credo Digital Designs LLC
 </td>
 
-<td class="signature-center">
-    <img src="file:///{{ static_path }}/stamp.jpeg" class="stamp">
+<td style="width:20%; text-align:center; vertical-align:middle;">
+    <img src="file:///{{ static_path }}/stamp.jpeg" style="height:100px;">
 </td>
 
-<td class="signature-right" style="text-align:right;">
+<td style="width:40%; text-align:right; vertical-align:top; font-size:13px;">
     <b>Approved By</b><br><br>
     Shilthra Surendran<br>
     Director – Operations & Accounts<br>
