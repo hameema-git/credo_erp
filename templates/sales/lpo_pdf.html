@@ -5,9 +5,21 @@
 <head>
 <style>
 
+/* PAGE */
 @page {
     size: A4;
     margin: 30px 30px 65px 30px;
+}
+
+/* GLOBAL */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -19,6 +31,8 @@ body {
 /* HEADER */
 .header-table {
     width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .logo {
@@ -57,6 +71,7 @@ body {
     vertical-align: top;
     width: 50%;
     padding: 0;
+    overflow-wrap: break-word;
 }
 
 /* ORDER BOX */
@@ -65,30 +80,70 @@ body {
     padding: 5px;
     display: table;
     margin-top: 10px;
+    max-width: 100%;
 }
 
 /* ITEMS TABLE */
 .items {
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    border-spacing: 0;
     table-layout: fixed;
+    margin-top: 20px;
+}
+
+/* Explicit column widths */
+.items col.description {
+    width: 44%;
+}
+
+.items col.quantity {
+    width: 8%;
+}
+
+.items col.unit-price {
+    width: 16%;
+}
+
+.items col.vat {
+    width: 16%;
+}
+
+.items col.price {
+    width: 16%;
 }
 
 .items th {
     background: linear-gradient(90deg,#362c7a,#741960,#d0153e);
     color: white;
-    padding: 6px;
+    padding: 5px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    overflow-wrap: break-word;
 }
 
 .items td {
     border: 1px solid #999;
-    padding: 6px;
+    padding: 5px;
     vertical-align: middle;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.items th,
+.items td {
+    box-sizing: border-box;
 }
 
 .total-row {
     font-weight: bold;
+}
+
+/* PARAGRAPH */
+.terms {
+    margin-top: 25px;
 }
 
 /* SIGNATURE */
@@ -96,6 +151,7 @@ body {
     width: 100%;
     margin-top: 80px;
     border-collapse: collapse;
+    table-layout: fixed;
     page-break-inside: avoid;
 }
 
@@ -104,12 +160,28 @@ body {
     padding: 0;
 }
 
+.signature-left {
+    width: 40%;
+}
+
+.signature-center {
+    width: 20%;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.signature-right {
+    width: 40%;
+    text-align: right;
+}
+
 /* FOOTER */
 .footer {
     position: fixed;
     bottom: -38px;
     left: 0;
     right: 0;
+    width: 100%;
     border-top: 1px solid #0d0c0c;
     padding-top: 10px;
     font-size: 12px;
@@ -127,14 +199,16 @@ body {
 .footer-row {
     display: flex;
     justify-content: center;
-    gap: 25px;
+    align-items: center;
+    gap: 18px;
     flex-wrap: nowrap;
+    width: 100%;
 }
 
 .footer-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     white-space: nowrap;
 }
 
@@ -167,6 +241,7 @@ body {
 <!-- DETAILS -->
 <table class="details-table">
 <tr>
+
 <td>
 
     <div class="section-title">Supplier Details</div><br>
@@ -198,21 +273,36 @@ body {
     <b>Delivery Date:</b> {{ lpo.delivery_date }}
 
 </td>
+
 </tr>
 </table>
 
 <!-- ITEMS -->
 <table class="items">
 
+<colgroup>
+    <col class="description">
+    <col class="quantity">
+    <col class="unit-price">
+    <col class="vat">
+    <col class="price">
+</colgroup>
+
 <thead>
 <tr>
-    <th style="width:45%;">Description</th>
-    <th style="width:7%; text-align:center;">Qty</th>
-    <th style="width:15%; text-align:center;">Unit Price</th>
-    <th style="width:15%; text-align:center;">
+
+    <th>Description</th>
+
+    <th>Qty</th>
+
+    <th>Unit Price</th>
+
+    <th>
         VAT {% if currency == "AED" %}5%{% else %}0%{% endif %}
     </th>
-    <th style="width:18%; text-align:center;">Price</th>
+
+    <th>Price</th>
+
 </tr>
 </thead>
 
@@ -252,24 +342,29 @@ body {
 
 <!-- TOTAL -->
 <tr class="total-row">
+
     <td colspan="4" style="text-align:right;">
         Total
     </td>
+
     <td>
         {{ currency }} {{ lpo.total|floatformat:2 }}
     </td>
+
 </tr>
 
 </tbody>
 </table>
 
 <!-- PARAGRAPH -->
-<div style="margin-top:25px;">
+<div class="terms">
+
     <b>Dear Suppliers ,</b><br>
 
     We kindly request you to proceed with the supply and/or services as per the specifications, quantities, and
     terms mentioned in this LPO. All items should meet the agreed quality standards and be delivered within the
     stipulated time frame.
+
 </div>
 
 <!-- SIGNATURE + STAMP -->
@@ -277,18 +372,18 @@ body {
 
 <tr>
 
-<td style="width:40%; vertical-align:top; font-size:13px;">
+<td class="signature-left">
     <b>Prepared By</b><br><br>
     Adwaitha<br>
     Operations Manager<br>
     Credo Digital Designs LLC
 </td>
 
-<td style="width:20%; text-align:center; vertical-align:middle;">
+<td class="signature-center">
     <img src="file:///{{ static_path }}/stamp.jpeg" style="height:100px;">
 </td>
 
-<td style="width:40%; text-align:right; vertical-align:top; font-size:13px;">
+<td class="signature-right">
     <b>Approved By</b><br><br>
     Shilthra Surendran<br>
     Director – Operations & Accounts<br>
@@ -333,4 +428,5 @@ body {
 
 </body>
 </html>
+
 
